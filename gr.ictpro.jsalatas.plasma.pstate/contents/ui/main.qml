@@ -1,5 +1,5 @@
 /*
- *   Copyright 2018 John Salatas <jsalatas@gmail.com>
+ *   Copyright 2018 John Salatas <jsalatas@ictpro.gr>
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU Library General Public License as
@@ -29,8 +29,6 @@ import '../code/utils.js' as Utils
 
 Item {
     id: main
-    //width: units.gridUnit * 25
-    //height: units.gridUnit * 30
     
     signal initialized(int childrenHeight, int childrenWidth)
     signal sensorsValuesChanged
