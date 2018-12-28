@@ -81,8 +81,8 @@ Item {
     }
     
     onInitialized: {
-        height = childrenHeight 
-        width = childrenWidth + 10 // add some small arbitrary value to width
+        height = childrenHeight * units.devicePixelRatio
+        width = childrenWidth * units.devicePixelRatio + 10 // add some small arbitrary value to width
         Layout.minimumWidth = width
         Layout.minimumHeight = height
         isInitialized = true
