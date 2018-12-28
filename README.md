@@ -15,7 +15,8 @@ Furthermore, if the hardware supports it, it allows you to interact with
 ## What it isn't
 This is just a GUI widget and it is not meant to replace [TLP](https://linrunner.de/en/tlp/tlp.html), [powertop](https://01.org/powertop) or 
 any other power management / energy consumption service. It is meant just to 
-provide quick access to ``sysfs`` settings related to Intel Processors.
+provide quick access to ``sysfs`` settings related to Intel Processors and 
+in fact it can run on top of TLP.
 
 ## Why
 As the trend in modern laptops continues to be more CPU power in more slim 
