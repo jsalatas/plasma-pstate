@@ -5,12 +5,12 @@ Intel P-state and CPUFreq Manager is a KDE Plasma widget in order to control
 the frequencies and energy conusmption of Intel CPUs and their integrated 
 GPUs for any modern Intel Processors running in [Active Mode with HWP](https://www.kernel.org/doc/html/v4.12/admin-guide/pm/intel_pstate.html#active-mode-with-hwp). 
 
-![Intel P-state and CPUFreq Manager Widget](https://raw.githubusercontent.com/jsalatas/plasma-pstate/master/screenshot1.png)
+![Intel P-state and CPUFreq Manager Widget](https://github.com/jsalatas/plasma-pstate/raw/master/screenshot_1.png "Intel P-state and CPUFreq Manager Widget")
 
 Furthermore, if the hardware supports it, it allows you to interact with 
 [Dell's Thermal Management Feature](https://www.dell.com/support/manuals/ba/en/babsdt1/dell-command-power-manager-v2.2/userguide_dell/thermal-management?guid=guid-c05d2582-fc07-4e3e-918a-965836d20752&lang=en-us) through [libsmbios library](https://github.com/dell/libsmbios).
 
-![Intel P-state and CPUFreq Manager Widget with Dell's Thermal Management Feature](https://raw.githubusercontent.com/jsalatas/plasma-pstate/master/screenshot2.png)
+![Intel P-state and CPUFreq Manager Widget with Dell's Thermal Management Feature](https://github.com/jsalatas/plasma-pstate/raw/master/screenshot_2.png "Intel P-state and CPUFreq Manager Widget with Dell's Thermal Management Feature")
 
 ## What it isn't
 This is just a GUI widget and it is not meant to replace [TLP](https://linrunner.de/en/tlp/tlp.html), [powertop](https://01.org/powertop) or 
