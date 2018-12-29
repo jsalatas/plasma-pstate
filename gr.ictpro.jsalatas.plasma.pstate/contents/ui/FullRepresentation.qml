@@ -83,9 +83,12 @@ Column {
             }
         }
         
-        print(">>>>>>>>> " + childrenWidth + " "  +childrenHeight  );
-        initialized(childrenHeight, childrenWidth)
+        //print(">>>>>>>>> " + childrenWidth + " "  +childrenHeight  );
+        print(">>>>>>>>> " + childrenRect.width + " "  +childrenRect.height );
+        //initialized(childrenHeight, childrenWidth)
+        initialized(childrenRect.height, childrenRect.width)
     }
+
     
     function removeChildren() {
         for(var i = fullRoot.children.length; i > 0 ; i--) {

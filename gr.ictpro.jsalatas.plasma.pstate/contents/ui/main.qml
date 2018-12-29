@@ -44,7 +44,7 @@ Item {
     property bool inTray: (plasmoid.parent === null || plasmoid.parent.objectName === 'taskItemContainer')
     // we need to postpone creation of FullRepresentation until we have the first values 
     // of all sensors script in order to know which vendors to load.
-    // is_ready is how we track it
+    // is_ready is how          we track it
     property bool systemmonitor_ready: false
     property bool powermanagement_ready: false
     property bool monitor_ready: false
@@ -79,8 +79,8 @@ Item {
     }
     
     onInitialized: {
-        height = childrenHeight * units.devicePixelRatio
-        width = childrenWidth * units.devicePixelRatio + 10 // add some small arbitrary value to width
+        height = childrenHeight 
+        width = childrenWidth + 10 // add some small arbitrary value to width
         Layout.minimumWidth = width
         Layout.minimumHeight = height
         isInitialized = true
