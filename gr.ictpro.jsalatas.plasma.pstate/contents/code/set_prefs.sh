@@ -81,9 +81,19 @@ set_cpu_governor () {
 set_energy_perf () {
     energyperf=$1
     if [ -n "$energyperf" ]; then
-        for cpu in /sys/devices/system/cpu/cpu*/cpufreq/energy_performance_preference; do
-            printf '%s\n' "$energyperf" > $cpu; 2> /dev/null
-        done
+        if [ -f /sys/devices/system/cpu/cpu0/cpufreq/energy_performance_preference ]; then
+            for cpu in /sys/devices/system/cpu/cpu*/cpufreq/energy_performance_preference; do
+                printf '%s\n' "$energyperf" > $cpu; 2> /dev/null
+            done
+        else
+            pnum=$(echo $energyperf | sed -r 's/^performance$/0/;
+                                s/^balance_performance$/4/;
+                                s/^(default|normal)$/6/;
+                                s/^balance_power?$/8/;
+                                s/^power(save)?$/15/')
+
+            x86_energy_perf_policy $pnum > /dev/null 2>&1
+        fi
     fi
 }
 
@@ -108,6 +118,16 @@ gpu_boost_freq=`cat $GPU_BOOST_FREQ`
 gpu_cur_freq=`cat $GPU_CUR_FREQ`
 cpu_governor=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`
 energy_perf=`cat /sys/devices/system/cpu/cpu0/cpufreq/energy_performance_preference`
+if [ -z "$energy_perf" ]; then
+    energy_perf=`x86_energy_perf_policy -r 2>/dev/null | grep -v 'HWP_' | \
+    sed -r 's/://;
+            s/(0x0000000000000000|EPB 0)/performance/;
+            s/(0x0000000000000004|EPB 4)/balance_performance/;
+            s/(0x0000000000000006|EPB 6)/default/;
+            s/(0x0000000000000008|EPB 8)/balance_power/;
+            s/(0x000000000000000f|EPB 15)/power/' | \
+    awk '{ printf "%s\n", $2; }' | head -n 1`
+fi
 if check_dell_thermal; then
     thermal_mode=`smbios-thermal-ctl -g | grep -C 1 "Current Thermal Modes:"  | tail -n 1 | awk '{$1=$1;print}' | sed "s/\t//g" | sed "s/ /-/g" | tr [A-Z] [a-z] `
 fi
