@@ -30,7 +30,7 @@ import '../code/utils.js' as Utils
 Item {
     id: main
     
-    signal initialized(int childrenHeight, int childrenWidth)
+    signal setSize(int childrenHeight, int childrenWidth)
     signal sensorsValuesChanged
     signal updateSensor(string name, string value)
     
@@ -78,7 +78,7 @@ Item {
         }
     }
     
-    onInitialized: {
+    onSetSize: {
         height = childrenHeight 
         width = childrenWidth + 10 // add some small arbitrary value to width
         Layout.minimumWidth = width

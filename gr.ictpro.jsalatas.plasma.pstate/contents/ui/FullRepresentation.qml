@@ -35,8 +35,7 @@ Column {
 
 
     onVisibleChanged: {
-        print("duh " + childrenWidth + " "  +childrenHeight  );
-        initialized(childrenHeight, childrenWidth)
+        setSize(childrenHeight, childrenWidth)
     }
     
     Component {
@@ -83,10 +82,8 @@ Column {
             }
         }
         
-        //print(">>>>>>>>> " + childrenWidth + " "  +childrenHeight  );
-        print(">>>>>>>>> " + childrenRect.width + " "  +childrenRect.height );
-        //initialized(childrenHeight, childrenWidth)
-        initialized(childrenRect.height, childrenRect.width)
+        //print(">>>>>>>>> " + childrenWidth + " "  +childrenHeight)
+        setSize(childrenHeight, childrenWidth)
     }
 
     
