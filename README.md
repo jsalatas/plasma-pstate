@@ -7,8 +7,8 @@ Processors running in
 [Active Mode with HWP](https://www.kernel.org/doc/html/v4.12/admin-guide/pm/intel_pstate.html#active-mode-with-hwp) 
 or 
 [Active Mode Without HWP](https://www.kernel.org/doc/html/v4.12/admin-guide/pm/intel_pstate.html#active-mode-without-hwp). 
-It can also managethe processor's energy consumption through Energy-Performance 
-Preference (EPP) knob (if supported) or its Energy-Performance Bias (EPB) knob 
+It can also manage the processor's energy consumption through Energy-Performance 
+Preference (EPP) knob (if supported) or the Energy-Performance Bias (EPB) knob 
 (otherwise).
 
 ![Intel P-state and CPUFreq Manager Widget](https://github.com/jsalatas/plasma-pstate/raw/master/screenshot_1.png "Intel P-state and CPUFreq Manager Widget")
