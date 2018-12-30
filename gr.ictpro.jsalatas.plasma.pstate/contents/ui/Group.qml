@@ -23,7 +23,7 @@ import org.kde.plasma.components 2.0 as PlasmaComponents
 
 ColumnLayout {
     id: group
-    
+
     property alias text: group_title.text
     property var items: []
 
@@ -35,7 +35,7 @@ ColumnLayout {
         text = props['text']
         items = props['items']
     }
-    
+
     Component {
         id: slider
         Slider {
@@ -44,7 +44,7 @@ ColumnLayout {
             Layout.minimumWidth: units.gridUnit * 18
         }
     }
-    
+
     Component {
         id: switchbutton
         Switch {
@@ -65,9 +65,7 @@ ColumnLayout {
                     break
                 }
                 default: console.log("header: unkonwn type: " + items[i]['type'])
-
             }
-
         }
     }
 
@@ -77,5 +75,4 @@ ColumnLayout {
         color: theme.textColor
         visible: text != ''
     }
-    
 }

@@ -34,14 +34,14 @@ Item {
     property var sensor: []
     property bool acceptingChanges: false
 
-    property color borderColor: updating ? '#ff0000' : (active ? Qt.rgba(theme.highlightColor.r, theme.highlightColor.g, theme.highlightColor.b, 0.6) : 
+    property color borderColor: updating ? '#ff0000' : (active ? Qt.rgba(theme.highlightColor.r, theme.highlightColor.g, theme.highlightColor.b, 0.6) :
                                          Qt.rgba(theme.textColor.r,      theme.textColor.g,      theme.textColor.b,      0.4))
     property color buttonColor: active ? theme.highlightColor : theme.textColor
-    
+
     Component.onCompleted: {
         sensorsValuesChanged()
     }
-    
+
     Connections {
         target: main
         onSensorsValuesChanged: {
@@ -51,6 +51,7 @@ Item {
             acceptingChanges = true
         }
     }
+
     Rectangle {
         anchors.fill: parent
         border.width: 2
@@ -58,7 +59,7 @@ Item {
         color: "transparent"
         radius: 3
         id: button
-        
+
         MouseArea {
             anchors.fill: parent
             onClicked: {
@@ -68,7 +69,7 @@ Item {
                 }
             }
         }
-        
+
         PlasmaComponents.Label {
             id: icon
             anchors {
@@ -84,10 +85,10 @@ Item {
             font.pointSize: theme.smallestFont.pointSize * 2.8
             font.family: symbolsFont.name
             color: buttonColor
-            
+ 
             text: symbol
         }
-        
+
         PlasmaComponents.Label {
             id: label
             anchors {
@@ -105,10 +106,6 @@ Item {
             lineHeight: 0.75
 
             color: buttonColor
-
         }
-
     }
-
-    
 }

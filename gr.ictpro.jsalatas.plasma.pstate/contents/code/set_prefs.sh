@@ -14,7 +14,7 @@ GPU_BOOST_FREQ=$GPU/gt_boost_freq_mhz
 GPU_CUR_FREQ=$GPU/gt_cur_freq_mhz
 
 check_dell_thermal () {
-    smbios-thermal-ctl -g > /dev/null 2>&1 
+    smbios-thermal-ctl -g > /dev/null 2>&1
     OUT=$?
     if [ $OUT -eq 0 ]; then
         return 0
@@ -98,7 +98,7 @@ set_energy_perf () {
 }
 
 set_thermal_mode () {
-    smbios-thermal-ctl --set-thermal-mode=$1 2> /dev/null 
+    smbios-thermal-ctl --set-thermal-mode=$1 2> /dev/null
 }
 
 read_all () {
@@ -206,23 +206,3 @@ case $1 in
         exit 3
         ;;
 esac
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

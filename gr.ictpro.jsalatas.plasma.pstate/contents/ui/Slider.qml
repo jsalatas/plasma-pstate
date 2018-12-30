@@ -28,13 +28,13 @@ RowLayout {
     property bool acceptingChanges: false
     property alias pressed: slider.pressed
     property bool updating: false
-    
+
 
     property var sensor: []
     property var min_sensor: []
     property var max_sensor: []
-    
-    
+
+
     property alias text: slider_title.text
     property var props
     spacing: 10
@@ -59,12 +59,12 @@ RowLayout {
         }
         acceptingChanges = true
     }
-    
+
     Component.onCompleted: {
         acceptingChanges = true
         sensorsValuesChanged()
     }
-    
+
     Connections {
         target: main
         onSensorsValuesChanged: {
@@ -85,13 +85,11 @@ RowLayout {
             }
         }
     }
-    
-
 
     PlasmaComponents.Label {
         Layout.alignment: Qt.AlignTop
         id: slider_title
-        font.pointSize: theme.smallestFont.pointSize 
+        font.pointSize: theme.smallestFont.pointSize
         color: theme.textColor
         horizontalAlignment: Text.AlignRight
         Layout.minimumWidth: units.gridUnit * 4
@@ -123,11 +121,9 @@ RowLayout {
     PlasmaComponents.Label {
         Layout.alignment: Qt.AlignTop
         id: slider_value
-        font.pointSize: theme.smallestFont.pointSize 
+        font.pointSize: theme.smallestFont.pointSize
         color: pressed || updating? '#ff0000' : theme.textColor
         horizontalAlignment: Text.AlignRight
         Layout.minimumWidth: units.gridUnit * 3
     }
-
-
 }

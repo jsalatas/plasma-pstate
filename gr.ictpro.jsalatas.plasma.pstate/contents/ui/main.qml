@@ -29,19 +29,19 @@ import '../code/utils.js' as Utils
 
 Item {
     id: main
-    
+
     signal sensorsValuesChanged
     signal updateSensor(string name, string value)
-    
+
     FontLoader {
-        id: symbolsFont; 
+        id: symbolsFont;
         source: '../font/plasma-pstate.ttf'
     }
 
     property var monitor_sources: [/cpu\/system\/AverageClock/g, /cpu\/system\/TotalLoad/g, /lmsensors\/.*Package_id_0/g, /lmsensors\/.*fan/g]
     property var sensors_model: Utils.get_sensors()
     property bool inTray: (plasmoid.parent === null || plasmoid.parent.objectName === 'taskItemContainer')
-    
+
     function sensor_short_name(long_name) {
         var parts = long_name.split('/');
         return parts[parts.length - 1];
@@ -49,7 +49,7 @@ Item {
 
     Plasmoid.compactRepresentation: CompactRepresentation { }
     Plasmoid.fullRepresentation: FullRepresentation { }
-    
+
     Plasmoid.preferredRepresentation: Plasmoid.compactRepresentation
     Plasmoid.switchWidth: units.gridUnit * 15
     Plasmoid.switchHeight: units.gridUnit * 20
@@ -65,7 +65,7 @@ Item {
             // not in tray
         }
     }
-    
+
     onUpdateSensor: {
         print("updating sensor " + name +": " + value)
         if(value != sensors_model[name]['value']) {
@@ -76,11 +76,11 @@ Item {
     }
 
     function get_value_text(sensor, value) {
-        // lol! Is this the bwsat way to do it? 
+        // lol! Is this the bwsat way to do it?
         var obj = {'value': value, 'unit': sensors_model[sensor]['unit']}
         return sensors_model[sensor]['print'](obj)
     }
-    
+
     function get_sensors_text(sensors) {
         var res = '';
         for(var i = 0 ; i < sensors.length; i++) {
@@ -92,36 +92,34 @@ Item {
                 res += value;
             }
         }
-        
+
         return res || 'N/A';
     }
 
-
-    
     function monitor_source(src) {
         for(var i=0; i < monitor_sources.length; i++) {
             if(src.match(monitor_sources[i])) {
                 return true;
             }
         }
-        
+
         return false;
     }
-    
+
     onSensorsValuesChanged: {
         updateTooltip();
     }
-    
+
     PlasmaCore.DataSource {
         id: systemmonitorDS
         engine: 'systemmonitor'
         property var seenSources: []
-        
+
         onSourceAdded: {
              if(monitor_source(source)) {
                  if(systemmonitorDS.connectedSources.indexOf(source) == -1) {
                      systemmonitorDS.connectedSources.push(source);
-                 }    
+                 }
             }
         }
 
@@ -130,9 +128,9 @@ Item {
             if(systemmonitorDS.seenSources.indexOf(sourceName) == -1 && data.value != undefined) {
                 systemmonitorDS.seenSources.push(sourceName)
             }
-            
+
             var source_short_name = sensor_short_name(sourceName);
-            
+
             if(source_short_name.startsWith('fan')) {
                 if (sensors_model['fan_speeds'] != undefined && sensors_model['fan_speeds']['value'] != undefined) {
                     sensors_model['fan_speeds']['value'][source_short_name] = data.value;
@@ -153,13 +151,14 @@ Item {
                     }
                 }
             }
-            
+
             sensorsValuesChanged()
         }
+
         Component.onCompleted: {
             systemmonitorDS.connectedSources = [];
             systemmonitorDS.connectedSources.length = 0;
-            
+
             for(var i=0; i< systemmonitorDS.sources.length; i++) {
                 if(monitor_source(systemmonitorDS.sources[i])) {
                     if(systemmonitorDS.connectedSources.indexOf(systemmonitorDS.sources[i]) == -1) {
@@ -170,7 +169,6 @@ Item {
         }
         interval: 2000
     }
-
 
     PlasmaCore.DataSource {
         id: powermanagementDS
@@ -239,11 +237,11 @@ Item {
 
         }
     }
-    
+
     function updateTooltip() {
         var toolTipSubText ='';
         var txt = '';
-        
+
         toolTipSubText += '<table>'
 
         toolTipSubText += '<tr>'
@@ -282,6 +280,4 @@ Item {
 
         Plasmoid.toolTipSubText = toolTipSubText
     }
-
-    
 }

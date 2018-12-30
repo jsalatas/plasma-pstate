@@ -42,7 +42,7 @@ RowLayout {
         acceptingChanges = true
         sensorsValuesChanged()
     }
-    
+
     Connections {
         target: main
         onSensorsValuesChanged: {
@@ -59,12 +59,12 @@ RowLayout {
     PlasmaComponents.Label {
         Layout.alignment: Qt.AlignVCenter
         id: checkbox_title
-        font.pointSize: theme.smallestFont.pointSize 
+        font.pointSize: theme.smallestFont.pointSize
         color: theme.textColor
         horizontalAlignment: Text.AlignRight
         Layout.minimumWidth: units.gridUnit * 4
     }
-        
+
     PlasmaComponents.CheckBox {
         id: checkBox
         onCheckedChanged: {

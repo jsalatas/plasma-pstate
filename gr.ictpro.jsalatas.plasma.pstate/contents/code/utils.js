@@ -42,7 +42,7 @@ function to_time(item) {
     var val = Math.round(parseFloat(item['value']), 0);
     var hours   = Math.floor(val / 3600);
     var minutes = Math.floor((val - (hours * 3600)) / 60);
-    
+
     if (minutes < 10) {minutes = "0"+minutes;}
     return hours ? hours+':'+minutes : '';
 }
@@ -56,20 +56,20 @@ function to_string(item) {
 }
 
 var sensors = {
-    // Informational 
-    'cpu_cur_load': {'value': undefined, 'unit':'%', 'print': to_int}, 
-    'cpu_cur_freq': {'value': undefined, 'unit':' MHz', 'print': to_int}, 
+    // Informational
+    'cpu_cur_load': {'value': undefined, 'unit':'%', 'print': to_int},
+    'cpu_cur_freq': {'value': undefined, 'unit':' MHz', 'print': to_int},
     'gpu_cur_freq': {'value': undefined, 'unit':' MHz', 'print': to_int},
     'gpu_min_limit': {'value': undefined, 'unit':'', 'print': to_int},
     'gpu_max_limit': {'value': undefined, 'unit':'', 'print': to_int},
-    'battery_percentage': {'value': undefined, 'unit': '%', 'print': to_int}, 
+    'battery_percentage': {'value': undefined, 'unit': '%', 'print': to_int},
     'battery_remaining_time': {'value': undefined, 'print': to_time},
-    'package_temp': {'value': undefined, 'unit': ' \u2103', 'print': to_int}, 
+    'package_temp': {'value': undefined, 'unit': ' \u2103', 'print': to_int},
     'fan_speeds': {'value': {}, 'unit': ' RPM', 'print': array_to_int},
     // Tunable
-    'cpu_min_perf': {'value': undefined, 'unit':'%', 'print': to_int}, 
-    'cpu_max_perf': {'value': undefined, 'unit':'%', 'print': to_int}, 
-    'cpu_turbo': {'value': undefined, 'unit':'', 'print': to_bool}, 
+    'cpu_min_perf': {'value': undefined, 'unit':'%', 'print': to_int},
+    'cpu_max_perf': {'value': undefined, 'unit':'%', 'print': to_int},
+    'cpu_turbo': {'value': undefined, 'unit':'', 'print': to_bool},
     'gpu_min_freq': {'value': undefined, 'unit':' MHz', 'print': to_int},
     'gpu_max_freq': {'value': undefined, 'unit':' MHz', 'print': to_int},
     'gpu_boost_freq': {'value': undefined, 'unit':' MHz', 'print': to_int},
@@ -83,8 +83,8 @@ var vendors = {
 }
 
 var model =  [
-    {'type': 'header', 'text': 'Processor Settings', 'icon': 'd', 
-        'sensors': ['cpu_cur_load', 'cpu_cur_freq', 'gpu_cur_freq'], 
+    {'type': 'header', 'text': 'Processor Settings', 'icon': 'd',
+        'sensors': ['cpu_cur_load', 'cpu_cur_freq', 'gpu_cur_freq'],
         'items': [
             {'type': 'group', 'text': 'CPU Frequencies', 'items' :[
                 {'type': 'slider', 'text': 'Min perf', 'min': 0, 'max': 100, 'sensor': 'cpu_min_perf'},
@@ -102,8 +102,8 @@ var model =  [
             ]}
         ]
     },
-    {'type': 'header', 'text': 'Energy Performance', 'icon': 'h', 
-        'sensors': ['battery_percentage', 'battery_remaining_time'], 
+    {'type': 'header', 'text': 'Energy Performance', 'icon': 'h',
+        'sensors': ['battery_percentage', 'battery_remaining_time'],
         'items': [
             {'type': 'radio', 'text': '', 'sensor': 'energy_perf', 'items' :[
                 {'symbol': 'i', 'text': 'Default', 'sensor_value': 'default'},
@@ -114,9 +114,9 @@ var model =  [
             ]}
         ]
     },
-    {'type': 'header', 'text': 'Thermal Management', 'icon': 'b', 
-        'vendors': ['dell'], 
-        'sensors': ['package_temp', 'fan_speeds'], 
+    {'type': 'header', 'text': 'Thermal Management', 'icon': 'b',
+        'vendors': ['dell'],
+        'sensors': ['package_temp', 'fan_speeds'],
         'items': [
             {'type': 'radio', 'text': '', 'sensor': 'thermal_mode', 'items' :[
                  {'symbol': 'e', 'text': 'Performance', 'sensor_value': 'performance'},

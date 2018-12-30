@@ -22,21 +22,21 @@ import org.kde.plasma.components 2.0 as PlasmaComponents
 
 PlasmaComponents.Label {
     anchors.fill: parent
-    
+
     verticalAlignment: Text.AlignVCenter
     horizontalAlignment: Text.AlignHCenter
 
     font.pixelSize: Math.min(parent.height, parent.width) * (inTray ? 1: 0.7)
     font.pointSize: -1
     font.family: symbolsFont.name
-    
+
     text: 'd'
-    
-     MouseArea {
+
+    MouseArea {
         id: mousearea
         anchors.fill: parent
         onClicked: {
-            plasmoid.expanded = !plasmoid.expanded 
+            plasmoid.expanded = !plasmoid.expanded
         }
-     }
+    }
 }

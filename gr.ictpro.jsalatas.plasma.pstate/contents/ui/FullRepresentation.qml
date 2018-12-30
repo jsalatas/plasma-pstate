@@ -23,14 +23,13 @@ import org.kde.plasma.components 2.0 as PlasmaComponents
 
 import '../code/utils.js' as Utils
 
-
 ColumnLayout {
     id: fullRoot
     spacing: 0.1
-    
-    property var model: Utils.get_model()   
+
+    property var model: Utils.get_model()
     property var vendors: Utils.get_vendors()
-    
+
     Component {
         id: header
         Header {
@@ -41,14 +40,14 @@ ColumnLayout {
         initialize()
         sensorsValuesChanged()
     }
-    
+
     onVisibleChanged: {
         if(visible) {
             initialize()
             sensorsValuesChanged()
         }
     }
-    
+
     function is_present(item_vendors) {
         if(item_vendors && item_vendors.length != 0) {
             for(var j=0; j< item_vendors.length; j++) {
@@ -66,7 +65,7 @@ ColumnLayout {
 
     function initialize() {
         removeChildren()
-        
+
         for(var i = 0; i < model.length; i++) {
             var item = model[i];
             if(is_present(item['vendors'])) {
@@ -81,11 +80,9 @@ ColumnLayout {
         }
     }
 
-    
     function removeChildren() {
         for(var i = fullRoot.children.length; i > 0 ; i--) {
             fullRoot.children[i-1].destroy()
-      }
-
+        }
     }
 }
