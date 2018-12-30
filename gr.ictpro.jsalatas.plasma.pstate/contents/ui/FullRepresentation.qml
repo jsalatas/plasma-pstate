@@ -18,25 +18,18 @@
  */
 
 import QtQuick 2.3
+import QtQuick.Layouts 1.1
 import org.kde.plasma.components 2.0 as PlasmaComponents
 
 import '../code/utils.js' as Utils
 
 
-Column {
+ColumnLayout {
     id: fullRoot
     spacing: 0.1
     
     property var model: Utils.get_model()   
     property var vendors: Utils.get_vendors()
-    property var childrenHeight: 0
-    property var childrenWidth: 0
-        
-
-
-    onVisibleChanged: {
-        setSize(childrenHeight, childrenWidth)
-    }
     
     Component {
         id: header
@@ -47,6 +40,13 @@ Column {
     Component.onCompleted: {
         initialize()
         sensorsValuesChanged()
+    }
+    
+    onVisibleChanged: {
+        if(visible) {
+            initialize()
+            sensorsValuesChanged()
+        }
     }
     
     function is_present(item_vendors) {
@@ -65,25 +65,20 @@ Column {
     }
 
     function initialize() {
+        removeChildren()
+        
         for(var i = 0; i < model.length; i++) {
             var item = model[i];
             if(is_present(item['vendors'])) {
                 switch (item.type) {
                     case 'header': {
                         var obj = header.createObject(fullRoot, {'props': item})
-                        print(">>>>>>>>> 1: "+ childrenWidth + " " + childrenHeight)
-                        childrenHeight += obj.height
-                        childrenWidth = Math.max(childrenWidth, obj.width)
-                        print(">>>>>>>>> 2: "+ childrenWidth + " " + childrenHeight + "---" +obj.width + " " + obj.height)
                         break
                     }
                     default: console.log("unkonwn type: " + item.type)
                 }
             }
         }
-        
-        //print(">>>>>>>>> " + childrenWidth + " "  +childrenHeight)
-        setSize(childrenHeight, childrenWidth)
     }
 
     

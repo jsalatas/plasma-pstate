@@ -36,10 +36,7 @@ PlasmaComponents.Label {
         id: mousearea
         anchors.fill: parent
         onClicked: {
-            if(main.isInitialized) {
-                // FIXME: There is an initial time that thw widget's button doesn't respond to clicks
-                plasmoid.expanded = !plasmoid.expanded 
-            }
+            plasmoid.expanded = !plasmoid.expanded 
         }
      }
 }

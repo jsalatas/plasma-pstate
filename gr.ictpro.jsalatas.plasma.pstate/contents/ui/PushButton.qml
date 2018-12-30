@@ -21,7 +21,7 @@ import QtQuick 2.3
 import org.kde.plasma.components 2.0 as PlasmaComponents
 
 Item {
-    width: units.gridUnit * 4
+    width: units.gridUnit * 4.2
     height: units.gridUnit * 4
 
     objectName: "PushButton"
@@ -37,6 +37,10 @@ Item {
     property color borderColor: updating ? '#ff0000' : (active ? Qt.rgba(theme.highlightColor.r, theme.highlightColor.g, theme.highlightColor.b, 0.6) : 
                                          Qt.rgba(theme.textColor.r,      theme.textColor.g,      theme.textColor.b,      0.4))
     property color buttonColor: active ? theme.highlightColor : theme.textColor
+    
+    Component.onCompleted: {
+        sensorsValuesChanged()
+    }
     
     Connections {
         target: main

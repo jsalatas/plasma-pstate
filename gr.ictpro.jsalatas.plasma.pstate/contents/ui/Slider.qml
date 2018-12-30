@@ -62,6 +62,7 @@ RowLayout {
     
     Component.onCompleted: {
         acceptingChanges = true
+        sensorsValuesChanged()
     }
     
     Connections {

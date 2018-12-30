@@ -62,6 +62,7 @@ ColumnLayout {
         id: buttons
         spacing: -0.5
         Layout.topMargin: radio_title.visible ? 0 : 8
+        Layout.rightMargin: 15
 
         height: units.gridUnit * 4
     }

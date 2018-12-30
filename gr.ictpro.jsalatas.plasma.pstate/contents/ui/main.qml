@@ -30,7 +30,6 @@ import '../code/utils.js' as Utils
 Item {
     id: main
     
-    signal setSize(int childrenHeight, int childrenWidth)
     signal sensorsValuesChanged
     signal updateSensor(string name, string value)
     
@@ -42,14 +41,6 @@ Item {
     property var monitor_sources: [/cpu\/system\/AverageClock/g, /cpu\/system\/TotalLoad/g, /lmsensors\/.*Package_id_0/g, /lmsensors\/.*fan/g]
     property var sensors_model: Utils.get_sensors()
     property bool inTray: (plasmoid.parent === null || plasmoid.parent.objectName === 'taskItemContainer')
-    // we need to postpone creation of FullRepresentation until we have the first values 
-    // of all sensors script in order to know which vendors to load.
-    // is_ready is how          we track it
-    property bool systemmonitor_ready: false
-    property bool powermanagement_ready: false
-    property bool monitor_ready: false
-    property bool isReady: systemmonitor_ready && powermanagement_ready && monitor_ready
-    property bool isInitialized: false
     
     function sensor_short_name(long_name) {
         var parts = long_name.split('/');
@@ -57,9 +48,11 @@ Item {
     }
 
     Plasmoid.compactRepresentation: CompactRepresentation { }
-    Plasmoid.preferredRepresentation: Plasmoid.fullRepresentation
-    Plasmoid.switchWidth: units.gridUnit * 8
-    Plasmoid.switchHeight: units.gridUnit * 12
+    Plasmoid.fullRepresentation: FullRepresentation { }
+    
+    Plasmoid.preferredRepresentation: Plasmoid.compactRepresentation
+    Plasmoid.switchWidth: units.gridUnit * 15
+    Plasmoid.switchHeight: units.gridUnit * 20
 
 
     Plasmoid.toolTipMainText: '' //i18n('Intel pstate and Thermal Management')
@@ -67,31 +60,12 @@ Item {
     Plasmoid.toolTipTextFormat: Text.RichText
     Plasmoid.icon: ''
 
-    Component {
-        id: fullrep
-        FullRepresentation {}
-    }
-    
     Component.onCompleted: {
         if (!inTray) {
             // not in tray
         }
     }
     
-    onSetSize: {
-        height = childrenHeight 
-        width = childrenWidth + 10 // add some small arbitrary value to width
-        Layout.minimumWidth = width
-        Layout.minimumHeight = height
-        isInitialized = true
-    }
-    
-    onIsReadyChanged:{
-        if(isReady) {
-            fullrep.createObject(main, {})
-            Plasmoid.fullRepresentation=fullrep
-        }
-    }
     onUpdateSensor: {
         print("updating sensor " + name +": " + value)
         if(value != sensors_model[name]['value']) {
@@ -156,8 +130,7 @@ Item {
             if(systemmonitorDS.seenSources.indexOf(sourceName) == -1 && data.value != undefined) {
                 systemmonitorDS.seenSources.push(sourceName)
             }
-            systemmonitor_ready = systemmonitorDS.connectedSources.length == systemmonitorDS.seenSources.length 
-
+            
             var source_short_name = sensor_short_name(sourceName);
             
             if(source_short_name.startsWith('fan')) {
@@ -205,7 +178,6 @@ Item {
         connectedSources: ['Battery']
         onDataChanged: {
             if(powermanagementDS.data["Battery"]) {
-                powermanagement_ready = true
                 sensors_model['battery_remaining_time']['value'] = Number(powermanagementDS.data["Battery"]["Remaining msec"]) / 1000;
                 sensors_model['battery_percentage']['value'] = powermanagementDS.data["Battery"]["Percent"];
                 sensorsValuesChanged()
@@ -221,7 +193,6 @@ Item {
         property string commandSource: 'sudo /usr/share/plasma/plasmoids/gr.ictpro.jsalatas.plasma.pstate/contents/code/set_prefs.sh -read-all'
 
         onNewData: {
-            monitor_ready = true
             if (data['exit code'] > 0) {
                 print('monitorDS error: ' + data.stderr)
             } else {
