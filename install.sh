@@ -15,5 +15,14 @@ chmod 755 /usr/share/plasma/plasmoids/gr.ictpro.jsalatas.plasma.pstate/contents/
 chown root:root /etc/sudoers.d/${SUDOERS_FILE}
 chmod 400 /etc/sudoers.d/${SUDOERS_FILE}
 
+# Test for wheel group instead of sudo
+# this is the case of arch based distros
+wheelgroup=`grep wheel /etc/group | wc -l`
+sudogroup=`grep sudo /etc/group | wc -l`
+if [ "$wheelgroup" -eq "1" ] && [ "$sudogroup" -eq "0" ]; then
+    # seems to be safe enough: there is a wheel group and not a sudo group
+    sed -i 's/sudo/wheel/' /etc/sudoers.d/${SUDOERS_FILE}
+fi
+
 echo -e "\nSetup complete."
 exit 0
