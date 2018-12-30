@@ -14,7 +14,6 @@ Preference (EPP) knob (if supported) or the Energy-Performance Bias (EPB) knob
 ![Intel P-state and CPUFreq Manager Widget](https://github.com/jsalatas/plasma-pstate/raw/master/screenshot_1.png "Intel P-state and CPUFreq Manager Widget")
 
 Furthermore, if the hardware supports it, it allows you to interact with 
-
 [Dell's Thermal Management Feature](https://www.dell.com/support/manuals/ba/en/babsdt1/dell-command-power-manager-v2.2/userguide_dell/thermal-management?guid=guid-c05d2582-fc07-4e3e-918a-965836d20752&lang=en-us) through [libsmbios library](https://github.com/dell/libsmbios).
 
 ![Intel P-state and CPUFreq Manager Widget with Dell's Thermal Management Feature](https://github.com/jsalatas/plasma-pstate/raw/master/screenshot_2.png "Intel P-state and CPUFreq Manager Widget with Dell's Thermal Management Feature")
