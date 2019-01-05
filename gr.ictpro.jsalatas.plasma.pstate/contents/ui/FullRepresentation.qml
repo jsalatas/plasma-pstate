@@ -23,9 +23,11 @@ import org.kde.plasma.components 2.0 as PlasmaComponents
 
 import '../code/utils.js' as Utils
 
-ColumnLayout {
+Column {
     id: fullRoot
     spacing: 0.1
+    Layout.minimumWidth: units.gridUnit * 15
+    Layout.minimumHeight: units.gridUnit * 20
 
     property var model: Utils.get_model()
     property var vendors: Utils.get_vendors()
@@ -37,12 +39,15 @@ ColumnLayout {
     }
 
     Component.onCompleted: {
-        initialize()
-        sensorsValuesChanged()
+        if(isReady) {
+            initialize()
+            sensorsValuesChanged()
+        }
     }
 
-    onVisibleChanged: {
-        if(visible) {
+    Connections {
+        target: main
+        onDataSourceReady: {
             initialize()
             sensorsValuesChanged()
         }
@@ -66,18 +71,29 @@ ColumnLayout {
     function initialize() {
         removeChildren()
 
+        var w = 0;
+        var h = 0;
+
         for(var i = 0; i < model.length; i++) {
             var item = model[i];
             if(is_present(item['vendors'])) {
                 switch (item.type) {
                     case 'header': {
                         var obj = header.createObject(fullRoot, {'props': item})
+                        w = Math.max(w, obj.width)
+                        h += obj.height
                         break
                     }
                     default: console.log("unkonwn type: " + item.type)
                 }
             }
         }
+
+        //FIXME: For some reason, the first time it is shown, the two rects are different :\
+        print(">>>>>>>>>>>>> childrenRect: " + childrenRect.width + " - " + childrenRect.height)
+        print(">>>>>>>>>>>>>          w-h: " + w + " - " + h)
+        Layout.minimumWidth = w
+        Layout.minimumHeight = h
     }
 
     function removeChildren() {

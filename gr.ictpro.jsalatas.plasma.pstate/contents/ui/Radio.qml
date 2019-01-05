@@ -23,7 +23,6 @@ import org.kde.plasma.components 2.0 as PlasmaComponents
 
 ColumnLayout {
     id: radio
-    height: radio_title.height + buttons.height
 
     property alias text: radio_title.text
     property var sensor: []

@@ -31,6 +31,7 @@ Item {
     id: main
 
     signal sensorsValuesChanged
+    signal dataSourceReady
     signal updateSensor(string name, string value)
 
     FontLoader {
@@ -40,6 +41,7 @@ Item {
 
     property var monitor_sources: [/cpu\/system\/AverageClock/g, /cpu\/system\/TotalLoad/g, /lmsensors\/.*Package_id_0/g, /lmsensors\/.*fan/g]
     property var sensors_model: Utils.get_sensors()
+    property alias isReady: monitorDS.isReady
     property bool inTray: (plasmoid.parent === null || plasmoid.parent.objectName === 'taskItemContainer')
 
     function sensor_short_name(long_name) {
@@ -188,6 +190,7 @@ Item {
         id: monitorDS
         engine: 'executable'
 
+        property bool isReady: false
         property string commandSource: 'sudo /usr/share/plasma/plasmoids/gr.ictpro.jsalatas.plasma.pstate/contents/code/set_prefs.sh -read-all'
 
         onNewData: {
@@ -198,6 +201,10 @@ Item {
                 var keys = Object.keys(obj);
                 for(var i=0; i< keys.length; i++) {
                     sensors_model[keys[i]]['value'] = obj[keys[i]];
+                }
+                if(!isReady) {
+                    dataSourceReady();
+                    isReady = true;
                 }
                 sensorsValuesChanged();
             }
