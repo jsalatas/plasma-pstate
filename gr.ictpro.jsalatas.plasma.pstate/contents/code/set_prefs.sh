@@ -13,6 +13,57 @@ GPU_MAX_LIMIT=$GPU/gt_RP0_freq_mhz
 GPU_BOOST_FREQ=$GPU/gt_boost_freq_mhz
 GPU_CUR_FREQ=$GPU/gt_cur_freq_mhz
 
+
+#If lg driver installed or kernel version > 4.20 then this directory should exist on lg_gram laptop
+LG_LAPTOP_DRIVER=/sys/devices/platform/lg-laptop
+LG_FAN_MODE=$LG_LAPTOP_DRIVER/fan_mode #Writing 1/0 disables/enables the fan silent mode.
+LG_BATTERY_CHARGE_LIMIT=$LG_LAPTOP_DRIVER/battery_care_limit # the value of this can be 100 or 80, on restart it resets to 100 I wan to make a switch enabling which this variable will be set to 80 
+LG_USB_CHARGE=$LG_LAPTOP_DRIVER/usb_charge #Writing 0/1 disables/enables charging another device from the USB port while the device is turned off.
+
+
+
+check_lg_drivers() {
+    if [ -d $LG_LAPTOP_DRIVER ]; then
+	return 1
+    else
+	return 0
+    fi
+
+    }
+
+set_lg_battery_charge_limit(){ #same as checking turbo mode
+    #echo "in battery charge limit"
+    enabled=$1
+    if [ -n "$enabled" ]; then
+        if [ "$enabled" == "true" ]; then
+	   echo 80 > $LG_BATTERY_CHARGE_LIMIT
+        else
+           echo 100 > $LG_BATTERY_CHARGE_LIMIT
+        fi
+    fi
+    
+}
+set_lg_fan_mode() {  #same as checking turbo mode
+    enabled=$1
+    if [ -n "$enabled" ]; then
+        if [ "$enabled" == "true" ]; then
+           echo 0 > $LG_FAN_MODE
+        else
+           echo 1 > $LG_FAN_MODE
+        fi
+    fi
+}
+set_lg_usb_charge()  { #same as checking turbo mode
+    enabled=$1
+    if [ -n "$enabled" ]; then
+        if [ "$enabled" == "true" ]; then
+           echo 1 > $LG_USB_CHARGE
+        else
+           echo 0 > $LG_USB_CHARGE
+        fi
+    fi
+}
+
 check_dell_thermal () {
     smbios-thermal-ctl -g > /dev/null 2>&1
     OUT=$?
@@ -131,6 +182,11 @@ fi
 if check_dell_thermal; then
     thermal_mode=`smbios-thermal-ctl -g | grep -C 1 "Current Thermal Modes:"  | tail -n 1 | awk '{$1=$1;print}' | sed "s/\t//g" | sed "s/ /-/g" | tr [A-Z] [a-z] `
 fi
+if check_lg_drivers; then
+    lg_battery_charge_limit=`cat $LG_BATTERY_CHARGE_LIMIT`
+    lg_usb_charge=`cat $LG_USB_CHARGE`
+    lg_fan_mode=`cat $LG_FAN_MODE`
+fi
 json="{"
 json="${json}\"cpu_min_perf\":\"${cpu_min_perf}\""
 json="${json},\"cpu_max_perf\":\"${cpu_max_perf}\""
@@ -145,6 +201,11 @@ json="${json},\"cpu_governor\":\"${cpu_governor}\""
 json="${json},\"energy_perf\":\"${energy_perf}\""
 if check_dell_thermal; then
     json="${json},\"thermal_mode\":\"${thermal_mode}\""
+fi
+if check_lg_drivers; then
+    json="${json},\"lg_battery_charge_limit\":\"${lg_battery_charge_limit}\""
+    json="${json},\"lg_usb_charge\":\"${lg_usb_charge}\""
+    json="${json},\"lg_fan_mode\":\"${lg_fan_mode}\""
 fi
 json="${json}}"
 echo $json
@@ -186,6 +247,18 @@ case $1 in
     "-thermal-mode")
         set_thermal_mode $2
         ;;
+
+    "-lg-battery")
+	set_lg_battery_charge_limit $2
+	;;
+
+    "-lg-fan")
+	set_lg_fan_mode $2
+	;;
+
+    "-lg-usb")
+	set_lg_usb_charge $2
+	;;
 
     "-read-all")
         read_all
