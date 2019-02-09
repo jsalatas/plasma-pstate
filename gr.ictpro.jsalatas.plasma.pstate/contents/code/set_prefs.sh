@@ -24,12 +24,11 @@ LG_USB_CHARGE=$LG_LAPTOP_DRIVER/usb_charge #Writing 0/1 disables/enables chargin
 
 check_lg_drivers() {
     if [ -d $LG_LAPTOP_DRIVER ]; then
-	return 1
+        return 0
     else
-	return 0
+        return 1
     fi
-
-    }
+}
 
 set_lg_battery_charge_limit(){ #same as checking turbo mode
     #echo "in battery charge limit"
