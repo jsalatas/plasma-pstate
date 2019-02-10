@@ -183,8 +183,23 @@ if check_dell_thermal; then
 fi
 if check_lg_drivers; then
     lg_battery_charge_limit=`cat $LG_BATTERY_CHARGE_LIMIT`
+    if [ "$lg_battery_charge_limit" == "80" ]; then
+        lg_battery_charge_limit = "true"
+    else
+        lg_battery_charge_limit = "false"
+    fi
     lg_usb_charge=`cat $LG_USB_CHARGE`
+    if [ "$lg_usb_charge" == "1" ]; then
+        lg_usb_charge="false"
+    else
+        lg_usb_charge="true"
+    fi
     lg_fan_mode=`cat $LG_FAN_MODE`
+    if [ "$lg_fan_mode" == "1" ]; then
+        lg_fan_mode="false"
+    else
+        lg_fan_mode="true"
+    fi
 fi
 json="{"
 json="${json}\"cpu_min_perf\":\"${cpu_min_perf}\""
