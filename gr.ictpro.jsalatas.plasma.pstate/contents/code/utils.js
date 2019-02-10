@@ -75,11 +75,15 @@ var sensors = {
     'gpu_boost_freq': {'value': undefined, 'unit':' MHz', 'print': to_int},
     'cpu_governor': {'value': undefined, 'unit':'', 'print': to_string},
     'energy_perf': {'value': undefined, 'unit':'', 'print': to_string},
-    'thermal_mode': {'value': undefined, 'unit':'', 'print': to_string}
+    'thermal_mode': {'value': undefined, 'unit':'', 'print': to_string}, 
+    'lg_battery_charge_limit': {'value': undefined, 'unit':'', 'print': to_bool},
+    'lg_usb_charge': {'value': undefined, 'unit':'', 'print': to_bool},
+    'lg_fan_mode': {'value': undefined, 'unit':'', 'print': to_bool}
 }
 
 var vendors = {
-    'dell': {'provides': ['thermal_mode']}
+    'dell': {'provides': ['thermal_mode']},
+    'lg-laptop': {'provides': ['lg_battery_charge_limit', 'lg_usb_charge', 'lg_fan_mode']}    
 }
 
 var model =  [
@@ -124,6 +128,19 @@ var model =  [
                  {'symbol': 'g', 'text': 'Cool Bottom', 'sensor_value': 'cool-bottom'},
                 {'symbol': 'c', 'text': 'Quiet', 'sensor_value': 'quiet'}
             ]}
+        ]
+    }, 
+    {'type': 'header', 'text': 'Power Supply Management', 'icon': 'm',
+        'vendors': ['lg-laptop'], 
+        'items': [
+            {'type': 'switch', 'text': 'Battery Limit', 'sensor': 'lg_battery_charge_limit'},
+            {'type': 'switch', 'text': 'USB Charge', 'sensor': 'lg_usb_charge'}
+        ]
+    },
+    {'type': 'header', 'text': 'Fan Control', 'icon': 'n',
+        'vendors': ['lg-laptop'], 
+        'items': [
+            {'type': 'switch', 'text': 'Silent Mode', 'sensor': 'lg_fan_mode'}
         ]
     }
 ]
