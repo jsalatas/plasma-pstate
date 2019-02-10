@@ -85,13 +85,15 @@ Item {
 
     function get_sensors_text(sensors) {
         var res = '';
-        for(var i = 0 ; i < sensors.length; i++) {
-            var value = sensors_model[sensors[i]]['print'](sensors_model[sensors[i]]);
-            if(value) {
-                if(res) {
-                    res += ' | ';
+        if(sensors != undefined) {
+            for(var i = 0 ; i < sensors.length; i++) {
+                var value = sensors_model[sensors[i]]['print'](sensors_model[sensors[i]]);
+                if(value) {
+                    if(res) {
+                        res += ' | ';
+                    }
+                    res += value;
                 }
-                res += value;
             }
         }
 
