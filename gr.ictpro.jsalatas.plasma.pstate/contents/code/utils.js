@@ -79,7 +79,7 @@ var sensors = {
 }
 
 var vendors = {
-    'dell': {'provides': 'thermal_mode'}
+    'dell': {'provides': ['thermal_mode']}
 }
 
 var model =  [
