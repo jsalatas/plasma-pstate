@@ -11,12 +11,19 @@ It can also manage the processor's energy consumption through Energy-Performance
 Preference (EPP) knob (if supported) or the Energy-Performance Bias (EPB) knob 
 (otherwise).
 
-![Intel P-state and CPUFreq Manager Widget](https://github.com/jsalatas/plasma-pstate/raw/master/screenshot_1.png "Intel P-state and CPUFreq Manager Widget")
+<a target="_blank" rel="noopener noreferrer" href="https://github.com/jsalatas/plasma-pstate/raw/master/screenshots/screenshot_1.png"><img src="https://github.com/jsalatas/plasma-pstate/raw/master/screenshots/screenshot_1.png" alt="Intel P-state and CPUFreq Manager Widget" title="Intel P-state and CPUFreq Manager Widget" width="500px"></a>
 
-Furthermore, if the hardware supports it, it allows you to interact with 
-[Dell's Thermal Management Feature](https://www.dell.com/support/manuals/ba/en/babsdt1/dell-command-power-manager-v2.2/userguide_dell/thermal-management?guid=guid-c05d2582-fc07-4e3e-918a-965836d20752&lang=en-us) through [libsmbios library](https://github.com/dell/libsmbios).
+Furthermore, it allows you to interact with the following vendor specific settings
 
-![Intel P-state and CPUFreq Manager Widget with Dell's Thermal Management Feature](https://github.com/jsalatas/plasma-pstate/raw/master/screenshot_2.png "Intel P-state and CPUFreq Manager Widget with Dell's Thermal Management Feature")
+1. [Dell's Thermal Management Feature](https://www.dell.com/support/manuals/ba/en/babsdt1/dell-command-power-manager-v2.2/userguide_dell/thermal-management?guid=guid-c05d2582-fc07-4e3e-918a-965836d20752&lang=en-us) 
+through [libsmbios library](https://github.com/dell/libsmbios).
+
+<a target="_blank" rel="noopener noreferrer" href="https://github.com/jsalatas/plasma-pstate/raw/master/screenshots/screenshot_2.png"><img src="https://github.com/jsalatas/plasma-pstate/raw/master/screenshots/screenshot_2.png" alt="Intel P-state and CPUFreq Manager Widget with Dell's Thermal Management Feature" title="Intel P-state and CPUFreq Manager Widget with Dell's Thermal Management Feature" width="500px"></a>
+
+2. LG Gram laptop [Battery care limit](https://github.com/torvalds/linux/blob/master/Documentation/laptops/lg-laptop.rst#battery-care-limit), [USB charge](https://github.com/torvalds/linux/blob/master/Documentation/laptops/lg-laptop.rst#usb-charge) and [Fan mode](https://github.com/torvalds/linux/blob/master/Documentation/laptops/lg-laptop.rst#fan-mode) features (on kernel 4.20 and higher).
+
+<a target="_blank" rel="noopener noreferrer" href="https://github.com/jsalatas/plasma-pstate/raw/master/screenshots/screenshot_3.png"><img src="https://github.com/jsalatas/plasma-pstate/raw/master/screenshots/screenshot_3.png" alt="Intel P-state and CPUFreq Manager Widget with LG Laptop Support features" title="Intel P-state and CPUFreq Manager Widget with LG Laptop Support features" width="500px"></a>
+
 
 ## What it isn't
 This is just a GUI widget and it is not meant to replace 
