@@ -180,9 +180,9 @@ fi
 if check_lg_drivers; then
     lg_battery_charge_limit=`cat $LG_BATTERY_CHARGE_LIMIT`
     if [ "$lg_battery_charge_limit" == "80" ]; then
-        lg_battery_charge_limit = "true"
+        lg_battery_charge_limit="true"
     else
-        lg_battery_charge_limit = "false"
+        lg_battery_charge_limit="false"
     fi
     lg_usb_charge=`cat $LG_USB_CHARGE`
     if [ "$lg_usb_charge" == "1" ]; then
