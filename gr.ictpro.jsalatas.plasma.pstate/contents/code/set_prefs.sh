@@ -13,54 +13,16 @@ GPU_MAX_LIMIT=$GPU/gt_RP0_freq_mhz
 GPU_BOOST_FREQ=$GPU/gt_boost_freq_mhz
 GPU_CUR_FREQ=$GPU/gt_cur_freq_mhz
 
-
-#If lg driver installed or kernel version > 4.20 then this directory should exist on lg_gram laptop
 LG_LAPTOP_DRIVER=/sys/devices/platform/lg-laptop
-LG_FAN_MODE=$LG_LAPTOP_DRIVER/fan_mode #Writing 1/0 disables/enables the fan silent mode.
-LG_BATTERY_CHARGE_LIMIT=$LG_LAPTOP_DRIVER/battery_care_limit # the value of this can be 100 or 80, on restart it resets to 100 I wan to make a switch enabling which this variable will be set to 80 
-LG_USB_CHARGE=$LG_LAPTOP_DRIVER/usb_charge #Writing 0/1 disables/enables charging another device from the USB port while the device is turned off.
-
-
+LG_FAN_MODE=$LG_LAPTOP_DRIVER/fan_mode
+LG_BATTERY_CHARGE_LIMIT=$LG_LAPTOP_DRIVER/battery_care_limit
+LG_USB_CHARGE=$LG_LAPTOP_DRIVER/usb_charge
 
 check_lg_drivers() {
     if [ -d $LG_LAPTOP_DRIVER ]; then
-	return 1
+        return 0
     else
-	return 0
-    fi
-
-    }
-
-set_lg_battery_charge_limit(){ #same as checking turbo mode
-    #echo "in battery charge limit"
-    enabled=$1
-    if [ -n "$enabled" ]; then
-        if [ "$enabled" == "true" ]; then
-	   echo 80 > $LG_BATTERY_CHARGE_LIMIT
-        else
-           echo 100 > $LG_BATTERY_CHARGE_LIMIT
-        fi
-    fi
-    
-}
-set_lg_fan_mode() {  #same as checking turbo mode
-    enabled=$1
-    if [ -n "$enabled" ]; then
-        if [ "$enabled" == "true" ]; then
-           echo 0 > $LG_FAN_MODE
-        else
-           echo 1 > $LG_FAN_MODE
-        fi
-    fi
-}
-set_lg_usb_charge()  { #same as checking turbo mode
-    enabled=$1
-    if [ -n "$enabled" ]; then
-        if [ "$enabled" == "true" ]; then
-           echo 1 > $LG_USB_CHARGE
-        else
-           echo 0 > $LG_USB_CHARGE
-        fi
+        return 1
     fi
 }
 
@@ -152,6 +114,39 @@ set_thermal_mode () {
     smbios-thermal-ctl --set-thermal-mode=$1 2> /dev/null
 }
 
+set_lg_battery_charge_limit(){
+    enabled=$1
+    if [ -n "$enabled" ]; then
+        if [ "$enabled" == "true" ]; then
+            printf '80\n' > $LG_BATTERY_CHARGE_LIMIT; 2> /dev/null
+        else
+            printf '100\n' > $LG_BATTERY_CHARGE_LIMIT; 2> /dev/null
+        fi
+    fi
+}
+
+set_lg_fan_mode() {
+    enabled=$1
+    if [ -n "$enabled" ]; then
+        if [ "$enabled" == "true" ]; then
+           printf '0\n' > $LG_FAN_MODE; 2> /dev/null
+        else
+           printf '1\n' > $LG_FAN_MODE; 2> /dev/null
+        fi
+    fi
+}
+
+set_lg_usb_charge()  {
+    enabled=$1
+    if [ -n "$enabled" ]; then
+        if [ "$enabled" == "true" ]; then
+           printf '1\n' > $LG_USB_CHARGE; 2> /dev/null
+        else
+           printf '0\n' > $LG_USB_CHARGE; 2> /dev/null
+        fi
+    fi
+}
+
 read_all () {
 cpu_min_perf=`cat $CPU_MIN_PERF`
 cpu_max_perf=`cat $CPU_MAX_PERF`
@@ -184,8 +179,23 @@ if check_dell_thermal; then
 fi
 if check_lg_drivers; then
     lg_battery_charge_limit=`cat $LG_BATTERY_CHARGE_LIMIT`
+    if [ "$lg_battery_charge_limit" == "80" ]; then
+        lg_battery_charge_limit = "true"
+    else
+        lg_battery_charge_limit = "false"
+    fi
     lg_usb_charge=`cat $LG_USB_CHARGE`
+    if [ "$lg_usb_charge" == "1" ]; then
+        lg_usb_charge="true"
+    else
+        lg_usb_charge="false"
+    fi
     lg_fan_mode=`cat $LG_FAN_MODE`
+    if [ "$lg_fan_mode" == "1" ]; then
+        lg_fan_mode="false"
+    else
+        lg_fan_mode="true"
+    fi
 fi
 json="{"
 json="${json}\"cpu_min_perf\":\"${cpu_min_perf}\""
@@ -248,15 +258,15 @@ case $1 in
         set_thermal_mode $2
         ;;
 
-    "-lg-battery")
+    "-lg-battery-charge-limit")
 	set_lg_battery_charge_limit $2
 	;;
 
-    "-lg-fan")
+    "-lg-fan-mode")
 	set_lg_fan_mode $2
 	;;
 
-    "-lg-usb")
+    "-lg-usb-charge")
 	set_lg_usb_charge $2
 	;;
 
@@ -266,15 +276,18 @@ case $1 in
 
     *)
         echo "Usage:"
-        echo "1: set_prefs.sh [ -cpu-min-perf   |"
-        echo "                  -cpu-max-perf   |"
-        echo "                  -cpu-turbo      |"
-        echo "                  -gpu-min-freq   |"
-        echo "                  -gpu-max-freq   |"
+        echo "1: set_prefs.sh [ -cpu-min-perf |"
+        echo "                  -cpu-max-perf |"
+        echo "                  -cpu-turbo |"
+        echo "                  -gpu-min-freq |"
+        echo "                  -gpu-max-freq |"
         echo "                  -gpu-boost-freq |"
-        echo "                  -cpu-governor   |"
-        echo "                  -energy-perf    |"
-        echo "                  -thermal-mode ] value"
+        echo "                  -cpu-governor |"
+        echo "                  -energy-perf |"
+        echo "                  -thermal-mode |"
+        echo "                  -lg-battery-charge-limit |"
+        echo "                  -lg-fan-mode |"
+        echo "                  -lg-usb-charge ] value"
         echo "2: set_prefs.sh -read-all"
         exit 3
         ;;

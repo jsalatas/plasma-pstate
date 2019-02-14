@@ -49,6 +49,14 @@ Row {
             Layout.bottomMargin: 10
         }
     }
+    
+    Component {
+        id: switchbutton
+        Switch {
+            Layout.topMargin: 5
+            Layout.bottomMargin: 5
+        }
+    }
 
     Connections {
         target: main
@@ -67,6 +75,10 @@ Row {
                 }
                 case 'group': {
                     group.createObject(controls, {'props': items[i]})
+                    break
+                }
+                case 'switch': {
+                    switchbutton.createObject(controls, {'props': items[i]})
                     break
                 }
                 default: console.log("header: unkonwn type: " + items[i]['type'])
