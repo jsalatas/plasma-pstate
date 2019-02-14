@@ -118,9 +118,9 @@ set_lg_battery_charge_limit(){
     enabled=$1
     if [ -n "$enabled" ]; then
         if [ "$enabled" == "true" ]; then
-	   echo 80 > $LG_BATTERY_CHARGE_LIMIT
+            printf '80\n' > $LG_BATTERY_CHARGE_LIMIT; 2> /dev/null
         else
-           echo 100 > $LG_BATTERY_CHARGE_LIMIT
+            printf '100\n' > $LG_BATTERY_CHARGE_LIMIT; 2> /dev/null
         fi
     fi
 }
@@ -129,9 +129,9 @@ set_lg_fan_mode() {
     enabled=$1
     if [ -n "$enabled" ]; then
         if [ "$enabled" == "true" ]; then
-           echo 0 > $LG_FAN_MODE
+           printf '0\n' > $LG_FAN_MODE; 2> /dev/null
         else
-           echo 1 > $LG_FAN_MODE
+           printf '1\n' > $LG_FAN_MODE; 2> /dev/null
         fi
     fi
 }
@@ -140,9 +140,9 @@ set_lg_usb_charge()  {
     enabled=$1
     if [ -n "$enabled" ]; then
         if [ "$enabled" == "true" ]; then
-           echo 1 > $LG_USB_CHARGE
+           printf '1\n' > $LG_USB_CHARGE; 2> /dev/null
         else
-           echo 0 > $LG_USB_CHARGE
+           printf '0\n' > $LG_USB_CHARGE; 2> /dev/null
         fi
     fi
 }
@@ -186,9 +186,9 @@ if check_lg_drivers; then
     fi
     lg_usb_charge=`cat $LG_USB_CHARGE`
     if [ "$lg_usb_charge" == "1" ]; then
-        lg_usb_charge="false"
-    else
         lg_usb_charge="true"
+    else
+        lg_usb_charge="false"
     fi
     lg_fan_mode=`cat $LG_FAN_MODE`
     if [ "$lg_fan_mode" == "1" ]; then
