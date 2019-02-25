@@ -12,5 +12,8 @@
         <entry name="customIcon" type="String">
             <default>""</default>
         </entry>
+        <entry name="showIntelGPU" type="Bool">
+            <default>true</default>
+        </entry>
     </group>
 </kcfg>

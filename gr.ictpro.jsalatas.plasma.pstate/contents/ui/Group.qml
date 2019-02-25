@@ -26,14 +26,14 @@ ColumnLayout {
 
     property alias text: group_title.text
     property var items: []
-
     property var props
-
+    
     objectName: "Group"
 
     onPropsChanged: {
         text = props['text']
         items = props['items']
+        visible = props['visible'] == undefined || eval('plasmoid.configuration.' + props['visible'])
     }
 
     Component {

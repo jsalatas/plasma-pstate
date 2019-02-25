@@ -4,6 +4,7 @@ import QtQuick.Layouts 1.1
 
 Item {
     property alias cfg_useDefaultIcon: useDefaultIconCheckbox.checked
+    property alias cfg_showIntelGPU: showIntelGPUCheckbox.checked
     property string cfg_customIcon: plasmoid.configuration.customIcon
 
     GridLayout {
@@ -29,5 +30,11 @@ Item {
             }
             enabled: !useDefaultIconCheckbox.checked
         }
+        
+        CheckBox {
+            id: showIntelGPUCheckbox
+            text: i18n('Show Intel GPU')
+            Layout.columnSpan: 2
         }
     }
+}

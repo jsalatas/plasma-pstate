@@ -53,6 +53,15 @@ Column {
         }
     }
 
+    Connections {
+        target: plasmoid.configuration
+        onShowIntelGPUChanged: {
+            if(isReady) {
+                initialize()
+            }
+        }
+    }
+
     function is_present(item_vendors) {
         if(item_vendors && item_vendors.length != 0) {
             for(var j=0; j< item_vendors.length; j++) {
@@ -96,8 +105,10 @@ Column {
         print(">>>>>>>>>>>>>          w-h: " + w + " - " + h)
         Layout.minimumWidth = w
         Layout.minimumHeight = h
+        Layout.maximumWidth = w
+        Layout.maximumHeight = h
     }
-
+    
     function removeChildren() {
         for(var i = fullRoot.children.length; i > 0 ; i--) {
             fullRoot.children[i-1].destroy()
