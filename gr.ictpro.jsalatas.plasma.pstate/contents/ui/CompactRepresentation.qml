@@ -18,20 +18,32 @@
  */
 
 import QtQuick 2.2
+import org.kde.plasma.core 2.0 as PlasmaCore
 import org.kde.plasma.components 2.0 as PlasmaComponents
 
-PlasmaComponents.Label {
-    anchors.fill: parent
+Item {
+    PlasmaCore.IconItem {
+        id: customIcon
+        anchors.fill: parent
+        visible: !plasmoid.configuration.useDefaultIcon
+        source: plasmoid.configuration.customIcon
+    }
 
-    verticalAlignment: Text.AlignVCenter
-    horizontalAlignment: Text.AlignHCenter
 
-    font.pixelSize: Math.min(parent.height, parent.width) * (inTray ? 1: 0.7)
-    font.pointSize: -1
-    font.family: symbolsFont.name
+    PlasmaComponents.Label {
+        anchors.fill: parent
+        visible: plasmoid.configuration.useDefaultIcon
 
-    text: 'd'
+        verticalAlignment: Text.AlignVCenter
+        horizontalAlignment: Text.AlignHCenter
 
+        font.pixelSize: Math.min(parent.height, parent.width) * (inTray ? 1: 0.7)
+        font.pointSize: -1
+        font.family: symbolsFont.name
+
+        text: 'd'
+    }
+    
     MouseArea {
         id: mousearea
         anchors.fill: parent
