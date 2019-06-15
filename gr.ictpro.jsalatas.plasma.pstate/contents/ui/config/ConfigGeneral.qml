@@ -6,11 +6,12 @@ Item {
     property alias cfg_useDefaultIcon: useDefaultIconCheckbox.checked
     property alias cfg_showIntelGPU: showIntelGPUCheckbox.checked
     property string cfg_customIcon: plasmoid.configuration.customIcon
+    property alias cfg_useSudoForReading: useSudoForReadingCheckbox.checked
 
     GridLayout {
         Layout.fillWidth: true
         columns: 2
-        
+
         CheckBox {
             id: useDefaultIconCheckbox
             text: i18n('Use Default Icon')
@@ -30,10 +31,16 @@ Item {
             }
             enabled: !useDefaultIconCheckbox.checked
         }
-        
+
         CheckBox {
             id: showIntelGPUCheckbox
             text: i18n('Show Intel GPU')
+            Layout.columnSpan: 2
+        }
+
+        CheckBox {
+            id: useSudoForReadingCheckbox
+            text: i18n('Use sudo for reading values')
             Layout.columnSpan: 2
         }
     }

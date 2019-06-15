@@ -188,12 +188,22 @@ Item {
         interval: 2000
     }
 
+    Connections {
+        target: plasmoid.configuration
+        onUseSudoForReadingChanged: {
+            monitorDS.commandSource = (plasmoid.configuration.useSudoForReading ? 'sudo ' : '') + '/usr/share/plasma/plasmoids/gr.ictpro.jsalatas.plasma.pstate/contents/code/set_prefs.sh -read-all'
+            monitorDS.connectedSources = [];
+            monitorDS.connectedSources.length = 0;
+            monitorDS.connectedSources.push(monitorDS.commandSource);
+        }
+    }
+
     PlasmaCore.DataSource {
         id: monitorDS
         engine: 'executable'
 
         property bool isReady: false
-        property string commandSource: 'sudo /usr/share/plasma/plasmoids/gr.ictpro.jsalatas.plasma.pstate/contents/code/set_prefs.sh -read-all'
+        property string commandSource: (plasmoid.configuration.useSudoForReading ? 'sudo ' : '') + '/usr/share/plasma/plasmoids/gr.ictpro.jsalatas.plasma.pstate/contents/code/set_prefs.sh -read-all'
 
         onNewData: {
             if (data['exit code'] > 0) {

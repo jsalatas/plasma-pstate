@@ -62,6 +62,15 @@ Column {
         }
     }
 
+    Connections {
+        target: plasmoid.configuration
+        onUseSudoForReadingChanged: {
+            if(isReady) {
+                initialize()
+            }
+        }
+    }
+
     function is_present(item_vendors) {
         if(item_vendors && item_vendors.length != 0) {
             for(var j=0; j< item_vendors.length; j++) {
