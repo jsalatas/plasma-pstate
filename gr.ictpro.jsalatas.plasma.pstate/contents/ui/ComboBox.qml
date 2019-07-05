@@ -28,6 +28,7 @@ RowLayout {
     property var sensor: []
     
     property bool acceptingChanges: false
+    property alias text: combobox_title.text
     property var props
     spacing: 10
 
@@ -35,9 +36,9 @@ RowLayout {
         acceptingChanges = false
 
         combobox.model = props['items']
-        
-
+        text = props['text']
         sensor.push(props['sensor'])
+
         acceptingChanges = true
     }
 
@@ -61,6 +62,15 @@ RowLayout {
             acceptingChanges = true
         }
     }
+    
+    PlasmaComponents.Label {
+        Layout.alignment: Qt.AlignVCenter
+        id: combobox_title
+        font.pointSize: theme.smallestFont.pointSize
+        color: theme.textColor
+        horizontalAlignment: Text.AlignRight
+        Layout.minimumWidth: units.gridUnit * 4
+    }
 
     PlasmaComponents3.ComboBox {
         id: combobox
@@ -72,6 +82,5 @@ RowLayout {
 
         }
         Layout.fillWidth: true
-        
     }
 }
