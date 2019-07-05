@@ -149,7 +149,7 @@ var model =  [
     {'type': 'header', 'text': 'Nvidia Settings', 'icon': 'o',
         'vendors': ['nvidia'],
         'items': [
-            {'type': 'combobox', 'text': 'Powermizer', 'sensor': 'powermizer', 'items' :[
+            {'type': 'combobox', 'text': 'PowerMizer', 'sensor': 'powermizer', 'items' :[
                  {'text': 'Adaptive', 'sensor_value': '0'},
                  {'text': 'Prefer Max Performance', 'sensor_value': '1'},
                 {'text': 'Auto', 'sensor_value': '2'}
