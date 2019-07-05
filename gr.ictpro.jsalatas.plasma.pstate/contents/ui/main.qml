@@ -29,7 +29,7 @@ import '../code/utils.js' as Utils
 
 Item {
     id: main
-
+    
     signal sensorsValuesChanged
     signal dataSourceReady
     signal updateSensor(string name, string value)
@@ -43,6 +43,7 @@ Item {
     property var sensors_model: Utils.get_sensors()
     property alias isReady: monitorDS.isReady
     property bool inTray: (plasmoid.parent === null || plasmoid.parent.objectName === 'taskItemContainer')
+    property var readCommand: (plasmoid.configuration.useSudoForReading ? 'sudo ' : '') + '/usr/share/plasma/plasmoids/gr.ictpro.jsalatas.plasma.pstate/contents/code/set_prefs.sh -read-all'
 
     function sensor_short_name(long_name) {
         var parts = long_name.split('/');
@@ -191,7 +192,7 @@ Item {
     Connections {
         target: plasmoid.configuration
         onUseSudoForReadingChanged: {
-            monitorDS.commandSource = (plasmoid.configuration.useSudoForReading ? 'sudo ' : '') + '/usr/share/plasma/plasmoids/gr.ictpro.jsalatas.plasma.pstate/contents/code/set_prefs.sh -read-all'
+            monitorDS.commandSource = readCommand
             monitorDS.connectedSources = [];
             monitorDS.connectedSources.length = 0;
             monitorDS.connectedSources.push(monitorDS.commandSource);
@@ -203,7 +204,7 @@ Item {
         engine: 'executable'
 
         property bool isReady: false
-        property string commandSource: (plasmoid.configuration.useSudoForReading ? 'sudo ' : '') + '/usr/share/plasma/plasmoids/gr.ictpro.jsalatas.plasma.pstate/contents/code/set_prefs.sh -read-all'
+        property string commandSource: readCommand
 
         onNewData: {
             if (data['exit code'] > 0) {
