@@ -36,6 +36,16 @@ check_dell_thermal () {
     fi
 }
 
+check_nvidia () {
+    nvidia-settings -q GpuPowerMizerMode > /dev/null 2>&1
+    OUT=$?
+    if [ $OUT -eq 0 ]; then
+        return 0
+    else
+        return 1
+    fi
+}
+
 set_cpu_min_perf () {
     minperf=$1
     if [ -n "$minperf" ] && [ "$minperf" != "0" ]; then
@@ -136,6 +146,10 @@ set_lg_fan_mode() {
     fi
 }
 
+set_powermizer () {
+    nvidia-settings -a "[gpu:0]/GpuPowerMizerMode=$1" 2> /dev/null
+}
+
 set_lg_usb_charge()  {
     enabled=$1
     if [ -n "$enabled" ]; then
@@ -177,6 +191,7 @@ fi
 if check_dell_thermal; then
     thermal_mode=`smbios-thermal-ctl -g | grep -C 1 "Current Thermal Modes:"  | tail -n 1 | awk '{$1=$1;print}' | sed "s/\t//g" | sed "s/ /-/g" | tr "[A-Z]" "[a-z]" `
 fi
+
 if check_lg_drivers; then
     lg_battery_charge_limit=`cat $LG_BATTERY_CHARGE_LIMIT`
     if [ "$lg_battery_charge_limit" == "80" ]; then
@@ -197,6 +212,11 @@ if check_lg_drivers; then
         lg_fan_mode="true"
     fi
 fi
+
+if check_nvidia; then
+    powermizer=`nvidia-settings -q GpuPowerMizerMode | grep "Attribute 'GPUPowerMizerMode'" | awk -F "): " '{print $2}'  | awk -F "." '{print $1}' ` 
+fi
+
 json="{"
 json="${json}\"cpu_min_perf\":\"${cpu_min_perf}\""
 json="${json},\"cpu_max_perf\":\"${cpu_max_perf}\""
@@ -216,6 +236,9 @@ if check_lg_drivers; then
     json="${json},\"lg_battery_charge_limit\":\"${lg_battery_charge_limit}\""
     json="${json},\"lg_usb_charge\":\"${lg_usb_charge}\""
     json="${json},\"lg_fan_mode\":\"${lg_fan_mode}\""
+fi
+if check_nvidia; then
+    json="${json},\"powermizer\":\"${powermizer}\""
 fi
 json="${json}}"
 echo $json
@@ -270,6 +293,10 @@ case $1 in
 	set_lg_usb_charge $2
 	;;
 
+    "-powermizer")
+        set_powermizer $2
+        ;;
+
     "-read-all")
         read_all
         ;;
@@ -287,7 +314,8 @@ case $1 in
         echo "                  -thermal-mode |"
         echo "                  -lg-battery-charge-limit |"
         echo "                  -lg-fan-mode |"
-        echo "                  -lg-usb-charge ] value"
+        echo "                  -lg-usb-charge |"
+        echo "                  -powermizer ] value"
         echo "2: set_prefs.sh -read-all"
         exit 3
         ;;

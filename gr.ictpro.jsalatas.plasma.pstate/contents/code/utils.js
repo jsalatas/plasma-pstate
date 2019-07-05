@@ -78,12 +78,15 @@ var sensors = {
     'thermal_mode': {'value': undefined, 'unit':'', 'print': to_string}, 
     'lg_battery_charge_limit': {'value': undefined, 'unit':'', 'print': to_bool},
     'lg_usb_charge': {'value': undefined, 'unit':'', 'print': to_bool},
-    'lg_fan_mode': {'value': undefined, 'unit':'', 'print': to_bool}
+    'lg_fan_mode': {'value': undefined, 'unit':'', 'print': to_bool},
+    'powermizer': {'value': undefined, 'unit':'', 'print': to_string}, 
+
 }
 
 var vendors = {
     'dell': {'provides': ['thermal_mode']},
-    'lg-laptop': {'provides': ['lg_battery_charge_limit', 'lg_usb_charge', 'lg_fan_mode']}    
+    'lg-laptop': {'provides': ['lg_battery_charge_limit', 'lg_usb_charge', 'lg_fan_mode']},
+    'nvidia': {'provides': ['powermizer']}
 }
 
 var model =  [
@@ -141,6 +144,16 @@ var model =  [
         'vendors': ['lg-laptop'], 
         'items': [
             {'type': 'switch', 'text': 'Silent Mode', 'sensor': 'lg_fan_mode'}
+        ]
+    },
+    {'type': 'header', 'text': 'Nvidia Settings', 'icon': 'o',
+        'vendors': ['nvidia'],
+        'items': [
+            {'type': 'combobox', 'text': '', 'sensor': 'powermizer', 'items' :[
+                 {'text': 'Adaptive', 'sensor_value': '0'},
+                 {'text': 'Prefer Max Performance', 'sensor_value': '1'},
+                {'text': 'Auto', 'sensor_value': '2'}
+            ]}
         ]
     }
 ]
