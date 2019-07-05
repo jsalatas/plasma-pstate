@@ -24,6 +24,10 @@ through [libsmbios library](https://github.com/dell/libsmbios).
 
 <a target="_blank" rel="noopener noreferrer" href="https://github.com/jsalatas/plasma-pstate/raw/master/screenshots/screenshot_3.png"><img src="https://github.com/jsalatas/plasma-pstate/raw/master/screenshots/screenshot_3.png" alt="Intel P-state and CPUFreq Manager Widget with LG Laptop Support features" title="Intel P-state and CPUFreq Manager Widget with LG Laptop Support features" width="500px"></a>
 
+3. [Nvidia PowerMizer Settings](https://www.nvidia.com/object/feature_powermizer.html). 
+
+<a target="_blank" rel="noopener noreferrer" href="https://github.com/jsalatas/plasma-pstate/raw/master/screenshots/screenshot_4.png"><img src="https://github.com/jsalatas/plasma-pstate/raw/master/screenshots/screenshot_4.png" alt="Intel P-state and CPUFreq Manager Widget with Nvidia PowerMizer Settings" title="Intel P-state and CPUFreq Manager Widget with Nvidia PowerMizer Settings" width="500px"></a>
+
 
 ## What it isn't
 This is just a GUI widget and it is not meant to replace 
