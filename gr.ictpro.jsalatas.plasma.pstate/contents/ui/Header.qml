@@ -58,6 +58,14 @@ Row {
         }
     }
 
+    Component {
+        id: combobox
+        ComboBox {
+            Layout.topMargin: 5
+            Layout.bottomMargin: 5
+        }
+    }
+
     Connections {
         target: main
         onSensorsValuesChanged: {
@@ -79,6 +87,10 @@ Row {
                 }
                 case 'switch': {
                     switchbutton.createObject(controls, {'props': items[i]})
+                    break
+                }
+                case 'combobox': {
+                    combobox.createObject(controls, {'props': items[i]})
                     break
                 }
                 default: console.log("header: unkonwn type: " + items[i]['type'])
