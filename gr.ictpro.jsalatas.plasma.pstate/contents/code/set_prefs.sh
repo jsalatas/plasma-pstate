@@ -214,7 +214,7 @@ if check_lg_drivers; then
 fi
 
 if check_nvidia; then
-    powermizer=`nvidia-settings -q GpuPowerMizerMode | grep "Attribute 'GPUPowerMizerMode'" | awk -F "): " '{print $2}'  | awk -F "." '{print $1}' ` 
+    powermizer=`nvidia-settings -q GpuPowerMizerMode | grep "Attribute 'GPUPowerMizerMode'" | awk -F "\): " '{print $2}'  | awk -F "." '{print $1}' ` 
 fi
 
 json="{"
