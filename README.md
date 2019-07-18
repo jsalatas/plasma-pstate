@@ -63,7 +63,7 @@ case of Ubuntu 18.04 distros) is provided by the ``linux-tools`` package and
 can be installed using the following command
 
 ```
-sudo apt-install linux-tools-generic linux-tools-`uname -r`
+sudo apt install linux-tools-generic linux-tools-`uname -r`
 ```
 ## How to update
 Assuming that you have checked out the latest code, you just need to run the following commands as root:
