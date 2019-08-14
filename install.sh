@@ -8,7 +8,7 @@ fi
 SUDOERS_FILE="99-plasma-pstate"
 
 cp -R ${SUDOERS_FILE} /etc/sudoers.d/
-plasmapkg2 -t plasmoid -g -i gr.ictpro.jsalatas.plasma.pstate
+kpackagetool5 -g -t Plasma/Applet -i gr.ictpro.jsalatas.plasma.pstate
 
 chmod 755 /usr/share/plasma/plasmoids/gr.ictpro.jsalatas.plasma.pstate/contents/code/set_prefs.sh
 
