@@ -150,7 +150,7 @@ var model =  [
         'vendors': ['nvidia'],
         'items': [
             {'type': 'combobox', 'text': i18n("PowerMizer"), 'sensor': 'powermizer', 'items' :[
-                 {'text': i18n("Adaptive"), 'sensor_value'): '0'},
+                 {'text': i18n("Adaptive"), 'sensor_value': '0'},
                  {'text': i18n("Prefer Max Performance"), 'sensor_value': '1'},
                 {'text': i18n("Auto"), 'sensor_value': '2'}
             ]}
