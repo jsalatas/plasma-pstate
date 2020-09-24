@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE policyconfig PUBLIC "-//freedesktop//DTD PolicyKit Policy Configuration 1.0//EN"
+ "http://www.freedesktop.org/standards/PolicyKit/1/policyconfig.dtd">
+<policyconfig>
+
+	<icon_name>cpu</icon_name>
+	<vendor>Intel PState Widget</vendor>
+	<vendor_url>https://github.com/blackPantherOS/plasma-pstate/</vendor_url>
+	<action id="org.pkexec.set_prefs">
+
+		<description>Modify Intel State as root</description>
+		<description xml:lang="cs">Spouštět Intel PState pod uživatelem root</description>
+		<description xml:lang="cs_CZ">Spustit Intel PState s právy správce systému (root)</description>
+		<description xml:lang="de">Intel PState als Root-Benutzer ausführen</description>
+		<description xml:lang="es">Ejecutar Intel PState como root</description>
+		<description xml:lang="fr">Lancer Intel PState en tant que super-utilisateur</description>
+		<description xml:lang="hr">Pokreni Intel PState kao korijenskog korisnika</description>
+		<description xml:lang="hu">Intel PState futtatása rendszergazdaként</description>
+		<description xml:lang="id">Jalankan Intel PState sebagai root</description>
+		<description xml:lang="lv">Palaist Intel PState kā root</description>
+		<description xml:lang="pl">Uruchomienie programu Intel PState jako administrator</description>
+		<description xml:lang="pt_BR">Rodar Intel PState como root</description>
+		<description xml:lang="ro">Rulează Intel PState ca root</description>
+		<description xml:lang="ru">Запустить Intel PState с правами администратора</description>
+		<description xml:lang="sk">Spustiť Intel PState ako správca</description>
+		<description xml:lang="sv">Kör Intel PState som root</description>
+		<description xml:lang="vi">Chạy Intel PState dưới tư cách siêu quản trị.</description>
+		<description xml:lang="zh">以 root 权限运行 Intel PState</description>
+
+		<message>Authentication is required to run Intel PState as root.</message>
+		<message xml:lang="cs_CZ">Pro spuštění Intel PState s právy správce je třeba ověření.</message>
+		<message xml:lang="fr">Il est nécessaire de s’authentifier pour lancer Intel PState en tant que super-utilisateur.</message>
+		<message xml:lang="pt_BR">Autenticação é necessária para rodar Intel PState como root.</message>
+		<message xml:lang="ru">Для запуска Intel PState с правами администратора требуется аутентификация.</message>
+		<message xml:lang="zh">以 root 权限运行 Intel PState 需要身份验证.</message>
+
+		<defaults>
+                        <allow_any>yes</allow_any>
+                        <allow_inactive>no</allow_inactive>
+                        <allow_active>yes</allow_active>
+		</defaults>
+		<annotate key="org.freedesktop.policykit.exec.path">/usr/share/plasma/plasmoids/gr.ictpro.jsalatas.plasma.pstate/contents/code/set_prefs.sh</annotate>
+		<annotate key="org.freedesktop.policykit.exec.allow_gui">true</annotate>
+
+	</action>
+
+</policyconfig>
