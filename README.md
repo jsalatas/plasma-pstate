@@ -49,7 +49,13 @@ comfort of your graphical interface using point and click or tap interactions
 even in cases that a keyboard isn't available.
 
 ## How to install
-First of all you need to be in sudoers' group. After that you can just clone 
+
+Under blackPanther OS just run
+'''
+installing plasma-pstate
+'''
+
+From source You can just clone 
 the code and install it using the following commands:
 
 ```
