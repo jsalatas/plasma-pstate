@@ -51,9 +51,10 @@ even in cases that a keyboard isn't available.
 ## How to install
 
 Under blackPanther OS just run
-'''
+```
 installing plasma-pstate
-'''
+
+```
 
 From source You can just clone 
 the code and install it using the following commands:
@@ -61,12 +62,18 @@ the code and install it using the following commands:
 ```
 git clone https://github.com/jsalatas/plasma-pstate
 cd plasma-pstate
-sudo ./install.sh
+./install.sh
 ```
 **Notice:** If your processor doesn't support EPP(ie older generations without 
-HWP), then you need also to install the ``x86_energy_perf_policy`` which (in 
-case of Ubuntu 18.04 distros) is provided by the ``linux-tools`` package and 
+HWP), then you need also to install the ``x86_energy_perf_policy`` which is 
+provided by the ``kernel-tools`` (in case of Ubuntu 18.04 distros) ``linux-tools`` package and 
 can be installed using the following command
+
+```
+installing kernel-tools
+```
+
+or on another Debian based distro
 
 ```
 sudo apt install linux-tools-generic linux-tools-`uname -r`
@@ -75,22 +82,13 @@ sudo apt install linux-tools-generic linux-tools-`uname -r`
 Assuming that you have checked out the latest code, you just need to run the following commands as root:
 
 ```
-sudo kpackagetool5 -g -t Plasma/Applet -u gr.ictpro.jsalatas.plasma.pstate
+kpackagetool5 -g -t Plasma/Applet -u gr.ictpro.jsalatas.plasma.pstate
 
-sudo chmod 755 /usr/share/plasma/plasmoids/gr.ictpro.jsalatas.plasma.pstate/contents/code/set_prefs.sh 
+chmod 755 /usr/share/plasma/plasmoids/gr.ictpro.jsalatas.plasma.pstate/contents/code/set_prefs.sh 
 ```
-
 
 ## Contributions
 Please feel free to clone, hack, and contribute anything you may find useful, 
 especially in relation to similar to Dell's Thermal Management Feature that 
 may be available in other hardware platforms.
-
-## Issues
-The widget uses a shell script that needs to be run as root user (sudo) and which apparently floods your log files with security related messages as described in [issue #16](https://github.com/jsalatas/plasma-pstate/issues/16). 
-
-If you want to get rid of these messages, please see a workaround at 
-
-https://github.com/jsalatas/plasma-pstate/wiki/Too-many-messages-in-system-log
-
 
