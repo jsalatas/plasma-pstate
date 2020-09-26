@@ -43,7 +43,7 @@ Item {
     property var sensors_model: Utils.get_sensors()
     property alias isReady: monitorDS.isReady
     property bool inTray: (plasmoid.parent === null || plasmoid.parent.objectName === 'taskItemContainer')
-    property var readCommand: (plasmoid.configuration.useSudoForReading ? 'pkexec ' : '') + '/usr/share/plasma/plasmoids/gr.ictpro.jsalatas.plasma.pstate/contents/code/set_prefs.sh read-all'
+    property var readCommand: '/usr/share/plasma/plasmoids/gr.ictpro.jsalatas.plasma.pstate/contents/code/set_prefs.sh read-all'
 
     function sensor_short_name(long_name) {
         var parts = long_name.split('/');
