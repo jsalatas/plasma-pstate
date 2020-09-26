@@ -1,0 +1,9 @@
+[Unit]
+Description=Pstate reading daememon
+
+[Service]
+ExecStart=/usr/share/plasma/plasmoids/gr.ictpro.jsalatas.plasma.pstate/contents/code/set_prefsd
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target 

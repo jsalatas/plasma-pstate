@@ -7,7 +7,15 @@ fi
 
 POLKIT_FILE="org.pkexec.set_prefs.policy"
 POLKIT_PATH="/usr/share/polkit-1/actions"
+SYSTEMD_FILE='set_prefsd'
+UNITDIR_PATH='/usr/lib/systemd/system'
+
 cp -f ${POLKIT_FILE} ${POLKIT_PATH} 
+cp -f ${SYSTED_FILE} ${UNITDIR_PATH} 
+
+systemctl daemon-reaload 
+systemctl enable set_perfsd
+systemctl start set_perfsd
 
 kpackagetool5 -g -t Plasma/Applet -i gr.ictpro.jsalatas.plasma.pstate
 
