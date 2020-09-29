@@ -2,8 +2,12 @@
 Description=Pstate reading daememon
 
 [Service]
+Type=simple
 ExecStart=/usr/share/plasma/plasmoids/gr.ictpro.jsalatas.plasma.pstate/contents/code/set_prefsd
-Restart=on-failure
+TimeoutSec=0
+RemainAfterExit=yes
+ExecReload=/bin/kill -HUP $MAINPID
 
 [Install]
-WantedBy=multi-user.target 
+WantedBy=multi-user.target
+
