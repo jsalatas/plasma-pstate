@@ -1,5 +1,10 @@
 # Intel P-state and CPUFreq Manager Widget
 
+```diff
+-Important
+```
+as of October 11, 2020, I'm not willing to maintain this widget anymore. I will maintain it based only to my personal needs. I thank you for your support and feedback all this time. Hope the community will take over from here and make the widget even better than it is now. 
+
 ## What it is
 Intel P-state and CPUFreq Manager is a KDE Plasma widget in order to control 
 the frequencies of Intel CPUs and their integrated GPUs for any modern Intel 
