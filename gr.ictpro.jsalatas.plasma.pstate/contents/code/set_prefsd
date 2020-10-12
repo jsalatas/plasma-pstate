@@ -1,0 +1,9 @@
+#!/bin/sh
+
+while true; do
+    #logger -t set_prefd "Read all..."
+    /usr/share/plasma/plasmoids/gr.ictpro.jsalatas.plasma.pstate/contents/code/set_prefs.sh read-all >/var/tmp/pstate.tmp
+    cat /var/tmp/pstate.tmp > /var/tmp/pstate.dat
+    rm -f /var/tmp/pstate.tmp
+   sleep 3;
+done

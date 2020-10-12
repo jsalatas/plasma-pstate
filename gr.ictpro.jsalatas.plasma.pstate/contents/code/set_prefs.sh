@@ -46,17 +46,44 @@ check_nvidia () {
     fi
 }
 
+read_cpu_min_perf () {
+    cpu_min_perf=`cat $CPU_MIN_PERF`
+}
+
 set_cpu_min_perf () {
     minperf=$1
     if [ -n "$minperf" ] && [ "$minperf" != "0" ]; then
         printf '%s\n' "$minperf" > $CPU_MIN_PERF; 2> /dev/null
     fi
+    read_cpu_min_perf
+    json="{"
+    json="${json}\"cpu_min_perf\":\"${cpu_min_perf}\""
+    json="${json}}"
+    echo $json
+}
+
+read_cpu_max_perf () {
+    cpu_max_perf=`cat $CPU_MAX_PERF`
 }
 
 set_cpu_max_perf () {
     maxperf=$1
     if [ -n "$maxperf" ] && [ "$maxperf" != "0" ]; then
         printf '%s\n' "$maxperf" > $CPU_MAX_PERF; 2> /dev/null
+    fi
+    read_cpu_max_perf
+    json="{"
+    json="${json}\"cpu_max_perf\":\"${cpu_max_perf}\""
+    json="${json}}"
+    echo $json
+}
+
+read_cpu_turbo () {
+    cpu_turbo=`cat $CPU_TURBO`
+    if [ "$cpu_turbo" == "1" ]; then
+        cpu_turbo="false"
+    else
+        cpu_turbo="true"
     fi
 }
 
@@ -69,6 +96,15 @@ set_cpu_turbo () {
             printf '1\n' > $CPU_TURBO; 2> /dev/null
         fi
     fi
+    read_cpu_turbo
+    json="{"
+    json="${json}\"cpu_turbo\":\"${cpu_turbo}\""
+    json="${json}}"
+    echo $json
+}
+
+read_gpu_min_freq () {
+    gpu_min_freq=`cat $GPU_MIN_FREQ`
 }
 
 set_gpu_min_freq () {
@@ -76,6 +112,15 @@ set_gpu_min_freq () {
     if [ -n "$gpuminfreq" ] && [ "$gpuminfreq" != "0" ]; then
         printf '%s\n' "$gpuminfreq" > $GPU_MIN_FREQ; 2> /dev/null
     fi
+    read_gpu_min_freq
+    json="{"
+    json="${json}\"gpu_min_freq\":\"${gpu_min_freq}\""
+    json="${json}}"
+    echo $json
+}
+
+read_gpu_max_freq () {
+    gpu_max_freq=`cat $GPU_MAX_FREQ`
 }
 
 set_gpu_max_freq () {
@@ -83,6 +128,15 @@ set_gpu_max_freq () {
     if [ -n "$gpumaxfreq" ] && [ "$gpumaxfreq" != "0" ]; then
         printf '%s\n' "$gpumaxfreq" > $GPU_MAX_FREQ; 2> /dev/null
     fi
+    read_gpu_max_freq
+    json="{"
+    json="${json}\"gpu_max_freq\":\"${gpu_max_freq}\""
+    json="${json}}"
+    echo $json
+}
+
+read_gpu_boost_freq () {
+    gpu_boost_freq=`cat $GPU_BOOST_FREQ`
 }
 
 set_gpu_boost_freq () {
@@ -90,6 +144,15 @@ set_gpu_boost_freq () {
     if [ -n "$gpuboostfreq" ] && [ "$gpuboostfreq" != "0" ]; then
         printf '%s\n' "$gpuboostfreq" > $GPU_BOOST_FREQ; 2> /dev/null
     fi
+    read_gpu_boost_freq
+    json="{"
+    json="${json}\"gpu_boost_freq\":\"${gpu_boost_freq}\""
+    json="${json}}"
+    echo $json
+}
+
+read_cpu_governor () {
+    cpu_governor=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`
 }
 
 set_cpu_governor () {
@@ -98,6 +161,25 @@ set_cpu_governor () {
         for cpu in /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor; do
             printf '%s\n' "$gov" > $cpu; 2> /dev/null
         done
+    fi
+    read_cpu_governor
+    json="{"
+    json="${json}\"cpu_governor\":\"${cpu_governor}\""
+    json="${json}}"
+    echo $json
+}
+
+read_energy_perf () {
+    energy_perf=`cat /sys/devices/system/cpu/cpu0/cpufreq/energy_performance_preference 2>/dev/null`
+    if [ -z "$energy_perf" ]; then
+        energy_perf=`x86_energy_perf_policy -r 2>/dev/null | grep -v 'HWP_' | \
+        sed -r 's/://;
+                s/(0x0000000000000000|EPB 0)/performance/;
+                s/(0x0000000000000004|EPB 4)/balance_performance/;
+                s/(0x0000000000000006|EPB 6)/default/;
+                s/(0x0000000000000008|EPB 8)/balance_power/;
+                s/(0x000000000000000f|EPB 15)/power/' | \
+        awk '{ printf "%s\n", $2; }' | head -n 1`
     fi
 }
 
@@ -118,10 +200,11 @@ set_energy_perf () {
             x86_energy_perf_policy $pnum > /dev/null 2>&1
         fi
     fi
-}
-
-set_thermal_mode () {
-    smbios-thermal-ctl --set-thermal-mode=$1 2> /dev/null
+    read_energy_perf
+    json="{"
+    json="${json}\"energy_perf\":\"${energy_perf}\""
+    json="${json}}"
+    echo $json
 }
 
 set_lg_battery_charge_limit(){
@@ -161,36 +244,33 @@ set_lg_usb_charge()  {
     fi
 }
 
+read_thermal_mode () {
+    thermal_mode=`smbios-thermal-ctl -g | grep -C 1 "Current Thermal Modes:"  | tail -n 1 | awk '{$1=$1;print}' | sed "s/\t//g" | sed "s/ /-/g" | tr [A-Z] [a-z] `
+}
+
+set_thermal_mode () {
+    smbios-thermal-ctl --set-thermal-mode=$1 > /dev/null 2>&1
+    read_thermal_mode
+    json="{"
+    json="${json}\"thermal_mode\":\"${thermal_mode}\""
+    json="${json}}"
+    echo $json
+}
+
 read_all () {
-cpu_min_perf=`cat $CPU_MIN_PERF`
-cpu_max_perf=`cat $CPU_MAX_PERF`
-cpu_turbo=`cat $CPU_TURBO`
-if [ "$cpu_turbo" == "1" ]; then
-    cpu_turbo="false"
-else
-    cpu_turbo="true"
-fi
-gpu_min_freq=`cat $GPU_MIN_FREQ`
-gpu_max_freq=`cat $GPU_MAX_FREQ`
+read_cpu_min_perf
+read_cpu_max_perf
+
+read_cpu_turbo
+
 gpu_min_limit=`cat $GPU_MIN_LIMIT`
 gpu_max_limit=`cat $GPU_MAX_LIMIT`
-gpu_boost_freq=`cat $GPU_BOOST_FREQ`
 gpu_cur_freq=`cat $GPU_CUR_FREQ`
-cpu_governor=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`
-energy_perf=`cat /sys/devices/system/cpu/cpu0/cpufreq/energy_performance_preference`
-if [ -z "$energy_perf" ]; then
-    energy_perf=`x86_energy_perf_policy -r 2>/dev/null | grep -v 'HWP_' | \
-    sed -r 's/://;
-            s/(0x0000000000000000|EPB 0)/performance/;
-            s/(0x0000000000000004|EPB 4)/balance_performance/;
-            s/(0x0000000000000006|EPB 6)/default/;
-            s/(0x0000000000000008|EPB 8)/balance_power/;
-            s/(0x000000000000000f|EPB 15)/power/' | \
-    awk '{ printf "%s\n", $2; }' | head -n 1`
-fi
-if check_dell_thermal; then
-    thermal_mode=`smbios-thermal-ctl -g | grep -C 1 "Current Thermal Modes:"  | tail -n 1 | awk '{$1=$1;print}' | sed "s/\t//g" | sed "s/ /-/g" | tr "[A-Z]" "[a-z]" `
-fi
+read_gpu_min_freq
+read_gpu_max_freq
+read_gpu_boost_freq
+read_cpu_governor
+read_energy_perf
 
 if check_lg_drivers; then
     lg_battery_charge_limit=`cat $LG_BATTERY_CHARGE_LIMIT`
@@ -230,6 +310,7 @@ json="${json},\"gpu_cur_freq\":\"${gpu_cur_freq}\""
 json="${json},\"cpu_governor\":\"${cpu_governor}\""
 json="${json},\"energy_perf\":\"${energy_perf}\""
 if check_dell_thermal; then
+    read_thermal_mode
     json="${json},\"thermal_mode\":\"${thermal_mode}\""
 fi
 if check_lg_drivers; then
@@ -245,78 +326,79 @@ echo $json
 }
 
 case $1 in
-    "-cpu-min-perf")
+    "cpu-min-perf")
         set_cpu_min_perf $2
         ;;
 
-    "-cpu-max-perf")
+    "cpu-max-perf")
         set_cpu_max_perf $2
         ;;
 
-    "-cpu-turbo")
+    "cpu-turbo")
         set_cpu_turbo $2
         ;;
 
-    "-gpu-min-freq")
+    "gpu-min-freq")
         set_gpu_min_freq $2
         ;;
 
-    "-gpu-max-freq")
+    "gpu-max-freq")
         set_gpu_max_freq $2
         ;;
 
-    "-gpu-boost-freq")
+    "gpu-boost-freq")
         set_gpu_boost_freq $2
         ;;
 
-    "-cpu-governor")
+    "cpu-governor")
         set_cpu_governor $2
         ;;
 
-    "-energy-perf")
+    "energy-perf")
         set_energy_perf $2
         ;;
 
-    "-thermal-mode")
+    "thermal-mode")
         set_thermal_mode $2
         ;;
 
-    "-lg-battery-charge-limit")
+    "lg-battery-charge-limit")
 	set_lg_battery_charge_limit $2
 	;;
 
-    "-lg-fan-mode")
+    "lg-fan-mode")
 	set_lg_fan_mode $2
 	;;
 
-    "-lg-usb-charge")
+    "lg-usb-charge")
 	set_lg_usb_charge $2
 	;;
 
-    "-powermizer")
+    "powermizer")
         set_powermizer $2
         ;;
 
-    "-read-all")
+    "read-all")
         read_all
         ;;
 
     *)
         echo "Usage:"
-        echo "1: set_prefs.sh [ -cpu-min-perf |"
-        echo "                  -cpu-max-perf |"
-        echo "                  -cpu-turbo |"
-        echo "                  -gpu-min-freq |"
-        echo "                  -gpu-max-freq |"
-        echo "                  -gpu-boost-freq |"
-        echo "                  -cpu-governor |"
-        echo "                  -energy-perf |"
-        echo "                  -thermal-mode |"
-        echo "                  -lg-battery-charge-limit |"
-        echo "                  -lg-fan-mode |"
-        echo "                  -lg-usb-charge |"
-        echo "                  -powermizer ] value"
-        echo "2: set_prefs.sh -read-all"
+        echo "1: set_prefs.sh [ cpu-min-perf |"
+        echo "                  cpu-max-perf |"
+        echo "                  cpu-turbo |"
+        echo "                  gpu-min-freq |"
+        echo "                  gpu-max-freq |"
+        echo "                  gpu-boost-freq |"
+        echo "                  cpu-governor |"
+        echo "                  energy-perf |"
+        echo "                  thermal-mode ] value"
+        echo "                  lg-battery-charge-limit |"
+        echo "                  lg-fan-mode |"
+        echo "                  lg-usb-charge |"
+        echo "                  powermizer ] value"
+        echo "2: set_prefs.sh   read-all"
         exit 3
         ;;
+
 esac

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE policyconfig PUBLIC "-//freedesktop//DTD PolicyKit Policy Configuration 1.0//EN"
+ "http://www.freedesktop.org/standards/PolicyKit/1/policyconfig.dtd">
+<policyconfig>
+
+	<icon_name>cpu</icon_name>
+	<vendor>Plasma PState Widget</vendor>
+	<vendor_url>https://github.com/blackPantherOS/plasma-pstate/</vendor_url>
+	<action id="org.pkexec.set_prefs">
+
+		<description>Modify Plasma State as root</description>
+		<description xml:lang="cs">Spouštět Plasma PState pod uživatelem root</description>
+		<description xml:lang="cs_CZ">Spustit Plasma PState s právy správce systému (root)</description>
+		<description xml:lang="de">Plasma PState als Root-Benutzer ausführen</description>
+		<description xml:lang="es">Ejecutar Plasma PState como root</description>
+		<description xml:lang="fr">Lancer Plasma PState en tant que super-utilisateur</description>
+		<description xml:lang="hr">Pokreni Plasma PState kao korijenskog korisnika</description>
+		<description xml:lang="hu">Plasma PState futtatása rendszergazdaként</description>
+		<description xml:lang="id">Jalankan Plasma PState sebagai root</description>
+		<description xml:lang="lv">Palaist Plasma PState kā root</description>
+		<description xml:lang="pl">Uruchomienie programu Plasma PState jako administrator</description>
+		<description xml:lang="pt_BR">Rodar Plasma PState como root</description>
+		<description xml:lang="ro">Rulează Plasma PState ca root</description>
+		<description xml:lang="ru">Запустить Plasma PState с правами администратора</description>
+		<description xml:lang="sk">Spustiť Plasma PState ako správca</description>
+		<description xml:lang="sv">Kör Plasma PState som root</description>
+		<description xml:lang="vi">Chạy Plasma PState dưới tư cách siêu quản trị.</description>
+		<description xml:lang="zh">以 root 权限运行 Plasma PState</description>
+
+		<message>Authentication is required to run Plasma PState as root.</message>
+		<message xml:lang="cs_CZ">Pro spuštění Plasma PState s právy správce je třeba ověření.</message>
+		<message xml:lang="fr">Il est nécessaire de s’authentifier pour lancer Plasma PState en tant que super-utilisateur.</message>
+		<message xml:lang="pt_BR">Autenticação é necessária para rodar Plasma PState como root.</message>
+		<message xml:lang="ru">Для запуска Plasma PState с правами администратора требуется аутентификация.</message>
+		<message xml:lang="zh">以 root 权限运行 Plasma PState 需要身份验证.</message>
+
+		<defaults>
+                        <allow_any>yes</allow_any>
+                        <allow_inactive>no</allow_inactive>
+                        <allow_active>yes</allow_active>
+		</defaults>
+		<annotate key="org.freedesktop.policykit.exec.path">/usr/share/plasma/plasmoids/gr.ictpro.jsalatas.plasma.pstate/contents/code/set_prefs.sh</annotate>
+		<annotate key="org.freedesktop.policykit.exec.allow_gui">true</annotate>
+
+	</action>
+
+</policyconfig>

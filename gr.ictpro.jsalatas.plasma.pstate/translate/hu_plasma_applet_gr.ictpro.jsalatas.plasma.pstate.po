@@ -1,0 +1,151 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: pstate\n"
+"Report-Msgid-Bugs-To: https://jsalatas.ictpro.gr\n"
+"POT-Creation-Date: 2020-09-24 08:18+0200\n"
+"PO-Revision-Date: 2020-09-23 15:04+0200\n"
+"Last-Translator: Barcza Károly <kbarcza@blackpanther.hu>\n"
+"Language-Team: \n"
+"Language: hu\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.2\n"
+
+#: ../contents/code/utils.js:93
+msgid "Processor Settings"
+msgstr "Processzor beállítások"
+
+#: ../contents/code/utils.js:96
+msgid "CPU Frequencies"
+msgstr "CPU frekvenciák"
+
+#: ../contents/code/utils.js:97
+msgid "Min perf"
+msgstr "Min telj."
+
+#: ../contents/code/utils.js:98
+msgid "Max perf"
+msgstr "Max telj."
+
+#: ../contents/code/utils.js:99
+msgid "Turbo"
+msgstr "Turbó"
+
+#: ../contents/code/utils.js:101
+msgid "GPU Frequencies"
+msgstr "GPU Frekvenciák"
+
+#: ../contents/code/utils.js:102
+msgid "Min freq"
+msgstr "Min frekv. (MHz):"
+
+#: ../contents/code/utils.js:103
+msgid "Max freq"
+msgstr "Max frekv. (MHz):"
+
+#: ../contents/code/utils.js:104
+msgid "Boost freq"
+msgstr "Gyorsító frekv."
+
+#: ../contents/code/utils.js:106
+msgid "CPU Governor"
+msgstr "CPU verzérlő"
+
+#: ../contents/code/utils.js:107 ../contents/code/utils.js:117 ../contents/code/utils.js:129
+msgid "Performance"
+msgstr "Teljesítmény"
+
+#: ../contents/code/utils.js:108
+msgid "Powersave"
+msgstr "Energiatakarékos"
+
+#: ../contents/code/utils.js:112
+msgid "Energy Performance"
+msgstr "Energiateljesítmény"
+
+#: ../contents/code/utils.js:116
+msgid "Default"
+msgstr "Alapértelmezés"
+
+#: ../contents/code/utils.js:118
+msgid "Balance Performance"
+msgstr "Egyensúlyozott teljesítmény"
+
+#: ../contents/code/utils.js:119
+msgid "Balance Power"
+msgstr "Egyensúlyozott energia"
+
+#: ../contents/code/utils.js:120
+msgid "Power"
+msgstr "Energiatakarékos"
+
+#: ../contents/code/utils.js:124
+msgid "Thermal Management"
+msgstr "Hőmérsékletkezelő"
+
+#: ../contents/code/utils.js:130
+msgid "Balanced"
+msgstr "Egyensúlyozott"
+
+#: ../contents/code/utils.js:131
+msgid "Cool Bottom"
+msgstr "Hűtés alatt"
+
+#: ../contents/code/utils.js:132
+msgid "Quiet"
+msgstr "Halk"
+
+#: ../contents/code/utils.js:136
+msgid "Power Supply Management"
+msgstr "Tápellátás kezelés"
+
+#: ../contents/code/utils.js:139
+msgid "Battery Limit"
+msgstr "Akkumlátor limit"
+
+#: ../contents/code/utils.js:140
+msgid "USB Charge"
+msgstr "USB töltés"
+
+#: ../contents/code/utils.js:143
+msgid "Fan Control"
+msgstr "Hűtésvezérlés"
+
+#: ../contents/code/utils.js:146
+msgid "Silent Mode"
+msgstr "Csendes mód"
+
+#: ../contents/code/utils.js:149
+msgid "Nvidia Settings"
+msgstr "Nvidia beállítások"
+
+#: ../contents/code/utils.js:152
+msgid "PowerMizer"
+msgstr "PowerMizer"
+
+#: ../contents/code/utils.js:153
+msgid "Adaptive"
+msgstr "Alaklmazkodó"
+
+#: ../contents/code/utils.js:154
+msgid "Prefer Max Performance"
+msgstr "Lehetőleg max teljesítmény"
+
+#: ../contents/code/utils.js:155
+msgid "Auto"
+msgstr "Auto"
+
+#: ../contents/ui/config/ConfigGeneral.qml:21
+msgid "Custom Icon:"
+msgstr "Egyéni ikon:"
+
+#: ../contents/ui/config/IconPicker.qml:70
+msgctxt "@item:inmenu Open icon chooser dialog"
+msgid "Choose..."
+msgstr "Választás…"
+
+#: ../contents/ui/config/IconPicker.qml:75
+msgctxt "@item:inmenu Reset icon to default"
+msgid "Clear Icon"
+msgstr "Ikon visszaállítása"
