@@ -81,6 +81,6 @@ RowLayout {
             }
 
         }
-        Layout.minimumWidth: parent.width
+        Layout.minimumWidth: units.gridUnit * 4
     }
 }
