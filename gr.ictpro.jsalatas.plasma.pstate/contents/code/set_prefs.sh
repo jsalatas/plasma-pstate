@@ -37,13 +37,14 @@ check_dell_thermal () {
 }
 
 check_nvidia () {
-    nvidia-settings -q GpuPowerMizerMode > /dev/null 2>&1
-    OUT=$?
-    if [ $OUT -eq 0 ]; then
-        return 0
-    else
-        return 1
-    fi
+    # nvidia-settings -q GpuPowerMizerMode > /dev/null 2>&1
+    # OUT=$?
+    # if [ $OUT -eq 0 ]; then
+    #     return 0
+    # else
+    #     return 1
+    # fi
+    return 1
 }
 
 set_cpu_min_perf () {
