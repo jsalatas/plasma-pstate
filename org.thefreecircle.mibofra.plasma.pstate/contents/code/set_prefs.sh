@@ -50,11 +50,11 @@ check_nvidia () {
 }
 
 check_isw () {
-    command -v isw &> /dev/null;
-    if [ $OUT -eq 0 ]; then
-        return 1
-    else
+    isw=`command -v isw`
+    if [ -z "${isw}" ]; then
         return 0
+    else
+        return 1
     fi
 }
 
