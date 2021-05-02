@@ -81,14 +81,16 @@ var sensors = {
     'lg_battery_charge_limit': {'value': undefined, 'unit':'', 'print': to_bool},
     'lg_usb_charge': {'value': undefined, 'unit':'', 'print': to_bool},
     'lg_fan_mode': {'value': undefined, 'unit':'', 'print': to_bool},
-    'powermizer': {'value': undefined, 'unit':'', 'print': to_string}, 
+    'powermizer': {'value': undefined, 'unit':'', 'print': to_string},
+    'cooler_boost': {'value': undefined, 'unit':'', 'print': to_bool}, 
 
 }
 
 var vendors = {
     'dell': {'provides': ['thermal_mode']},
     'lg-laptop': {'provides': ['lg_battery_charge_limit', 'lg_usb_charge', 'lg_fan_mode']},
-    'nvidia': {'provides': ['powermizer']}
+    'nvidia': {'provides': ['powermizer']},
+    'msi': {'provides': ['cooler_boost']}
 }
 
 var model =  [
@@ -159,6 +161,12 @@ var model =  [
                  {'text': 'Prefer Max Performance', 'sensor_value': '1'},
                 {'text': 'Auto', 'sensor_value': '2'}
             ]}
+        ]
+    },
+    {'type': 'header', 'text': 'MSI Settings', 'icon': 'b',
+        'vendors': ['msi'], 
+        'items': [
+            {'type': 'switch', 'text': 'Cooler Boost', 'sensor': 'cooler_boost'}
         ]
     }
 ]

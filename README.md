@@ -28,6 +28,10 @@ through [libsmbios library](https://github.com/dell/libsmbios).
 
 <a target="_blank" rel="noopener noreferrer" href="https://github.com/jsalatas/plasma-pstate/raw/master/screenshots/screenshot_4.png"><img src="https://github.com/jsalatas/plasma-pstate/raw/master/screenshots/screenshot_4.png" alt="Intel P-state and CPUFreq Manager Widget with Nvidia PowerMizer Settings" title="Intel P-state and CPUFreq Manager Widget with Nvidia PowerMizer Settings" width="500px"></a>
 
+4. MSI Cooler Boost
+
+- This assume that you already have seen if your laptop is supported by ISW tool, already seen https://github.com/YoyPa/isw/blob/master/README.md and set up it, and isw is in the executable path.
+
 
 ## What it isn't
 This is just a GUI widget and it is not meant to replace 
@@ -81,10 +85,17 @@ especially in relation to similar to Dell's Thermal Management Feature that
 may be available in other hardware platforms.
 
 ## Issues
-The widget uses a shell script that needs to be run as root user (sudo) and which apparently floods your log files with security related messages as described in [issue #16](https://github.com/jsalatas/plasma-pstate/issues/16). 
 
-If you want to get rid of these messages, please see a workaround at 
+Using PolKit, I don't see any log flood a the moment.
 
-https://github.com/jsalatas/plasma-pstate/wiki/Too-many-messages-in-system-log
+If it's not your case, plese read: https://github.com/jsalatas/plasma-pstate/wiki/Too-many-messages-in-system-log
 
+For option with a slider, please, be sure to slide them and not click on an arbitrary point of the slider. This will ensure that, the plasmoid slider is working fine, getting the preference issued, avoiding it to bug plasmashell, the plasmoid, or the panel where it is docked. And surely, making polkit agent asking the password for setting the preference, as expected.
+
+## Info
+
+The original author is maintaining the plasmoid up to his needs, see the head of: https://github.com/jsalatas/plasma-pstate/blob/master/README.md ,
+also because there are efforts to have hardware profiles directly in powerdevil and kcm like in gnome with https://gitlab.freedesktop.org/hadess/power-profiles-daemon .
+
+Anyway, some tools can be still useful for some users, like me, who added the possibility to set the number of online cpus, or other tools that are out of scope of powerdevil and kcm itself. So I'm trying to keep at least it up to date, in a working state with latest KDE releases, trying to adding new functions if needed. With patience and time, also trying to redesing the ui, as the original author wanted: https://github.com/jsalatas/plasma-pstate/issues/40 (or the space on the desktop for the tools will decrease).
 

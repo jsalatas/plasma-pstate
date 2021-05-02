@@ -5,7 +5,10 @@ if [[ $EUID -ne 0 ]]; then
     exit 1
 fi
 
-kpackagetool5 -g -t Plasma/Applet -r gr.ictpro.jsalatas.plasma.pstate
+kpackagetool5 -g -t Plasma/Applet -r org.thefreecircle.mibofra.plasma.pstate
+
+rm /usr/share/polkit-1/actions/org.thefreecircle.mibofra.plasma.pstate.get-thermal.policy
+rm /usr/share/polkit-1/actions/org.thefreecircle.mibofra.plasma.pstate.set-prefs.policy
 
 echo "Uninstall complete."
 exit 0

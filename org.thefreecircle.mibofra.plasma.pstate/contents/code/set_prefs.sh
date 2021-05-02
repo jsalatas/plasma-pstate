@@ -30,7 +30,7 @@ check_lg_drivers() {
 }
 
 check_dell_thermal () {
-    smbios-thermal-ctl -g > /dev/null 2>&1
+    /usr/bin/pkexec /usr/share/plasma/plasmoids/org.thefreecircle.mibofra.plasma.pstate/contents/code/get_thermal.sh > /dev/null 2>&1
     OUT=$?
     if [ $OUT -eq 0 ]; then
         return 0
@@ -46,6 +46,15 @@ check_nvidia () {
         return 0
     else
         return 1
+    fi
+}
+
+check_isw () {
+    command -v isw &> /dev/null;
+    if [ $OUT -eq 0 ]; then
+        return 1
+    else
+        return 0
     fi
 }
 
@@ -190,6 +199,19 @@ set_lg_usb_charge()  {
     fi
 }
 
+set_cooler_boost () {
+    boost=$1
+    if [ -n "$boost" ]; then
+        if [ "$boost" == "true" ]; then
+            printf '1\n' > /run/isw_cooler_boost; 2> /dev/null
+            isw -b on; 2> /dev/null
+        else
+            printf '0\n' > /run/isw_cooler_boost; 2> /dev/null
+            isw -b off; 2> /dev/null
+        fi
+    fi
+}
+
 read_all () {
 cpu_min_perf=`cat $CPU_MIN_PERF`
 cpu_max_perf=`cat $CPU_MAX_PERF`
@@ -220,7 +242,7 @@ if [ -z "$energy_perf" ]; then
     awk '{ printf "%s\n", $2; }' | head -n 1`
 fi
 if check_dell_thermal; then
-    thermal_mode=`smbios-thermal-ctl -g | grep -C 1 "Current Thermal Modes:"  | tail -n 1 | awk '{$1=$1;print}' | sed "s/\t//g" | sed "s/ /-/g" | tr "[A-Z]" "[a-z]" `
+    thermal_mode=`/usr/bin/pkexec /usr/share/plasma/plasmoids/org.thefreecircle.mibofra.plasma.pstate/contents/code/get_thermal.sh | grep -C 1 "Current Thermal Modes:"  | tail -n 1 | awk '{$1=$1;print}' | sed "s/\t//g" | sed "s/ /-/g" | tr "[A-Z]" "[a-z]" `
 fi
 
 if check_lg_drivers; then
@@ -245,7 +267,20 @@ if check_lg_drivers; then
 fi
 
 if check_nvidia; then
-    powermizer=`nvidia-settings -q GpuPowerMizerMode | grep "Attribute 'GPUPowerMizerMode'" | awk -F "): " '{print $2}'  | awk -F "." '{print $1}' ` 
+    powermizer=`nvidia-settings -q GpuPowerMizerMode 2> /dev/null | grep "Attribute 'GPUPowerMizerMode'" | awk -F "): " '{print $2}'  | awk -F "." '{print $1}' ` 
+fi
+
+if check_isw; then
+    if [[ -f /run/isw_cooler_boost ]]; then
+        cooler_boost=`cat /run/isw_cooler_boost`
+        if [ "cooler_boost" == "0" ]; then
+            cooler_boost="false"
+        else
+            cooler_boost="true"
+        fi
+    else 
+        cooler_boost="false"
+    fi
 fi
 
 json="{"
@@ -272,6 +307,9 @@ if check_lg_drivers; then
 fi
 if check_nvidia; then
     json="${json},\"powermizer\":\"${powermizer}\""
+fi
+if check_isw; then
+    json="${json},\"cooler_boost\":\"${cooler_boost}\""
 fi
 json="${json}}"
 echo $json
@@ -334,6 +372,10 @@ case $1 in
         set_powermizer $2
         ;;
 
+    "-cooler-boost")
+        set_cooler_boost $2
+        ;;
+
     "-read-all")
         read_all
         ;;
@@ -353,7 +395,8 @@ case $1 in
         echo "                  -lg-battery-charge-limit |"
         echo "                  -lg-fan-mode |"
         echo "                  -lg-usb-charge |"
-        echo "                  -powermizer ] value"
+        echo "                  -powermizer |"
+        echo "                  -cooler-boost ] value"
         echo "2: set_prefs.sh -read-all"
         exit 3
         ;;
