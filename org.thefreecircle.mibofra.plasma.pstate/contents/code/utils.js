@@ -60,6 +60,7 @@ var sensors = {
     'cpu_cur_load': {'value': undefined, 'unit':'%', 'print': to_int},
     'cpu_cur_freq': {'value': undefined, 'unit':' MHz', 'print': to_int},
     'gpu_cur_freq': {'value': undefined, 'unit':' MHz', 'print': to_int},
+    'cpu_total_available': {'value': undefined, 'unit':'', 'print': to_int},
     'gpu_min_limit': {'value': undefined, 'unit':'', 'print': to_int},
     'gpu_max_limit': {'value': undefined, 'unit':'', 'print': to_int},
     'battery_percentage': {'value': undefined, 'unit': '%', 'print': to_int},
@@ -70,6 +71,7 @@ var sensors = {
     'cpu_min_perf': {'value': undefined, 'unit':'%', 'print': to_int},
     'cpu_max_perf': {'value': undefined, 'unit':'%', 'print': to_int},
     'cpu_turbo': {'value': undefined, 'unit':'', 'print': to_bool},
+    'cpu_online': {'value': undefined, 'unit':'', 'print': to_int},
     'gpu_min_freq': {'value': undefined, 'unit':' MHz', 'print': to_int},
     'gpu_max_freq': {'value': undefined, 'unit':' MHz', 'print': to_int},
     'gpu_boost_freq': {'value': undefined, 'unit':' MHz', 'print': to_int},
@@ -79,14 +81,16 @@ var sensors = {
     'lg_battery_charge_limit': {'value': undefined, 'unit':'', 'print': to_bool},
     'lg_usb_charge': {'value': undefined, 'unit':'', 'print': to_bool},
     'lg_fan_mode': {'value': undefined, 'unit':'', 'print': to_bool},
-    'powermizer': {'value': undefined, 'unit':'', 'print': to_string}, 
+    'powermizer': {'value': undefined, 'unit':'', 'print': to_string},
+    'cooler_boost': {'value': undefined, 'unit':'', 'print': to_bool}, 
 
 }
 
 var vendors = {
     'dell': {'provides': ['thermal_mode']},
     'lg-laptop': {'provides': ['lg_battery_charge_limit', 'lg_usb_charge', 'lg_fan_mode']},
-    'nvidia': {'provides': ['powermizer']}
+    'nvidia': {'provides': ['powermizer']},
+    'msi': {'provides': ['cooler_boost']}
 }
 
 var model =  [
@@ -97,6 +101,9 @@ var model =  [
                 {'type': 'slider', 'text': 'Min perf', 'min': 0, 'max': 100, 'sensor': 'cpu_min_perf'},
                 {'type': 'slider', 'text': 'Max perf', 'min': 0, 'max': 100, 'sensor': 'cpu_max_perf'},
                 {'type': 'switch', 'text': 'Turbo', 'sensor': 'cpu_turbo'}
+            ]},
+            {'type': 'group', 'text': 'Online CPUs', 'items' :[
+                {'type': 'slider', 'text': 'CPUs', 'min': 0, 'max': 'cpu_total_available', 'sensor': 'cpu_online'},
             ]},
             {'type': 'group', 'text': 'GPU Frequencies', 'visible': 'showIntelGPU', 'items' :[
                 {'type': 'slider', 'text': 'Min freq', 'min': 'gpu_min_limit', 'max': 'gpu_max_limit', 'sensor': 'gpu_min_freq'},
@@ -154,6 +161,12 @@ var model =  [
                  {'text': 'Prefer Max Performance', 'sensor_value': '1'},
                 {'text': 'Auto', 'sensor_value': '2'}
             ]}
+        ]
+    },
+    {'type': 'header', 'text': 'MSI Settings', 'icon': 'b',
+        'vendors': ['msi'], 
+        'items': [
+            {'type': 'switch', 'text': 'Cooler Boost', 'sensor': 'cooler_boost'}
         ]
     }
 ]
