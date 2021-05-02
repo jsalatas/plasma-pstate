@@ -177,9 +177,9 @@ set_lg_fan_mode() {
     enabled=$1
     if [ -n "$enabled" ]; then
         if [ "$enabled" == "true" ]; then
-           printf '0\n' > $LG_FAN_MODE; 2> /dev/null
+           printf '0' > $LG_FAN_MODE; 2> /dev/null
         else
-           printf '1\n' > $LG_FAN_MODE; 2> /dev/null
+           printf '1' > $LG_FAN_MODE; 2> /dev/null
         fi
     fi
 }
@@ -223,12 +223,14 @@ if [ "$cpu_turbo" == "1" ]; then
 else
     cpu_turbo="true"
 fi
-gpu_min_freq=`cat $GPU_MIN_FREQ`
-gpu_max_freq=`cat $GPU_MAX_FREQ`
-gpu_min_limit=`cat $GPU_MIN_LIMIT`
-gpu_max_limit=`cat $GPU_MAX_LIMIT`
-gpu_boost_freq=`cat $GPU_BOOST_FREQ`
-gpu_cur_freq=`cat $GPU_CUR_FREQ`
+if [ -f $GPU_MIN_FREQ ]; then
+    gpu_min_freq=`cat $GPU_MIN_FREQ`
+    gpu_max_freq=`cat $GPU_MAX_FREQ`
+    gpu_min_limit=`cat $GPU_MIN_LIMIT`
+    gpu_max_limit=`cat $GPU_MAX_LIMIT`
+    gpu_boost_freq=`cat $GPU_BOOST_FREQ`
+    gpu_cur_freq=`cat $GPU_CUR_FREQ`
+fi
 cpu_governor=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`
 energy_perf=`cat /sys/devices/system/cpu/cpu0/cpufreq/energy_performance_preference`
 if [ -z "$energy_perf" ]; then
@@ -275,10 +277,10 @@ if check_isw; then
         cooler_boost="false"
     else 
         cooler_boost=`cat /run/isw_cooler_boost`
-        if [ "cooler_boost" == "0" ]; then
-            cooler_boost="false"
-        else
+        if [ "$cooler_boost" == "1" ]; then
             cooler_boost="true"
+        else
+            cooler_boost="false"
         fi
     fi
 fi
@@ -289,12 +291,14 @@ json="${json},\"cpu_max_perf\":\"${cpu_max_perf}\""
 json="${json},\"cpu_turbo\":\"${cpu_turbo}\""
 json="${json},\"cpu_total_available\":\"${cpu_total_available}\""
 json="${json},\"cpu_online\":\"${cpu_online}\""
-json="${json},\"gpu_min_freq\":\"${gpu_min_freq}\""
-json="${json},\"gpu_max_freq\":\"${gpu_max_freq}\""
-json="${json},\"gpu_min_limit\":\"${gpu_min_limit}\""
-json="${json},\"gpu_max_limit\":\"${gpu_max_limit}\""
-json="${json},\"gpu_boost_freq\":\"${gpu_boost_freq}\""
-json="${json},\"gpu_cur_freq\":\"${gpu_cur_freq}\""
+if [ -f $GPU_MIN_FREQ ]; then
+    json="${json},\"gpu_min_freq\":\"${gpu_min_freq}\""
+    json="${json},\"gpu_max_freq\":\"${gpu_max_freq}\""
+    json="${json},\"gpu_min_limit\":\"${gpu_min_limit}\""
+    json="${json},\"gpu_max_limit\":\"${gpu_max_limit}\""
+    json="${json},\"gpu_boost_freq\":\"${gpu_boost_freq}\""
+    json="${json},\"gpu_cur_freq\":\"${gpu_cur_freq}\""
+fi
 json="${json},\"cpu_governor\":\"${cpu_governor}\""
 json="${json},\"energy_perf\":\"${energy_perf}\""
 if check_dell_thermal; then
