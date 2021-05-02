@@ -73,9 +73,10 @@ sudo apt install linux-tools-generic linux-tools-`uname -r`
 Assuming that you have checked out the latest code, you just need to run the following commands as root:
 
 ```
-sudo kpackagetool5 -g -t Plasma/Applet -u gr.ictpro.jsalatas.plasma.pstate
+sudo kpackagetool5 -g -t Plasma/Applet -u org.thefreecircle.mibofra.plasma.pstate
 
-sudo chmod 755 /usr/share/plasma/plasmoids/gr.ictpro.jsalatas.plasma.pstate/contents/code/set_prefs.sh 
+sudo chmod 755 /usr/share/plasma/plasmoids/org.thefreecircle.mibofra.plasma.pstate/contents/code/set_prefs.sh
+sudo chmod 755 /usr/share/plasma/plasmoids/org.thefreecircle.mibofra.plasma.pstate/contents/code/get_thermal.sh
 ```
 
 

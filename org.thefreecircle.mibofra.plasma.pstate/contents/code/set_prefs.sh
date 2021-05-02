@@ -271,15 +271,15 @@ if check_nvidia; then
 fi
 
 if check_isw; then
-    if [[ -f /run/isw_cooler_boost ]]; then
+    if [[ ! -f /run/isw_cooler_boost ]]; then
+        cooler_boost="false"
+    else 
         cooler_boost=`cat /run/isw_cooler_boost`
         if [ "cooler_boost" == "0" ]; then
             cooler_boost="false"
         else
             cooler_boost="true"
         fi
-    else 
-        cooler_boost="false"
     fi
 fi
 
