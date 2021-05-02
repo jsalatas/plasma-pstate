@@ -52,9 +52,9 @@ check_nvidia () {
 check_isw () {
     isw=`command -v isw`
     if [ -z "${isw}" ]; then
-        return 0
-    else
         return 1
+    else
+        return 0
     fi
 }
 
