@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
 ACPI_CPU=/sys/devices/system/cpu
-
 if [ -d /sys/devices/system/cpu/cpufreq ]; then
   INTEL_PSTATE=$ACPI_CPU/cpufreq
   CPU_MIN_PERF=$INTEL_PSTATE/policy0/scaling_min_freq
