@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE policyconfig PUBLIC
+ "-//freedesktop//DTD PolicyKit Policy Configuration 1.0//EN"
+ "http://www.freedesktop.org/standards/PolicyKit/1/policyconfig.dtd">
+<policyconfig>
+
+  <action id="org.thefreecircle.mibofra.plasma.pstate.set-prefs.pkexec.set_prefs.sh">
+    <message>Authentication is required to run Plasma P-state</message>
+    <defaults>
+      <allow_any>no</allow_any>
+      <allow_inactive>no</allow_inactive>
+      <allow_active>auth_admin</allow_active>
+    </defaults>
+    <annotate key="org.freedesktop.policykit.exec.path">/usr/share/plasma/plasmoids/org.thefreecircle.mibofra.plasma.pstate/contents/code/set_prefs.sh</annotate>
+  </action>
+
+</policyconfig>
