@@ -105,6 +105,8 @@ var model =  [
             ]},
             {'type': 'radio', 'text': 'CPU Governor', 'sensor': 'cpu_governor', 'items' :[
                 {'symbol': 'a', 'text': 'Performance', 'sensor_value': 'performance'},
+                {'symbol': 'k', 'text': 'Balance Performance', 'sensor_value': 'ondemand'},
+                {'symbol': 'l', 'text': 'Balance Power', 'sensor_value': 'conservative'},
                 {'symbol': 'f', 'text': 'Powersave', 'sensor_value': 'powersave'}
             ]}
         ]

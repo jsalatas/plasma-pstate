@@ -1,9 +1,22 @@
 #!/bin/bash
 
-INTEL_PSTATE=/sys/devices/system/cpu/intel_pstate
-CPU_MIN_PERF=$INTEL_PSTATE/min_perf_pct
-CPU_MAX_PERF=$INTEL_PSTATE/max_perf_pct
-CPU_TURBO=$INTEL_PSTATE/no_turbo
+if [ -d /sys/devices/system/cpu/cpufreq ]; then
+	INTEL_PSTATE=/sys/devices/system/cpu/cpufreq
+	CPU_MIN_PERF=$INTEL_PSTATE/policy0/scaling_min_freq
+	CPU_MAX_PERF=$INTEL_PSTATE/policy0/scaling_max_freq
+	CPU_MIN_PERF_SET=$INTEL_PSTATE/policy*/scaling_min_freq
+	CPU_MAX_PERF_SET=$INTEL_PSTATE/policy*/scaling_max_freq
+	CPU_MIN_FREQ=$INTEL_PSTATE/policy0/cpuinfo_min_freq
+	CPU_MAX_FREQ=$INTEL_PSTATE/policy0/cpuinfo_max_freq
+	CPU_TURBO=$INTEL_PSTATE/boost
+	AMD=1
+else 
+	INTEL_PSTATE=/sys/devices/system/cpu/intel_pstate
+	CPU_MIN_PERF=$INTEL_PSTATE/min_perf_pct
+	CPU_MAX_PERF=$INTEL_PSTATE/max_perf_pct
+	CPU_TURBO=$INTEL_PSTATE/no_turbo
+	AMD=0
+fi
 
 GPU=/sys/class/drm/card0
 GPU_MIN_FREQ=$GPU/gt_min_freq_mhz
@@ -48,15 +61,33 @@ check_nvidia () {
 
 set_cpu_min_perf () {
     minperf=$1
-    if [ -n "$minperf" ] && [ "$minperf" != "0" ]; then
+    if [ -n "$minperf" ] && [ "$minperf" != "0" -a "$AMD" == "0" -o "$AMD" == "1" ]; then
+      if [ "$AMD" == "0" ]; then
         printf '%s\n' "$minperf" > $CPU_MIN_PERF; 2> /dev/null
+      else
+        minfreq=$(cat $CPU_MIN_FREQ)
+        maxfreq=$(cat $CPU_MAX_FREQ)
+      	freq=$((($maxfreq-$minfreq)*$minperf/100 + $minfreq))
+      	for d in $CPU_MIN_PERF_SET; do 
+          printf '%s\n' "$freq" > $d; 2> /dev/null
+      	done
+      fi
     fi
 }
 
 set_cpu_max_perf () {
     maxperf=$1
     if [ -n "$maxperf" ] && [ "$maxperf" != "0" ]; then
+      if [ "$AMD" == "0" ]; then
         printf '%s\n' "$maxperf" > $CPU_MAX_PERF; 2> /dev/null
+      else
+        minfreq=$(cat $CPU_MIN_FREQ)
+        maxfreq=$(cat $CPU_MAX_FREQ)
+      	freq=$((($maxfreq-$minfreq)*$maxperf/100 + $minfreq))
+      	for d in $CPU_MAX_PERF_SET; do 
+          printf '%s\n' "$freq" > $d; 2> /dev/null
+        done
+      fi
     fi
 }
 
@@ -64,9 +95,17 @@ set_cpu_turbo () {
     turbo=$1
     if [ -n "$turbo" ]; then
         if [ "$turbo" == "true" ]; then
+          if [ "$AMD" == "0" ]; then
             printf '0\n' > $CPU_TURBO; 2> /dev/null
-        else
+          else
             printf '1\n' > $CPU_TURBO; 2> /dev/null
+          fi
+        else
+          if [ "$AMD" == "0" ]; then
+            printf '1\n' > $CPU_TURBO; 2> /dev/null
+          else
+            printf '0\n' > $CPU_TURBO; 2> /dev/null
+          fi
         fi
     fi
 }
@@ -162,10 +201,19 @@ set_lg_usb_charge()  {
 }
 
 read_all () {
-cpu_min_perf=`cat $CPU_MIN_PERF`
-cpu_max_perf=`cat $CPU_MAX_PERF`
+if [ "$AMD" == "0" ]; then
+  cpu_min_perf=`cat $CPU_MIN_PERF`
+  cpu_max_perf=`cat $CPU_MAX_PERF`
+else
+  cpu_min_freq=`cat $CPU_MIN_FREQ`
+  cpu_max_freq=`cat $CPU_MAX_FREQ`
+  max=$(cat $CPU_MAX_PERF)
+  min=$(cat $CPU_MIN_PERF)
+  cpu_max_perf=$(((100+($max-$cpu_max_freq)*100/$cpu_max_freq)))
+  cpu_min_perf=$((($min-$cpu_min_freq)*100/$cpu_min_freq))
+fi
 cpu_turbo=`cat $CPU_TURBO`
-if [ "$cpu_turbo" == "1" ]; then
+if [ "$cpu_turbo" == "1" -a "$AMD" = "0" -o "$cpu_turbo" == "0" -a "$AMD" = "1" ]; then
     cpu_turbo="false"
 else
     cpu_turbo="true"
