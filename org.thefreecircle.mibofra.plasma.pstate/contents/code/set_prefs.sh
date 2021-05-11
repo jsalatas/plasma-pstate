@@ -1,9 +1,25 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-INTEL_PSTATE=/sys/devices/system/cpu/intel_pstate
-CPU_MIN_PERF=$INTEL_PSTATE/min_perf_pct
-CPU_MAX_PERF=$INTEL_PSTATE/max_perf_pct
-CPU_TURBO=$INTEL_PSTATE/no_turbo
+ACPI_CPU=/sys/devices/system/cpu
+if [ -d /sys/devices/system/cpu/cpufreq ]; then
+  INTEL_PSTATE=$ACPI_CPU/cpufreq
+  CPU_MIN_PERF=$INTEL_PSTATE/policy0/scaling_min_freq
+  CPU_MAX_PERF=$INTEL_PSTATE/policy0/scaling_max_freq
+  CPU_MIN_PERF_SET=$INTEL_PSTATE/policy*/scaling_min_freq
+  CPU_MAX_PERF_SET=$INTEL_PSTATE/policy*/scaling_max_freq
+  CPU_MIN_FREQ=$INTEL_PSTATE/policy0/cpuinfo_min_freq
+  CPU_MAX_FREQ=$INTEL_PSTATE/policy0/cpuinfo_max_freq
+  CPU_TURBO=$INTEL_PSTATE/boost
+  AMD=1
+else
+  INTEL_PSTATE=$ACPI_CPU/intel_pstate
+  CPU_MIN_PERF=$INTEL_PSTATE/min_perf_pct
+  CPU_MAX_PERF=$INTEL_PSTATE/max_perf_pct
+  CPU_TURBO=$INTEL_PSTATE/no_turbo
+  AMD=0
+fi
+CPU_TOTAL_AVAILABLE=$(nproc --all)
+CPU_ONLINE=$(nproc)
 
 GPU=/sys/class/drm/card0
 GPU_MIN_FREQ=$GPU/gt_min_freq_mhz
@@ -27,7 +43,7 @@ check_lg_drivers() {
 }
 
 check_dell_thermal () {
-    smbios-thermal-ctl -g > /dev/null 2>&1
+    /usr/bin/pkexec /usr/share/plasma/plasmoids/org.thefreecircle.mibofra.plasma.pstate/contents/code/get_thermal.sh > /dev/null 2>&1
     OUT=$?
     if [ $OUT -eq 0 ]; then
         return 0
@@ -46,17 +62,44 @@ check_nvidia () {
     fi
 }
 
+check_isw () {
+    isw=`command -v isw`
+    if [ -z "${isw}" ]; then
+        return 1
+    else
+        return 0
+    fi
+}
+
 set_cpu_min_perf () {
     minperf=$1
-    if [ -n "$minperf" ] && [ "$minperf" != "0" ]; then
+    if [ -n "$minperf" ] && [ "$minperf" != "0" -a "$AMD" == "0" -o "$AMD" == "1" ]; then
+      if [ "$AMD" == "0" ]; then
         printf '%s\n' "$minperf" > $CPU_MIN_PERF; 2> /dev/null
+      else
+        minfreq=$(cat $CPU_MIN_FREQ)
+        maxfreq=$(cat $CPU_MAX_FREQ)
+        freq=$((($maxfreq-$minfreq)*$minperf/100 + $minfreq))
+        for d in $CPU_MIN_PERF_SET; do 
+          printf '%s\n' "$freq" > $d; 2> /dev/null
+        done
+      fi
     fi
 }
 
 set_cpu_max_perf () {
     maxperf=$1
     if [ -n "$maxperf" ] && [ "$maxperf" != "0" ]; then
+      if [ "$AMD" == "0" ]; then
         printf '%s\n' "$maxperf" > $CPU_MAX_PERF; 2> /dev/null
+      else
+        minfreq=$(cat $CPU_MIN_FREQ)
+        maxfreq=$(cat $CPU_MAX_FREQ)
+        freq=$((($maxfreq-$minfreq)*$maxperf/100 + $minfreq))
+        for d in $CPU_MAX_PERF_SET; do 
+          printf '%s\n' "$freq" > $d; 2> /dev/null
+        done
+      fi
     fi
 }
 
@@ -64,10 +107,44 @@ set_cpu_turbo () {
     turbo=$1
     if [ -n "$turbo" ]; then
         if [ "$turbo" == "true" ]; then
+          if [ "$AMD" == "0" ]; then
             printf '0\n' > $CPU_TURBO; 2> /dev/null
-        else
+          else
             printf '1\n' > $CPU_TURBO; 2> /dev/null
+          fi
+        else
+          if [ "$AMD" == "0" ]; then
+            printf '1\n' > $CPU_TURBO; 2> /dev/null
+          else
+            printf '0\n' > $CPU_TURBO; 2> /dev/null
+          fi
         fi
+    fi
+}
+
+set_cpu_state () {
+    num=$1
+    num_off=$[$CPU_TOTAL_AVAILABLE-$num]
+    counter=1
+    limit=$[$num-1]
+    all_off=$[$CPU_TOTAL_AVAILABLE-1]
+    if [ -n "$num" ] && [ "$num" != "0" ]; then
+        if [ "$num" -ne "1" ]; then
+            while [ "$counter" -le "$limit" ]; do
+                    printf '1\n' > $ACPI_CPU/cpu$counter/online; 2> /dev/null
+                    counter=$[$counter+1]
+            done
+            limit=$[$limit+$num_off]
+            while [ "$counter" -le "$limit" ]; do
+                    printf '0\n' > $ACPI_CPU/cpu$counter/online; 2> /dev/null
+                    counter=$[$counter+1]
+            done
+        else
+            while [ "$counter" -le "$all_off" ]; do
+                    printf '0\n' > $ACPI_CPU/cpu$counter/online; 2> /dev/null
+                    counter=$[$counter+1]
+            done
+        fi    
     fi
 }
 
@@ -139,9 +216,9 @@ set_lg_fan_mode() {
     enabled=$1
     if [ -n "$enabled" ]; then
         if [ "$enabled" == "true" ]; then
-           printf '0\n' > $LG_FAN_MODE; 2> /dev/null
+           printf '0' > $LG_FAN_MODE; 2> /dev/null
         else
-           printf '1\n' > $LG_FAN_MODE; 2> /dev/null
+           printf '1' > $LG_FAN_MODE; 2> /dev/null
         fi
     fi
 }
@@ -161,21 +238,47 @@ set_lg_usb_charge()  {
     fi
 }
 
+set_cooler_boost () {
+    boost=$1
+    if [ -n "$boost" ]; then
+        if [ "$boost" == "true" ]; then
+            printf '1\n' > /run/isw_cooler_boost; 2> /dev/null
+            isw -b on; 2> /dev/null
+        else
+            printf '0\n' > /run/isw_cooler_boost; 2> /dev/null
+            isw -b off; 2> /dev/null
+        fi
+    fi
+}
+
 read_all () {
-cpu_min_perf=`cat $CPU_MIN_PERF`
-cpu_max_perf=`cat $CPU_MAX_PERF`
+if [ "$AMD" == "0" ]; then
+  cpu_min_perf=`cat $CPU_MIN_PERF`
+  cpu_max_perf=`cat $CPU_MAX_PERF`
+else
+  cpu_min_freq=`cat $CPU_MIN_FREQ`
+  cpu_max_freq=`cat $CPU_MAX_FREQ`
+  max=$(cat $CPU_MAX_PERF)
+  min=$(cat $CPU_MIN_PERF)
+  cpu_max_perf=$(((100+($max-$cpu_max_freq)*100/$cpu_max_freq)))
+  cpu_min_perf=$((($min-$cpu_min_freq)*100/$cpu_min_freq))
+fi
+cpu_total_available=`echo $CPU_TOTAL_AVAILABLE`
+cpu_online=`echo $CPU_ONLINE`
 cpu_turbo=`cat $CPU_TURBO`
-if [ "$cpu_turbo" == "1" ]; then
+if [ "$cpu_turbo" == "1" -a "$AMD" = "0" -o "$cpu_turbo" == "0" -a "$AMD" = "1" ]; then
     cpu_turbo="false"
 else
     cpu_turbo="true"
 fi
-gpu_min_freq=`cat $GPU_MIN_FREQ`
-gpu_max_freq=`cat $GPU_MAX_FREQ`
-gpu_min_limit=`cat $GPU_MIN_LIMIT`
-gpu_max_limit=`cat $GPU_MAX_LIMIT`
-gpu_boost_freq=`cat $GPU_BOOST_FREQ`
-gpu_cur_freq=`cat $GPU_CUR_FREQ`
+if [ -f $GPU_MIN_FREQ ]; then
+    gpu_min_freq=`cat $GPU_MIN_FREQ`
+    gpu_max_freq=`cat $GPU_MAX_FREQ`
+    gpu_min_limit=`cat $GPU_MIN_LIMIT`
+    gpu_max_limit=`cat $GPU_MAX_LIMIT`
+    gpu_boost_freq=`cat $GPU_BOOST_FREQ`
+    gpu_cur_freq=`cat $GPU_CUR_FREQ`
+fi
 cpu_governor=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`
 energy_perf=`cat /sys/devices/system/cpu/cpu0/cpufreq/energy_performance_preference`
 if [ -z "$energy_perf" ]; then
@@ -189,7 +292,7 @@ if [ -z "$energy_perf" ]; then
     awk '{ printf "%s\n", $2; }' | head -n 1`
 fi
 if check_dell_thermal; then
-    thermal_mode=`smbios-thermal-ctl -g | grep -C 1 "Current Thermal Modes:"  | tail -n 1 | awk '{$1=$1;print}' | sed "s/\t//g" | sed "s/ /-/g" | tr "[A-Z]" "[a-z]" `
+    thermal_mode=`/usr/bin/pkexec /usr/share/plasma/plasmoids/org.thefreecircle.mibofra.plasma.pstate/contents/code/get_thermal.sh | grep -C 1 "Current Thermal Modes:"  | tail -n 1 | awk '{$1=$1;print}' | sed "s/\t//g" | sed "s/ /-/g" | tr "[A-Z]" "[a-z]" `
 fi
 
 if check_lg_drivers; then
@@ -214,19 +317,36 @@ if check_lg_drivers; then
 fi
 
 if check_nvidia; then
-    powermizer=`nvidia-settings -q GpuPowerMizerMode | grep "Attribute 'GPUPowerMizerMode'" | awk -F "): " '{print $2}'  | awk -F "." '{print $1}' ` 
+    powermizer=`nvidia-settings -q GpuPowerMizerMode 2> /dev/null | grep "Attribute 'GPUPowerMizerMode'" | awk -F "): " '{print $2}'  | awk -F "." '{print $1}' ` 
+fi
+
+if check_isw; then
+    if [[ ! -f /run/isw_cooler_boost ]]; then
+        cooler_boost="false"
+    else 
+        cooler_boost=`cat /run/isw_cooler_boost`
+        if [ "$cooler_boost" == "1" ]; then
+            cooler_boost="true"
+        else
+            cooler_boost="false"
+        fi
+    fi
 fi
 
 json="{"
 json="${json}\"cpu_min_perf\":\"${cpu_min_perf}\""
 json="${json},\"cpu_max_perf\":\"${cpu_max_perf}\""
 json="${json},\"cpu_turbo\":\"${cpu_turbo}\""
-json="${json},\"gpu_min_freq\":\"${gpu_min_freq}\""
-json="${json},\"gpu_max_freq\":\"${gpu_max_freq}\""
-json="${json},\"gpu_min_limit\":\"${gpu_min_limit}\""
-json="${json},\"gpu_max_limit\":\"${gpu_max_limit}\""
-json="${json},\"gpu_boost_freq\":\"${gpu_boost_freq}\""
-json="${json},\"gpu_cur_freq\":\"${gpu_cur_freq}\""
+json="${json},\"cpu_total_available\":\"${cpu_total_available}\""
+json="${json},\"cpu_online\":\"${cpu_online}\""
+if [ -f $GPU_MIN_FREQ ]; then
+    json="${json},\"gpu_min_freq\":\"${gpu_min_freq}\""
+    json="${json},\"gpu_max_freq\":\"${gpu_max_freq}\""
+    json="${json},\"gpu_min_limit\":\"${gpu_min_limit}\""
+    json="${json},\"gpu_max_limit\":\"${gpu_max_limit}\""
+    json="${json},\"gpu_boost_freq\":\"${gpu_boost_freq}\""
+    json="${json},\"gpu_cur_freq\":\"${gpu_cur_freq}\""
+fi
 json="${json},\"cpu_governor\":\"${cpu_governor}\""
 json="${json},\"energy_perf\":\"${energy_perf}\""
 if check_dell_thermal; then
@@ -239,6 +359,9 @@ if check_lg_drivers; then
 fi
 if check_nvidia; then
     json="${json},\"powermizer\":\"${powermizer}\""
+fi
+if check_isw; then
+    json="${json},\"cooler_boost\":\"${cooler_boost}\""
 fi
 json="${json}}"
 echo $json
@@ -255,6 +378,10 @@ case $1 in
 
     "-cpu-turbo")
         set_cpu_turbo $2
+        ;;
+
+    "-cpu-online")
+        set_cpu_state $2
         ;;
 
     "-gpu-min-freq")
@@ -297,6 +424,10 @@ case $1 in
         set_powermizer $2
         ;;
 
+    "-cooler-boost")
+        set_cooler_boost $2
+        ;;
+
     "-read-all")
         read_all
         ;;
@@ -306,6 +437,7 @@ case $1 in
         echo "1: set_prefs.sh [ -cpu-min-perf |"
         echo "                  -cpu-max-perf |"
         echo "                  -cpu-turbo |"
+        echo "                  -cpu-online |"
         echo "                  -gpu-min-freq |"
         echo "                  -gpu-max-freq |"
         echo "                  -gpu-boost-freq |"
@@ -315,7 +447,8 @@ case $1 in
         echo "                  -lg-battery-charge-limit |"
         echo "                  -lg-fan-mode |"
         echo "                  -lg-usb-charge |"
-        echo "                  -powermizer ] value"
+        echo "                  -powermizer |"
+        echo "                  -cooler-boost ] value"
         echo "2: set_prefs.sh -read-all"
         exit 3
         ;;

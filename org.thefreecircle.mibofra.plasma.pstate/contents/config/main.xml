@@ -15,8 +15,5 @@
         <entry name="showIntelGPU" type="Bool">
             <default>true</default>
         </entry>
-        <entry name="useSudoForReading" type="Bool">
-            <default>true</default>
-        </entry>
     </group>
 </kcfg>
