@@ -170,3 +170,19 @@ function get_vendors() {
     return vendors;
 }
 
+function is_present(item_vendors) {
+    if(item_vendors && item_vendors.length != 0) {
+        for(var j=0; j< item_vendors.length; j++) {
+            var vendor = vendors[item_vendors[j]]
+            for(var k=0; k<vendor['provides'].length; k++) {
+                if(sensors_model[vendor['provides'][k]]['value']) {
+                    return true;
+                    break;
+                }
+            }
+        }
+        return false;
+    }
+
+    return true;
+}

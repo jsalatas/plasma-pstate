@@ -72,29 +72,12 @@ ColumnLayout {
         }
     }
 
-    function is_present(item_vendors) {
-        if(item_vendors && item_vendors.length != 0) {
-            for(var j=0; j< item_vendors.length; j++) {
-                var vendor = vendors[item_vendors[j]]
-                for(var k=0; k<vendor['provides'].length; k++) {
-                    if(sensors_model[vendor['provides'][k]]['value']) {
-                        return true;
-                        break;
-                    }
-                }
-            }
-            return false;
-        }
-
-        return true;
-    }
-
     function initialize() {
         removeChildren()
 
         for(var i = 0; i < model.length; i++) {
             var item = model[i];
-            if(is_present(item['vendors'])) {
+            if(Utils.is_present(item['vendors'])) {
                 switch (item.type) {
                     case 'header': {
                         var obj = header.createObject(fullRoot, {'props': item})
