@@ -186,3 +186,27 @@ function is_present(item_vendors) {
 
     return true;
 }
+
+function find_dropped_keys(a, b) {
+    var c = {}
+    for (var key in b) {
+        if (!a.hasOwnProperty(key)) {
+            c[key] = b[key]
+        }
+    }
+
+    return c
+}
+
+function remove_stale_data(data, old_data, sensors_model) {
+    var has_stale_data = false;
+
+    var diff = find_dropped_keys(data, old_data)
+    var keys = Object.keys(diff);
+    for (var i=0; i < keys.length; i++) {
+        sensors_model[keys[i]].value = undefined
+        has_stale_data = true;
+    }
+
+    return has_stale_data;
+}

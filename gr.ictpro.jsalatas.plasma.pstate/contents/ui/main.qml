@@ -37,6 +37,8 @@ Item {
         source: '../font/plasma-pstate.ttf'
     }
 
+    property var old_data: {}
+
     property var monitor_sources: [/cpu\/system\/AverageClock/g, /cpu\/system\/TotalLoad/g, /lmsensors\/.*Package_id_0/g, /lmsensors\/.*fan/g]
     property var sensors_model: Utils.get_sensors()
     property alias isReady: monitorDS.isReady
@@ -210,6 +212,10 @@ Item {
                 print('monitorDS error: ' + data.stderr)
             } else {
                 var obj = JSON.parse(data.stdout);
+
+                Utils.remove_stale_data(obj, old_data, sensors_model);
+                old_data = obj
+
                 var keys = Object.keys(obj);
                 for(var i=0; i< keys.length; i++) {
                     if (!sensors_model[keys[i]]) {
