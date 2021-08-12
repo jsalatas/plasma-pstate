@@ -18,9 +18,8 @@
  */
 
 import QtQuick 2.3
+import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.1
-import org.kde.plasma.components 2.0 as PlasmaComponents
-import org.kde.plasma.components 3.0 as PlasmaComponents3
 
 RowLayout {
     Layout.fillWidth: true
@@ -63,7 +62,7 @@ RowLayout {
         }
     }
     
-    PlasmaComponents.Label {
+    Label {
         Layout.alignment: Qt.AlignVCenter
         id: combobox_title
         font.pointSize: theme.smallestFont.pointSize
@@ -72,7 +71,7 @@ RowLayout {
         Layout.minimumWidth: units.gridUnit * 4
     }
 
-    PlasmaComponents3.ComboBox {
+    ComboBox {
         id: combobox
         textRole: "text"
         onActivated: {
