@@ -19,7 +19,6 @@
 
 import QtQuick 2.3
 import QtQuick.Layouts 1.1
-import org.kde.plasma.components 2.0 as PlasmaComponents
 
 import '../code/utils.js' as Utils
 
