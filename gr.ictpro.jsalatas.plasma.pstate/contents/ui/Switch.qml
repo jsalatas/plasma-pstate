@@ -19,7 +19,7 @@
 
 import QtQuick 2.3
 import QtQuick.Layouts 1.1
-import org.kde.plasma.components 2.0 as PlasmaComponents
+import QtQuick.Controls 2.2
 
 RowLayout {
     property alias text: checkbox_title.text
@@ -56,7 +56,7 @@ RowLayout {
         }
     }
 
-    PlasmaComponents.Label {
+    Label {
         Layout.alignment: Qt.AlignVCenter
         id: checkbox_title
         font.pointSize: theme.smallestFont.pointSize
@@ -65,7 +65,7 @@ RowLayout {
         Layout.minimumWidth: units.gridUnit * 4
     }
 
-    PlasmaComponents.CheckBox {
+    CheckBox {
         id: checkBox
         onCheckedChanged: {
             if(acceptingChanges) {
