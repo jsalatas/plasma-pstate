@@ -18,7 +18,8 @@
  */
 
 import QtQuick 2.3
-import org.kde.plasma.components 2.0 as PlasmaComponents
+import QtQuick.Controls 2.2
+
 
 Item {
     width: units.gridUnit * 4.2
@@ -70,7 +71,7 @@ Item {
             }
         }
 
-        PlasmaComponents.Label {
+        Label {
             id: icon
             anchors {
                 margins: units.smallSpacing *1.5
@@ -89,7 +90,7 @@ Item {
             text: symbol
         }
 
-        PlasmaComponents.Label {
+        Label {
             id: label
             anchors {
                 margins: units.smallSpacing * 1.5
