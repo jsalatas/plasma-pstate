@@ -18,12 +18,12 @@
  */
 
 import QtQuick 2.3
+import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.1
-import org.kde.plasma.components 2.0 as PlasmaComponents
 
 RowLayout {
-    property alias min: slider.minimumValue
-    property alias max: slider.maximumValue
+    property alias min: slider.from
+    property alias max: slider.to
     property alias value: slider.value
     property bool acceptingChanges: false
     property alias pressed: slider.pressed
@@ -86,7 +86,7 @@ RowLayout {
         }
     }
 
-    PlasmaComponents.Label {
+    Label {
         Layout.alignment: Qt.AlignTop
         id: slider_title
         font.pointSize: theme.smallestFont.pointSize
@@ -95,15 +95,15 @@ RowLayout {
         Layout.minimumWidth: units.gridUnit * 4
     }
 
-    PlasmaComponents.Slider {
+    Slider {
         Layout.fillWidth: true
         Layout.alignment: Qt.AlignBottom
         id: slider
-        stepSize: 1
+        stepSize: 0.0
         onPressedChanged: {
             //need to resend here
             if(acceptingChanges) {
-                updateSensor(sensor[0], value)
+                updateSensor(sensor[0], Math.round(value))
             }
         }
         onValueChanged: {
@@ -118,7 +118,7 @@ RowLayout {
         }
     }
 
-    PlasmaComponents.Label {
+    Label {
         Layout.alignment: Qt.AlignTop
         id: slider_value
         font.pointSize: theme.smallestFont.pointSize
