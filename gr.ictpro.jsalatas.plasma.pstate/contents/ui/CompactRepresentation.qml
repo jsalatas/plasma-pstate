@@ -19,7 +19,7 @@
 
 import QtQuick 2.2
 import org.kde.plasma.core 2.0 as PlasmaCore
-import org.kde.plasma.components 2.0 as PlasmaComponents
+import QtQuick.Controls 2.2
 
 Item {
     PlasmaCore.IconItem {
@@ -30,7 +30,7 @@ Item {
     }
 
 
-    PlasmaComponents.Label {
+    Label {
         anchors.fill: parent
         visible: plasmoid.configuration.useDefaultIcon
 
