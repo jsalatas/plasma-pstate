@@ -18,8 +18,8 @@
  */
 
 import QtQuick 2.3
+import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.1
-import org.kde.plasma.components 2.0 as PlasmaComponents
 
 ColumnLayout {
     id: radio
@@ -51,7 +51,7 @@ ColumnLayout {
         }
     }
 
-    PlasmaComponents.Label {
+    Label {
         id: radio_title
         font.pointSize: theme.smallestFont.pointSize * 1.25
         color: theme.textColor
