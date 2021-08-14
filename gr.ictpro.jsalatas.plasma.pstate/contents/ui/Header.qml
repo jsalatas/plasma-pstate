@@ -21,11 +21,11 @@ import QtQuick 2.6
 import QtQuick.Layouts 1.1
 import org.kde.plasma.components 2.0 as PlasmaComponents
 
-Row {
+RowLayout {
     id: header
 
-    topPadding: 5
-    bottomPadding: 10
+    Layout.topMargin: 5
+    Layout.bottomMargin: 10
 
     property alias symbol: icon.text
     property alias text: title.text

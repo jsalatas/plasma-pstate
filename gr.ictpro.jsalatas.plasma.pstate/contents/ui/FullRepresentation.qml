@@ -23,7 +23,7 @@ import org.kde.plasma.components 2.0 as PlasmaComponents
 
 import '../code/utils.js' as Utils
 
-Column {
+ColumnLayout {
     id: fullRoot
     spacing: 0.1
     Layout.minimumWidth: units.gridUnit * 15
