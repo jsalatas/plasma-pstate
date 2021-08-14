@@ -18,8 +18,11 @@
  */
 
 import QtQuick 2.3
+import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.1
-import org.kde.plasma.components 2.0 as PlasmaComponents
+
+import "./" as Pstate
+
 
 ColumnLayout {
     id: group
@@ -38,7 +41,7 @@ ColumnLayout {
 
     Component {
         id: slider
-        Slider {
+        Pstate.Slider {
             Layout.topMargin: 5
             Layout.bottomMargin: 5
             Layout.minimumWidth: units.gridUnit * 18
@@ -47,7 +50,7 @@ ColumnLayout {
 
     Component {
         id: switchbutton
-        Switch {
+        Pstate.Switch {
             Layout.topMargin: 5
             Layout.bottomMargin: 5
         }
@@ -69,7 +72,7 @@ ColumnLayout {
         }
     }
 
-    PlasmaComponents.Label {
+    Label {
         id: group_title
         font.pointSize: theme.smallestFont.pointSize * 1.25
         color: theme.textColor

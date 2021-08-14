@@ -18,8 +18,10 @@
  */
 
 import QtQuick 2.6
+import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.1
-import org.kde.plasma.components 2.0 as PlasmaComponents
+
+import "./" as Pstate
 
 RowLayout {
     id: header
@@ -36,7 +38,7 @@ RowLayout {
 
     Component {
         id: group
-        Group {
+        Pstate.Group {
             Layout.topMargin: 5
             Layout.bottomMargin: 10
         }
@@ -44,7 +46,7 @@ RowLayout {
 
     Component {
         id: radio
-        Radio {
+        Pstate.Radio {
             Layout.topMargin: 5
             Layout.bottomMargin: 10
         }
@@ -52,7 +54,7 @@ RowLayout {
     
     Component {
         id: switchbutton
-        Switch {
+        Pstate.Switch {
             Layout.topMargin: 5
             Layout.bottomMargin: 5
         }
@@ -60,7 +62,7 @@ RowLayout {
 
     Component {
         id: combobox
-        ComboBox {
+        Pstate.ComboBox {
             Layout.topMargin: 5
             Layout.bottomMargin: 5
         }
@@ -112,7 +114,7 @@ RowLayout {
         columnSpacing: 10
         rowSpacing: 0
 
-        PlasmaComponents.Label {
+        Label {
             id: icon
 
             width: units.gridUnit * 2.2
@@ -125,19 +127,19 @@ RowLayout {
             color: theme.textColor
         }
 
-        PlasmaComponents.Label {
+        Label {
             id: title
 
             font.pointSize: theme.smallestFont.pointSize * 2
             color: theme.textColor
         }
 
-        PlasmaComponents.Label  {
+        Label  {
             id: spacer0
             visible: sensors_label.text != 'N/A'
         }
 
-        PlasmaComponents.Label {
+        Label {
             id: sensors_label
 
             Layout.bottomMargin: 5
@@ -149,7 +151,7 @@ RowLayout {
             visible: sensors_label.text != 'N/A'
         }
 
-        PlasmaComponents.Label  {
+        Label  {
             id: spacer1
         }
 
