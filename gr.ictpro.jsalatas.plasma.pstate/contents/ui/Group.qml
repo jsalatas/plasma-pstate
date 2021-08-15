@@ -45,7 +45,7 @@ ColumnLayout {
         Pstate.Slider {
             Layout.topMargin: 5
             Layout.bottomMargin: 5
-            Layout.minimumWidth: units.gridUnit * 18
+            Layout.minimumWidth: units.gridUnit * 1
         }
     }
 
