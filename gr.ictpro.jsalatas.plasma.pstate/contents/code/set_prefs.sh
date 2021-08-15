@@ -1,5 +1,8 @@
 #!/bin/bash
 
+CPUFREQ=/sys/devices/system/cpu/cpu0/cpufreq
+CPUFREQ_AVAILABLE_GOVERNORS="${CPUFREQ}/scaling_available_governors"
+
 INTEL_PSTATE=/sys/devices/system/cpu/intel_pstate
 CPU_MIN_PERF=$INTEL_PSTATE/min_perf_pct
 CPU_MAX_PERF=$INTEL_PSTATE/max_perf_pct
@@ -253,6 +256,24 @@ json="${json}}"
 echo $json
 }
 
+check_cpu_available_governors () {
+    [ -f ${CPUFREQ_AVAILABLE_GOVERNORS} ]
+}
+
+read_cpu_available_governors () {
+    cpu_available_governors=$(cat ${CPUFREQ_AVAILABLE_GOVERNORS})
+}
+
+read_available () {
+    json="{"
+    if check_cpu_available_governors; then
+        read_cpu_available_governors
+        append_json "\"cpu_governor\":\"${cpu_available_governors}\""
+    fi
+    json="${json}}"
+    echo $json
+}
+
 case $1 in
     "-cpu-min-perf")
         set_cpu_min_perf $2
@@ -310,6 +331,10 @@ case $1 in
         read_all
         ;;
 
+    "-read-available")
+        read_available
+        ;;
+
     *)
         echo "Usage:"
         echo "1: set_prefs.sh [ -cpu-min-perf |"
@@ -326,6 +351,7 @@ case $1 in
         echo "                  -lg-usb-charge |"
         echo "                  -powermizer ] value"
         echo "2: set_prefs.sh -read-all"
+        echo "3: set_prefs.sh -read-available"
         exit 3
         ;;
 esac
