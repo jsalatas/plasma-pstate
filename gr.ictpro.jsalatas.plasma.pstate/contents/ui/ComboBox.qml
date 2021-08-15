@@ -21,7 +21,7 @@ import QtQuick 2.3
 import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.1
 
-RowLayout {
+ColumnLayout {
     Layout.fillWidth: true
 
     property var sensor: []
@@ -65,7 +65,6 @@ RowLayout {
     Label {
         Layout.alignment: Qt.AlignVCenter
         id: combobox_title
-        font.pointSize: theme.smallestFont.pointSize
         color: theme.textColor
         horizontalAlignment: Text.AlignRight
         Layout.minimumWidth: units.gridUnit * 4
@@ -82,5 +81,6 @@ RowLayout {
         }
         Layout.minimumWidth: units.gridUnit * 4
         Layout.fillWidth: true
+        Layout.leftMargin: units.gridUnit
     }
 }
