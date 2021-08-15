@@ -29,6 +29,9 @@ LG_FAN_MODE=$LG_LAPTOP_DRIVER/fan_mode
 LG_BATTERY_CHARGE_LIMIT=$LG_LAPTOP_DRIVER/battery_care_limit
 LG_USB_CHARGE=$LG_LAPTOP_DRIVER/usb_charge
 
+INTEL_TCC=$(grep -r . /sys/class/thermal/*/type 2>/dev/null | \
+            grep  "type:TCC Offset" | sed 's/\/type.*//')
+
 check_lg_drivers() {
     if [ -d $LG_LAPTOP_DRIVER ]; then
         return 0
@@ -313,6 +316,27 @@ set_lg_usb_charge()  {
     fi
 }
 
+check_intel_tcc() {
+    [ -n "${INTEL_TCC}" ] && [ -d "${INTEL_TCC}" ]
+}
+
+read_intel_tcc_cur_state() {
+    intel_tcc_cur_state=$(cat "${INTEL_TCC}/cur_state")
+}
+
+read_intel_tcc_max_state() {
+    intel_tcc_max_state=$(cat "${INTEL_TCC}/max_state")
+}
+
+set_intel_tcc_cur_state() {
+    printf "%s" "$1" > "${INTEL_TCC}/cur_state" 2> /dev/null
+    read_intel_tcc_cur_state
+    json="{"
+    json="${json}\"intel_tcc_cur_state\":\"${intel_tcc_cur_state}\""
+    json="${json}}"
+    echo "$json"
+}
+
 append_json() {
     if [ "${json#"${json%?}"}" = "{" ]; then
         json="${json}${1}"
@@ -407,6 +431,12 @@ fi
 if check_nvidia; then
     json="${json},\"powermizer\":\"${powermizer}\""
 fi
+if check_intel_tcc; then
+    read_intel_tcc_cur_state
+    read_intel_tcc_max_state
+    append_json "\"intel_tcc_cur_state\":\"${intel_tcc_cur_state}\""
+    append_json "\"intel_tcc_max_state\":\"${intel_tcc_max_state}\""
+fi
 json="${json}}"
 echo $json
 }
@@ -482,6 +512,10 @@ case $1 in
         set_powermizer $2
         ;;
 
+    "-intel-tcc-cur-state")
+        set_intel_tcc_cur_state "$2"
+        ;;
+
     "-read-all")
         read_all
         ;;
@@ -504,7 +538,8 @@ case $1 in
         echo "                  -lg-battery-charge-limit |"
         echo "                  -lg-fan-mode |"
         echo "                  -lg-usb-charge |"
-        echo "                  -powermizer ] value"
+        echo "                  -powermizer |"
+        echo "                  -intel-tcc-cur-state ] value"
         echo "2: set_prefs.sh -read-all"
         echo "3: set_prefs.sh -read-available"
         exit 3

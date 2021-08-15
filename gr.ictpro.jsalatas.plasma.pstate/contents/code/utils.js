@@ -55,6 +55,14 @@ function to_string(item) {
     return item['value'];
 }
 
+function fmt_tcc(item) {
+    var val = Math.round(parseFloat(item['value']), 0);
+    if (val === 0) {
+        return to_int(item);
+    }
+    return "-" + to_int(item);
+}
+
 var sensors = {
     // Informational
     'cpu_cur_load': {'value': undefined, 'unit':'%', 'print': to_int},
@@ -80,6 +88,10 @@ var sensors = {
     'lg_usb_charge': {'value': undefined, 'unit':'', 'print': to_bool},
     'lg_fan_mode': {'value': undefined, 'unit':'', 'print': to_bool},
     'powermizer': {'value': undefined, 'unit':'', 'print': to_string}, 
+    'intel_tcc_cur_state': {'value': undefined, 'unit':' °C', 'print': fmt_tcc},
+    'intel_tcc_max_state': {'value': undefined, 'unit':' °C', 'print': fmt_tcc},
+
+}
 
 var available_values = {
     'cpu_governor': [],
@@ -136,7 +148,13 @@ var model =  [
                  {'symbol': 'j', 'text': 'Balanced', 'sensor_value': 'balanced'},
                  {'symbol': 'g', 'text': 'Cool Bottom', 'sensor_value': 'cool-bottom'},
                 {'symbol': 'c', 'text': 'Quiet', 'sensor_value': 'quiet'}
-            ]}
+            ]},
+            {'type': 'group', 'id': 'tcc', 'text': "Thermal Control Circuit",
+                'items' :[
+                    {'type': 'slider', 'text': "Offset", 'min': 0, 'max': 'intel_tcc_max_state',
+                     'sensor': 'intel_tcc_cur_state' },
+                ]
+            },
         ]
     }, 
     {'type': 'header', 'id': 'powerSupply', 'text': 'Power Supply Management', 'icon': 'm',
