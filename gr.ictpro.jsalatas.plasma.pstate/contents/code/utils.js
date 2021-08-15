@@ -107,7 +107,11 @@ var model =  [
             ]},
             {'type': 'combobox', 'text': 'CPU Governor', 'sensor': 'cpu_governor', 'items' :[
                 {'symbol': 'a', 'text': 'Performance', 'sensor_value': 'performance'},
-                {'symbol': 'f', 'text': 'Powersave', 'sensor_value': 'powersave'}
+                {'symbol': 'f', 'text': 'Powersave', 'sensor_value': 'powersave'},
+                {'symbol': 'l', 'text': "Ondemand", 'sensor_value': 'ondemand'},
+                {'symbol': 'i', 'text': "Userspace", 'sensor_value': 'userspace'},
+                {'symbol': 'k', 'text': "Schedutil", 'sensor_value': 'schedutil'},
+                {'symbol': 'f', 'text': "Conservative", 'sensor_value': 'conservative'}
             ]}
         ]
     },
