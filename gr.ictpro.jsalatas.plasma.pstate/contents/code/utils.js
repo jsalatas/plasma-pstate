@@ -90,7 +90,7 @@ var vendors = {
 }
 
 var model =  [
-    {'type': 'header', 'text': 'Processor Settings', 'icon': 'd',
+    {'type': 'header', 'id': 'processorSettings', 'text': 'Processor Settings', 'icon': 'd',
         'sensors': ['cpu_cur_load', 'cpu_cur_freq', 'gpu_cur_freq'],
         'items': [
             {'type': 'group', 'text': 'CPU Frequencies', 'items' :[
@@ -109,7 +109,7 @@ var model =  [
             ]}
         ]
     },
-    {'type': 'header', 'text': 'Energy Performance', 'icon': 'h',
+    {'type': 'header', 'id': 'energyPerf', 'text': 'Energy Performance', 'icon': 'h',
         'sensors': ['battery_percentage', 'battery_remaining_time'],
         'items': [
             {'type': 'radio', 'text': '', 'sensor': 'energy_perf', 'items' :[
@@ -121,7 +121,7 @@ var model =  [
             ]}
         ]
     },
-    {'type': 'header', 'text': 'Thermal Management', 'icon': 'b',
+    {'type': 'header', 'id': 'thermalManagement', 'text': 'Thermal Management', 'icon': 'b',
         'vendors': ['dell'],
         'sensors': ['package_temp', 'fan_speeds'],
         'items': [
@@ -133,20 +133,20 @@ var model =  [
             ]}
         ]
     }, 
-    {'type': 'header', 'text': 'Power Supply Management', 'icon': 'm',
+    {'type': 'header', 'id': 'powerSupply', 'text': 'Power Supply Management', 'icon': 'm',
         'vendors': ['lg-laptop'], 
         'items': [
             {'type': 'switch', 'text': 'Battery Limit', 'sensor': 'lg_battery_charge_limit'},
             {'type': 'switch', 'text': 'USB Charge', 'sensor': 'lg_usb_charge'}
         ]
     },
-    {'type': 'header', 'text': 'Fan Control', 'icon': 'n',
+    {'type': 'header', 'id': 'fanControl', 'text': 'Fan Control', 'icon': 'n',
         'vendors': ['lg-laptop'], 
         'items': [
             {'type': 'switch', 'text': 'Silent Mode', 'sensor': 'lg_fan_mode'}
         ]
     },
-    {'type': 'header', 'text': 'Nvidia Settings', 'icon': 'o',
+    {'type': 'header', 'id': 'nvidiaSettings', 'text': 'Nvidia Settings', 'icon': 'o',
         'vendors': ['nvidia'],
         'items': [
             {'type': 'combobox', 'text': 'PowerMizer', 'sensor': 'powermizer', 'items' :[
