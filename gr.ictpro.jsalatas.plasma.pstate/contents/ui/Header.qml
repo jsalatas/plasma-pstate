@@ -36,6 +36,8 @@ RowLayout {
 
     property var props
 
+    Layout.alignment: Qt.AlignTop | Qt.AlignLeft
+
     Component {
         id: group
         Pstate.Group {
