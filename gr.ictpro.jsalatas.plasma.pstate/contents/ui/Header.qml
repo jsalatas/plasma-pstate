@@ -22,6 +22,7 @@ import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.1
 
 import "./" as Pstate
+import '../code/utils.js' as Utils
 
 RowLayout {
     id: header
@@ -81,6 +82,10 @@ RowLayout {
     onItemsChanged: {
         // parent: controls
         for(var i = 0; i < items.length; i++) {
+            if(!Utils.sensor_has_value(items[i])) {
+                continue
+            }
+
             switch (items[i]['type']) {
                 case 'radio': {
                     radio.createObject(controls, {'props': items[i]})

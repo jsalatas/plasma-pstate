@@ -139,7 +139,8 @@ GridLayout {
     function initialize_toolbar() {
         for(var i = 0; i < model.length; i++) {
             var item = model[i];
-            if(!Utils.is_present(item['vendors'])) {
+            // if(!Utils.is_present(item['vendors'])) {
+            if(!Utils.sensor_has_value(item)) {
                 continue
             }
             switch (item.type) {

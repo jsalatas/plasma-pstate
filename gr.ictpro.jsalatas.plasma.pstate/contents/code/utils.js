@@ -197,6 +197,47 @@ function is_present(item_vendors) {
     return true;
 }
 
+function sensor_has_value(item) {
+    if (item.type === 'header') {
+        if (item.sensors) {
+            for (var i = item.sensors.length - 1; i >= 0; i--) {
+                var sensor = item.sensors[i]
+                if (sensor in sensors_model && !!sensors_model[sensor]['value']) {
+                    return true
+                }
+            }
+        }
+
+        for (var i = item.items.length - 1; i >= 0; i--) {
+            if (sensor_has_value(item.items[i])) {
+                return true
+            }
+        }
+
+        return false
+
+        // return true
+    }
+
+    if (item.type === 'group') {
+        if (!item.items) {
+            return true
+        }
+        for (var i = item.items.length - 1; i >= 0; i--) {
+            if (sensor_has_value(item.items[i])) {
+                return true
+            }
+        }
+        return false
+    }
+
+    if (item.sensor in sensors_model) {
+        return sensors_model[item.sensor]['value'] !== undefined
+    }
+
+    return true
+}
+
 function find_dropped_keys(a, b) {
     var c = {}
     for (var key in b) {
