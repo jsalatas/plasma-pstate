@@ -35,6 +35,7 @@ RowLayout {
     property var items: []
 
     property var props
+    property var showIcon: true
 
     Layout.alignment: Qt.AlignTop | Qt.AlignLeft
 
@@ -112,9 +113,11 @@ RowLayout {
     GridLayout {
         id: grid
 
-        columns: 2
+        columns: header.showIcon ? 2 : 1
         columnSpacing: 10
         rowSpacing: 0
+
+        Layout.alignment: Qt.AlignTop | Qt.AlignLeft
 
         Label {
             id: icon
@@ -127,6 +130,8 @@ RowLayout {
             font.pointSize: theme.smallestFont.pointSize * 2.5
             font.family: symbolsFont.name
             color: theme.textColor
+
+            visible: header.showIcon
         }
 
         Label {
@@ -138,7 +143,7 @@ RowLayout {
 
         Label  {
             id: spacer0
-            visible: sensors_label.text != 'N/A'
+            visible: sensors_label.text != 'N/A' && header.showIcon
         }
 
         Label {
@@ -156,6 +161,7 @@ RowLayout {
 
         Label  {
             id: spacer1
+            visible: header.showIcon
         }
 
         ColumnLayout {
