@@ -79,6 +79,20 @@ ColumnLayout {
             }
 
         }
+        MouseArea {
+            anchors.fill: parent
+            onWheel: {
+                // do nothing
+            }
+            onPressed: {
+                // propogate to ComboBox
+                mouse.accepted = false;
+            }
+            onReleased: {
+                // propogate to ComboBox
+                mouse.accepted = false;
+            }
+        }
         Layout.minimumWidth: units.gridUnit * 4
         Layout.fillWidth: true
         Layout.leftMargin: units.gridUnit
