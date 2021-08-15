@@ -162,6 +162,14 @@ set_lg_usb_charge()  {
     fi
 }
 
+append_json() {
+    if [ "${json#"${json%?}"}" = "{" ]; then
+        json="${json}${1}"
+    else
+        json="${json},${1}"
+    fi
+}
+
 read_all () {
 cpu_min_perf=`cat $CPU_MIN_PERF`
 cpu_max_perf=`cat $CPU_MAX_PERF`
