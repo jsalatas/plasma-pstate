@@ -175,7 +175,7 @@ function is_present(item_vendors) {
         for(var j=0; j< item_vendors.length; j++) {
             var vendor = vendors[item_vendors[j]]
             for(var k=0; k<vendor['provides'].length; k++) {
-                if(sensors_model[vendor['provides'][k]]['value']) {
+                if(sensors_model[vendor['provides'][k]]['value'] !== undefined) {
                     return true;
                     break;
                 }
