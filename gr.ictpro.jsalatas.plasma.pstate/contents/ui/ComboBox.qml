@@ -34,7 +34,15 @@ ColumnLayout {
     onPropsChanged: {
         acceptingChanges = false
 
-        combobox.model = props['items']
+        var filtered = props['items']
+        if (props['sensor'] in available_values) {
+            var values = available_values[props['sensor']]
+            filtered = filtered.filter(item => {
+                return values.includes(item['sensor_value'])
+            })
+        }
+
+        combobox.model = filtered
         text = props['text']
         sensor.push(props['sensor'])
 
