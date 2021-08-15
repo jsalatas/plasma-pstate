@@ -49,7 +49,8 @@ Item {
     }
 
     Plasmoid.compactRepresentation: CompactRepresentation { }
-    Plasmoid.fullRepresentation: FullRepresentation { }
+    // Plasmoid.fullRepresentation: FullRepresentation { }
+    Plasmoid.fullRepresentation: TabbedRepresentation { }
 
     Plasmoid.preferredRepresentation: Plasmoid.compactRepresentation
     Plasmoid.switchWidth: units.gridUnit * 15
