@@ -152,9 +152,10 @@ RowLayout {
 
             Layout.bottomMargin: 5
 
-            font.pointSize: theme.smallestFont.pointSize * 1.25
-            color: theme.textColor
-            opacity: 0.8
+            font.pointSize: theme.smallestFont.pointSize
+            color: Qt.rgba(theme.textColor.r,
+                           theme.textColor.g,
+                           theme.textColor.b, 0.6)
 
             visible: sensors_label.text != 'N/A'
         }
