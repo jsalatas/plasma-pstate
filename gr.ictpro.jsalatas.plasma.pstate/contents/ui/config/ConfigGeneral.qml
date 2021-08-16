@@ -7,6 +7,7 @@ Item {
     property alias cfg_showIntelGPU: showIntelGPUCheckbox.checked
     property string cfg_customIcon: plasmoid.configuration.customIcon
     property alias cfg_useSudoForReading: useSudoForReadingCheckbox.checked
+    property alias cfg_pollingInterval: pollingInterval.value
 
     GridLayout {
         Layout.fillWidth: true
@@ -42,6 +43,18 @@ Item {
             id: useSudoForReadingCheckbox
             text: i18n('Use sudo for reading values')
             Layout.columnSpan: 2
+        }
+
+        Label {
+            text: i18n("Polling Interval (seconds):")
+            Layout.alignment: Qt.AlignRight
+        }
+
+        SpinBox {
+            id: pollingInterval
+
+            minimumValue: 2
+            maximumValue: 3600
         }
     }
 }

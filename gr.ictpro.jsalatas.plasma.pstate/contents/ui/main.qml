@@ -54,6 +54,9 @@ Item {
                                         'gr.ictpro.jsalatas.plasma.pstate/contents/code/' +
                                         'set_prefs.sh'
 
+    property int pollingInterval: plasmoid.configuration.pollingInterval ?
+                                  (plasmoid.configuration.pollingInterval * 1000) : 2000
+
     function sensor_short_name(long_name) {
         var parts = long_name.split('/');
         return parts[parts.length - 1];
@@ -165,7 +168,7 @@ Item {
 
             sensorsValuesChanged()
         }
-        interval: 2000
+        interval: pollingInterval
     }
 
     PlasmaCore.DataSource {
@@ -181,13 +184,19 @@ Item {
                 sensorsValuesChanged()
             }
         }
-        interval: 2000
+        interval: pollingInterval
     }
 
     Connections {
         target: plasmoid.configuration
         onUseSudoForReadingChanged: {
             monitorDS.restart()
+        }
+
+        onPollingIntervalChanged: {
+            monitorDS.interval = pollingInterval
+            powermanagementDS.interval = pollingInterval
+            systemmonitorDS.interval = pollingInterval
         }
     }
 
@@ -225,7 +234,7 @@ Item {
         Component.onCompleted: {
             connectSource(commandSource);
         }
-        interval: 2000
+        interval: pollingInterval
 
         function restart() {
             stop()

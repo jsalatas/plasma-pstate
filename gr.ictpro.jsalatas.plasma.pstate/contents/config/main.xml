@@ -18,5 +18,8 @@
         <entry name="useSudoForReading" type="Bool">
             <default>true</default>
         </entry>
+        <entry name="pollingInterval" type="Int">
+            <default>2</default>
+        </entry>
     </group>
 </kcfg>
