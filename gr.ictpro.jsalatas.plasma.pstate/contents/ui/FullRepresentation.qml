@@ -25,6 +25,7 @@ import '../code/utils.js' as Utils
 ColumnLayout {
     id: fullRoot
     spacing: 0.1
+    clip: true
 
     Layout.preferredWidth: childrenRect.width
     Layout.preferredHeight: childrenRect.height
