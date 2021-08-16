@@ -266,7 +266,16 @@ Item {
             print("exec: " + command)
             connectSource(command);
 
+            if (parameter === 'powermizer') {
+                nvidiaPowerMizerDS.update()
+            }
         }
+    }
+
+    NvidiaPowerMizerDS {
+        id: nvidiaPowerMizerDS
+        sensors_model: main.sensors_model
+        dataSourceReady: main.dataSourceReady
     }
 
     function updateTooltip() {
