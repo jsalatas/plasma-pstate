@@ -84,7 +84,18 @@ Item {
 
     onUpdateSensor: {
         print("updating sensor " + name +": " + value)
-        if(value != sensors_model[name]['value']) {
+
+        var rw_mode = sensors_model[name]['rw_mode']
+        var old_val = sensors_model[name]['value']
+
+        if (rw_mode == 'w') {
+            updater.update(name, value)
+            sensors_model[name]['value'] = value
+            sensorsValuesChanged();
+            return
+        }
+
+        if(value != old_val) {
             updater.update(name, value)
         } else {
             print("    same value")
@@ -232,7 +243,16 @@ Item {
                     if (!sensors_model[keys[i]]) {
                         continue;
                     }
-                    sensors_model[keys[i]]['value'] = obj[keys[i]];
+
+                    var rw_mode = sensors_model[keys[i]]['rw_mode']
+                    var old_val = sensors_model[keys[i]]['value']
+                    if (rw_mode == 'w'){
+                        if (old_val === undefined) {
+                            sensors_model[keys[i]]['value'] = true
+                        }
+                    } else {
+                        sensors_model[keys[i]]['value'] = obj[keys[i]];
+                    }
                 }
                 if(!isReady) {
                     dataSourceReady();
