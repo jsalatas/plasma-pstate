@@ -141,6 +141,7 @@ RowLayout {
 
         Label {
             id: sensors_label
+            text: get_sensors_text(sensors)
 
             Layout.bottomMargin: 5
 
