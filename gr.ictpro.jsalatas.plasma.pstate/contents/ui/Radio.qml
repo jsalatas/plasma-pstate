@@ -56,12 +56,16 @@ ColumnLayout {
         font.pointSize: theme.smallestFont.pointSize * 1.25
         color: theme.textColor
         visible: text != ''
+        Layout.fillWidth: true
     }
     RowLayout {
         id: buttons
         spacing: -0.5
         Layout.topMargin: radio_title.visible ? 0 : 8
-        Layout.rightMargin: 15
+        // Layout.rightMargin: 15
+
+        Layout.alignment: Qt.AlignHCenter
+        Layout.fillWidth: true
 
         height: units.gridUnit * 4
     }

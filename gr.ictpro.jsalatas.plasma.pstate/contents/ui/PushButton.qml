@@ -22,8 +22,8 @@ import QtQuick.Controls 2.2
 
 
 Item {
-    width: units.gridUnit * 4.2
-    height: units.gridUnit * 4
+    width: units.gridUnit * 3.9
+    height: units.gridUnit * 3.8
 
     objectName: "PushButton"
 
