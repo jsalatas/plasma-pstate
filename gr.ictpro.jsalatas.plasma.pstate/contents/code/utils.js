@@ -81,6 +81,8 @@ var sensors = {
     'lg_fan_mode': {'value': undefined, 'unit':'', 'print': to_bool},
     'powermizer': {'value': undefined, 'unit':'', 'print': to_string}, 
 
+var available_values = {
+    'cpu_governor': [],
 }
 
 var vendors = {
@@ -164,6 +166,10 @@ function get_model() {
 
 function get_sensors() {
     return sensors;
+}
+
+function get_available_values() {
+    return available_values;
 }
 
 function get_vendors() {

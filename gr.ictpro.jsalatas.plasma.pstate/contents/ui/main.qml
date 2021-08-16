@@ -46,6 +46,7 @@ Item {
         /lmsensors\/.*fan/g
     ]
     property var sensors_model: Utils.get_sensors()
+    property var available_values: Utils.get_available_values()
     property alias isReady: monitorDS.isReady
     property bool inTray: (plasmoid.parent === null || plasmoid.parent.objectName === 'taskItemContainer')
 
@@ -276,6 +277,15 @@ Item {
         id: nvidiaPowerMizerDS
         sensors_model: main.sensors_model
         dataSourceReady: main.dataSourceReady
+    }
+
+    AvailableValuesDS {
+        commandSource: (plasmoid.configuration.useSudoForReading ? 'sudo ' : '') +
+                       set_prefs + ' -read-available'
+
+        available_values: main.available_values
+        dataSourceReady: main.dataSourceReady
+        isReady: function() { return main.isReady }
     }
 
     function updateTooltip() {
