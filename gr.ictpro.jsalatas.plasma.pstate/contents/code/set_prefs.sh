@@ -32,6 +32,10 @@ LG_USB_CHARGE=$LG_LAPTOP_DRIVER/usb_charge
 INTEL_TCC=$(grep -r . /sys/class/thermal/*/type 2>/dev/null | \
             grep  "type:TCC Offset" | sed 's/\/type.*//')
 
+DELL_SMM_HWMON=$(grep -r . /sys/class/hwmon/*/name  2>/dev/null | \
+                 grep  "name:dell_smm"  | sed 's/\/name.*//')
+
+
 check_lg_drivers() {
     if [ -d $LG_LAPTOP_DRIVER ]; then
         return 0
@@ -337,6 +341,36 @@ set_intel_tcc_cur_state() {
     echo "$json"
 }
 
+check_dell_fan() {
+    [ ! -z ${DELL_SMM_HWMON} ] && [ -d ${DELL_SMM_HWMON} ] && \
+        [ -f ${DELL_SMM_HWMON}/pwm1_enable ]
+}
+
+set_dell_fan() {
+    if [ $1 -lt $((128/2)) ]; then
+        printf 2 > ${DELL_SMM_HWMON}/pwm1_enable; 2> /dev/null
+        return 0
+    fi
+
+    printf 1 > ${DELL_SMM_HWMON}/pwm1_enable; 2> /dev/null
+
+    if [ -f ${DELL_SMM_HWMON}/pwm1 ]; then
+        printf $1 > ${DELL_SMM_HWMON}/pwm1; 2> /dev/null
+    fi
+
+    if [ -f ${DELL_SMM_HWMON}/pwm2 ]; then
+        printf $1 > ${DELL_SMM_HWMON}/pwm2; 2> /dev/null
+    fi
+}
+
+have_dell_fan_mode() {
+    if [ -f ${DELL_SMM_HWMON}/pwm1_enable ]; then
+        dell_fan_mode="true"
+    else
+        dell_fan_mode="false"
+    fi
+}
+
 append_json() {
     if [ "${json#"${json%?}"}" = "{" ]; then
         json="${json}${1}"
@@ -437,6 +471,10 @@ if check_intel_tcc; then
     append_json "\"intel_tcc_cur_state\":\"${intel_tcc_cur_state}\""
     append_json "\"intel_tcc_max_state\":\"${intel_tcc_max_state}\""
 fi
+if check_dell_fan; then
+    have_dell_fan_mode
+    json="${json},\"dell_fan_mode\": ${dell_fan_mode}"
+fi
 json="${json}}"
 echo $json
 }
@@ -516,6 +554,10 @@ case $1 in
         set_intel_tcc_cur_state "$2"
         ;;
 
+    "-dell-fan-mode")
+        set_dell_fan $2
+        ;;
+
     "-read-all")
         read_all
         ;;
@@ -539,7 +581,8 @@ case $1 in
         echo "                  -lg-fan-mode |"
         echo "                  -lg-usb-charge |"
         echo "                  -powermizer |"
-        echo "                  -intel-tcc-cur-state ] value"
+        echo "                  -intel-tcc-cur-state |"
+        echo "                  -dell-fan-mode ] value"
         echo "2: set_prefs.sh -read-all"
         echo "3: set_prefs.sh -read-available"
         exit 3
