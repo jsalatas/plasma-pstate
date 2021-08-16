@@ -241,8 +241,10 @@ Item {
             } else {
                 print("    done")
             }
+            monitorDS.connectSource(monitorDS.commandSource)
         }
         function update(parameter, value) {
+            monitorDS.disconnectSource(monitorDS.commandSource)
             var command = commandSource + parameter.replace(/_/g, '-') + ' ' + value
             print("exec: " + command)
             connectSource(command);
