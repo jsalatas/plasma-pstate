@@ -1,6 +1,6 @@
 [Desktop Entry]
 Comment=Intel P-state and CPUFreq Manager
-Name=Intel P-state and CPUFreq Manager
+Name=P-state and CPUFreq
 Icon=cpu
 Type=Service
 X-KDE-ParentApp=
