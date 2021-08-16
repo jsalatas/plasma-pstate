@@ -123,8 +123,8 @@ Item {
 
         onSourceAdded: {
              if(monitor_source(source)) {
-                 if(systemmonitorDS.connectedSources.indexOf(source) == -1) {
-                     systemmonitorDS.connectedSources.push(source);
+                 if(connectedSources.indexOf(source) == -1) {
+                    connectSource(source);
                  }
             }
         }
@@ -138,7 +138,9 @@ Item {
             var source_short_name = sensor_short_name(sourceName);
 
             if(source_short_name.startsWith('fan')) {
-                if (sensors_model['fan_speeds'] != undefined && sensors_model['fan_speeds']['value'] != undefined) {
+                if (sensors_model['fan_speeds'] != undefined &&
+                    sensors_model['fan_speeds']['value'] != undefined)
+                {
                     sensors_model['fan_speeds']['value'][source_short_name] = data.value;
                 }
             } else {
@@ -159,19 +161,6 @@ Item {
             }
 
             sensorsValuesChanged()
-        }
-
-        Component.onCompleted: {
-            systemmonitorDS.connectedSources = [];
-            systemmonitorDS.connectedSources.length = 0;
-
-            for(var i=0; i< systemmonitorDS.sources.length; i++) {
-                if(monitor_source(systemmonitorDS.sources[i])) {
-                    if(systemmonitorDS.connectedSources.indexOf(systemmonitorDS.sources[i]) == -1) {
-                        systemmonitorDS.connectedSources.push(systemmonitorDS.sources[i]);
-                    }
-                }
-            }
         }
         interval: 2000
     }
