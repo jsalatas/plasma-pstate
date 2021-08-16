@@ -127,7 +127,7 @@ RowLayout {
 
             horizontalAlignment: Text.AlignHCenter
 
-            font.pointSize: theme.smallestFont.pointSize * 2.5
+            font.pointSize: theme.defaultFont.pointSize * 1.5
             font.family: symbolsFont.name
             color: theme.textColor
 
@@ -137,7 +137,7 @@ RowLayout {
         Label {
             id: title
 
-            font.pointSize: theme.smallestFont.pointSize * 2
+            font.pointSize: theme.defaultFont.pointSize * 1.25
             color: theme.textColor
         }
 
