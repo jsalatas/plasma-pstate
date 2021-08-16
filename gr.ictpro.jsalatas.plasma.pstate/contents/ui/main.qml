@@ -39,7 +39,12 @@ Item {
 
     property var old_data: {}
 
-    property var monitor_sources: [/cpu\/system\/AverageClock/g, /cpu\/system\/TotalLoad/g, /lmsensors\/.*Package_id_0/g, /lmsensors\/.*fan/g]
+    property var monitor_sources: [
+        /cpu\/system\/AverageClock/g,
+        /cpu\/system\/TotalLoad/g,
+        /lmsensors\/.*Package_id_0/g,
+        /lmsensors\/.*fan/g
+    ]
     property var sensors_model: Utils.get_sensors()
     property alias isReady: monitorDS.isReady
     property bool inTray: (plasmoid.parent === null || plasmoid.parent.objectName === 'taskItemContainer')
