@@ -177,8 +177,6 @@ Item {
                     }
                 }
             }
-
-            sensorsChanged()
         }
         interval: pollingInterval
 
@@ -202,7 +200,6 @@ Item {
                 sensors_model['battery_remaining_time']['value'] = bat_time;
                 var bat_charge = powermanagementDS.data["Battery"]["Percent"];
                 sensors_model['battery_percentage']['value'] = bat_charge;
-                sensorsValuesChanged()
             }
         }
         interval: pollingInterval
