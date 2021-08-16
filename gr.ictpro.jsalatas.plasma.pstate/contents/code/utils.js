@@ -167,6 +167,7 @@ var model =  [
     },
     {'type': 'header', 'id': 'fanControl', 'text': 'Fan Control', 'icon': 'n',
         'vendors': ['lg-laptop', 'dell'],
+        'sensors': ['package_temp', 'fan_speeds'],
         'items': [
             {'type': 'switch', 'text': 'Silent Mode', 'sensor': 'lg_fan_mode'},
             {'type': 'combobox', 'text': 'Dell Fan Mode', 'sensor': 'dell_fan_mode',
