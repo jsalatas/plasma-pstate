@@ -3,7 +3,6 @@
 CPUFREQ=/sys/devices/system/cpu/cpu0/cpufreq
 CPUFREQ_AVAILABLE_GOVERNORS="${CPUFREQ}/scaling_available_governors"
 
-CPUFREQ_EPP_GOVERNORS="${CPUFREQ}/energy_performance_available_preferences"
 CPUFREQ_EPP="${CPUFREQ}/energy_performance_preference"
 
 INTEL_PSTATE=/sys/devices/system/cpu/intel_pstate
@@ -286,10 +285,10 @@ set_thermal_mode () {
 set_lg_battery_charge_limit(){
     enabled=$1
     if [ -n "$enabled" ]; then
-        if [ "$enabled" == "true" ]; then
-            printf '80\n' > $LG_BATTERY_CHARGE_LIMIT; 2> /dev/null
+        if [ "$enabled" = "true" ]; then
+            printf '80\n' > $LG_BATTERY_CHARGE_LIMIT 2> /dev/null
         else
-            printf '100\n' > $LG_BATTERY_CHARGE_LIMIT; 2> /dev/null
+            printf '100\n' > $LG_BATTERY_CHARGE_LIMIT 2> /dev/null
         fi
     fi
 }
@@ -297,10 +296,10 @@ set_lg_battery_charge_limit(){
 set_lg_fan_mode() {
     enabled=$1
     if [ -n "$enabled" ]; then
-        if [ "$enabled" == "true" ]; then
-           printf '0\n' > $LG_FAN_MODE; 2> /dev/null
+        if [ "$enabled" = "true" ]; then
+           printf '0\n' > $LG_FAN_MODE 2> /dev/null
         else
-           printf '1\n' > $LG_FAN_MODE; 2> /dev/null
+           printf '1\n' > $LG_FAN_MODE 2> /dev/null
         fi
     fi
 }
@@ -312,10 +311,10 @@ set_powermizer () {
 set_lg_usb_charge()  {
     enabled=$1
     if [ -n "$enabled" ]; then
-        if [ "$enabled" == "true" ]; then
-           printf '1\n' > $LG_USB_CHARGE; 2> /dev/null
+        if [ "$enabled" = "true" ]; then
+           printf '1\n' > $LG_USB_CHARGE 2> /dev/null
         else
-           printf '0\n' > $LG_USB_CHARGE; 2> /dev/null
+           printf '0\n' > $LG_USB_CHARGE 2> /dev/null
         fi
     fi
 }
@@ -342,29 +341,29 @@ set_intel_tcc_cur_state() {
 }
 
 check_dell_fan() {
-    [ ! -z ${DELL_SMM_HWMON} ] && [ -d ${DELL_SMM_HWMON} ] && \
-        [ -f ${DELL_SMM_HWMON}/pwm1_enable ]
+    [ -n "${DELL_SMM_HWMON}" ] && [ -d "${DELL_SMM_HWMON}" ] && \
+        [ -f "${DELL_SMM_HWMON}"/pwm1_enable ]
 }
 
 set_dell_fan() {
-    if [ $1 -lt $((128/2)) ]; then
-        printf 2 > ${DELL_SMM_HWMON}/pwm1_enable; 2> /dev/null
+    if [ "$1" -lt $((128/2)) ]; then
+        printf "2" > "${DELL_SMM_HWMON}"/pwm1_enable 2> /dev/null
         return 0
     fi
 
-    printf 1 > ${DELL_SMM_HWMON}/pwm1_enable; 2> /dev/null
+    printf 1 > "${DELL_SMM_HWMON}"/pwm1_enable 2> /dev/null
 
-    if [ -f ${DELL_SMM_HWMON}/pwm1 ]; then
-        printf $1 > ${DELL_SMM_HWMON}/pwm1; 2> /dev/null
+    if [ -f "${DELL_SMM_HWMON}"/pwm1 ]; then
+        printf "%s" "$1" > "${DELL_SMM_HWMON}"/pwm1 2> /dev/null
     fi
 
-    if [ -f ${DELL_SMM_HWMON}/pwm2 ]; then
-        printf $1 > ${DELL_SMM_HWMON}/pwm2; 2> /dev/null
+    if [ -f "${DELL_SMM_HWMON}"/pwm2 ]; then
+        printf "%s" "$1" > "${DELL_SMM_HWMON}"/pwm2 2> /dev/null
     fi
 }
 
 have_dell_fan_mode() {
-    if [ -f ${DELL_SMM_HWMON}/pwm1_enable ]; then
+    if [ -f "${DELL_SMM_HWMON}"/pwm1_enable ]; then
         dell_fan_mode="true"
     else
         dell_fan_mode="false"
@@ -476,7 +475,7 @@ if check_dell_fan; then
     json="${json},\"dell_fan_mode\": ${dell_fan_mode}"
 fi
 json="${json}}"
-echo $json
+echo "$json"
 }
 
 check_cpu_available_governors () {
@@ -499,55 +498,55 @@ read_available () {
 
 case $1 in
     "-cpu-min-perf")
-        set_cpu_min_perf $2
+        set_cpu_min_perf "$2"
         ;;
 
     "-cpu-max-perf")
-        set_cpu_max_perf $2
+        set_cpu_max_perf "$2"
         ;;
 
     "-cpu-turbo")
-        set_cpu_turbo $2
+        set_cpu_turbo "$2"
         ;;
 
     "-gpu-min-freq")
-        set_gpu_min_freq $2
+        set_gpu_min_freq "$2"
         ;;
 
     "-gpu-max-freq")
-        set_gpu_max_freq $2
+        set_gpu_max_freq "$2"
         ;;
 
     "-gpu-boost-freq")
-        set_gpu_boost_freq $2
+        set_gpu_boost_freq "$2"
         ;;
 
     "-cpu-governor")
-        set_cpu_governor $2
+        set_cpu_governor "$2"
         ;;
 
     "-energy-perf")
-        set_energy_perf $2
+        set_energy_perf "$2"
         ;;
 
     "-thermal-mode")
-        set_thermal_mode $2
+        set_thermal_mode "$2"
         ;;
 
     "-lg-battery-charge-limit")
-    set_lg_battery_charge_limit $2
+        set_lg_battery_charge_limit "$2"
     ;;
 
     "-lg-fan-mode")
-    set_lg_fan_mode $2
+        set_lg_fan_mode "$2"
     ;;
 
     "-lg-usb-charge")
-    set_lg_usb_charge $2
+        set_lg_usb_charge "$2"
     ;;
 
     "-powermizer")
-        set_powermizer $2
+        set_powermizer "$2"
         ;;
 
     "-intel-tcc-cur-state")
@@ -555,7 +554,7 @@ case $1 in
         ;;
 
     "-dell-fan-mode")
-        set_dell_fan $2
+        set_dell_fan "$2"
         ;;
 
     "-read-all")
