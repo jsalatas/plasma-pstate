@@ -165,8 +165,10 @@ Item {
         connectedSources: ['Battery']
         onDataChanged: {
             if(powermanagementDS.data["Battery"]) {
-                sensors_model['battery_remaining_time']['value'] = Number(powermanagementDS.data["Battery"]["Remaining msec"]) / 1000;
-                sensors_model['battery_percentage']['value'] = powermanagementDS.data["Battery"]["Percent"];
+                var bat_time = Number(powermanagementDS.data["Battery"]["Remaining msec"]) / 1000;
+                sensors_model['battery_remaining_time']['value'] = bat_time;
+                var bat_charge = powermanagementDS.data["Battery"]["Percent"];
+                sensors_model['battery_percentage']['value'] = bat_charge;
                 sensorsValuesChanged()
             }
         }
