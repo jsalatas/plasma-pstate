@@ -52,8 +52,6 @@ Item {
     readonly property string set_prefs: '/usr/share/plasma/plasmoids/' +
                                         'gr.ictpro.jsalatas.plasma.pstate/contents/code/' +
                                         'set_prefs.sh'
-    property var readCommand: (plasmoid.configuration.useSudoForReading ? 'sudo ' : '') +
-                              set_prefs + ' -read-all'
 
     function sensor_short_name(long_name) {
         var parts = long_name.split('/');
@@ -191,7 +189,6 @@ Item {
             while(monitorDS.connectedSources.length) {
                 monitorDS.disconnectSource(monitorDS.connectedSources[0]);
             }
-            monitorDS.commandSource = readCommand
             monitorDS.connectSource(monitorDS.commandSource);
         }
     }
@@ -201,7 +198,8 @@ Item {
         engine: 'executable'
 
         property bool isReady: false
-        property string commandSource: readCommand
+        property string commandSource: (plasmoid.configuration.useSudoForReading ? 'sudo ' : '') +
+                                       set_prefs + ' -read-all'
 
         onNewData: {
             if (data['exit code'] > 0) {
