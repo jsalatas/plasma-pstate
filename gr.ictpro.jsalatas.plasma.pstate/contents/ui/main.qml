@@ -119,7 +119,6 @@ Item {
     PlasmaCore.DataSource {
         id: systemmonitorDS
         engine: 'systemmonitor'
-        property var seenSources: []
 
         onSourceAdded: {
              if(monitor_source(source)) {
@@ -130,11 +129,6 @@ Item {
         }
 
         onNewData: {
-            var show = false
-            if(systemmonitorDS.seenSources.indexOf(sourceName) == -1 && data.value != undefined) {
-                systemmonitorDS.seenSources.push(sourceName)
-            }
-
             var source_short_name = sensor_short_name(sourceName);
 
             if(source_short_name.startsWith('fan')) {
