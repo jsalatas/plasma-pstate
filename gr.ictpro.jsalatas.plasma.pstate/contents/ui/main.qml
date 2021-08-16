@@ -193,10 +193,11 @@ Item {
     Connections {
         target: plasmoid.configuration
         onUseSudoForReadingChanged: {
+            while(monitorDS.connectedSources.length) {
+                monitorDS.disconnectSource(monitorDS.connectedSources[0]);
+            }
             monitorDS.commandSource = readCommand
-            monitorDS.connectedSources = [];
-            monitorDS.connectedSources.length = 0;
-            monitorDS.connectedSources.push(monitorDS.commandSource);
+            monitorDS.connectSource(monitorDS.commandSource);
         }
     }
 
@@ -231,10 +232,7 @@ Item {
             }
         }
         Component.onCompleted: {
-            monitorDS.connectedSources = [];
-            monitorDS.connectedSources.length = 0;
-            monitorDS.connectedSources.push(monitorDS.commandSource);
-
+            connectSource(commandSource);
         }
         interval: 2000
     }
