@@ -231,6 +231,18 @@ GridLayout {
             }
         }
 
+        // Tab bar indicator
+        GridLayout {
+            Rectangle {
+                height: stackView.height
+                width: 1
+                color: Qt.rgba(theme.textColor.r,
+                               theme.textColor.g,
+                               theme.textColor.b, 0.25)
+                Layout.fillHeight: true
+            }
+        }
+
         GridLayout {
             clip: true
 
