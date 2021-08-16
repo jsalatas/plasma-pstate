@@ -90,6 +90,7 @@ var sensors = {
     'powermizer': {'value': undefined, 'unit':'', 'print': to_string, 'rw_mode': 'w'},
     'intel_tcc_cur_state': {'value': undefined, 'unit':' °C', 'print': fmt_tcc},
     'intel_tcc_max_state': {'value': undefined, 'unit':' °C', 'print': fmt_tcc},
+    'dell_fan_mode': {'value': undefined, 'unit': '', 'print': to_string, 'rw_mode': 'w'},
 
 }
 
@@ -165,9 +166,15 @@ var model =  [
         ]
     },
     {'type': 'header', 'id': 'fanControl', 'text': 'Fan Control', 'icon': 'n',
-        'vendors': ['lg-laptop'], 
+        'vendors': ['lg-laptop', 'dell'],
         'items': [
-            {'type': 'switch', 'text': 'Silent Mode', 'sensor': 'lg_fan_mode'}
+            {'type': 'switch', 'text': 'Silent Mode', 'sensor': 'lg_fan_mode'},
+            {'type': 'combobox', 'text': 'Dell Fan Mode', 'sensor': 'dell_fan_mode',
+             'items' :[
+                 {'symbol': '◯', 'text': "Auto", 'sensor_value': '-1'},
+                 {'symbol': '◐', 'text': "Low", 'sensor_value': '128'},
+                 {'symbol': '●', 'text': "High", 'sensor_value': '255'},
+            ]}
         ]
     },
     {'type': 'header', 'id': 'nvidiaSettings', 'text': 'Nvidia Settings', 'icon': 'o',
