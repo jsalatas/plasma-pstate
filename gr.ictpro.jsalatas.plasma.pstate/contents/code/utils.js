@@ -131,7 +131,7 @@ var model =  [
     {'type': 'header', 'id': 'energyPerf', 'text': 'Energy Performance', 'icon': 'h',
         'sensors': ['battery_percentage', 'battery_remaining_time'],
         'items': [
-            {'type': 'combobox', 'text': 'Energy Performance Preference', 'sensor': 'energy_perf', 'items' :[
+            {'type': 'radio', 'text': 'Energy Performance Preference', 'sensor': 'energy_perf', 'items' :[
                 {'symbol': 'i', 'text': 'Default', 'sensor_value': 'default'},
                 {'symbol': 'a', 'text': 'Performance', 'sensor_value': 'performance'},
                 {'symbol': 'k', 'text': 'Balance Performance', 'sensor_value': 'balance_performance'},
@@ -170,7 +170,7 @@ var model =  [
         'sensors': ['package_temp', 'fan_speeds'],
         'items': [
             {'type': 'switch', 'text': 'Silent Mode', 'sensor': 'lg_fan_mode'},
-            {'type': 'combobox', 'text': 'Dell Fan Mode', 'sensor': 'dell_fan_mode',
+            {'type': 'radio', 'text': 'Dell Fan Mode', 'sensor': 'dell_fan_mode',
              'items' :[
                  {'symbol': '◯', 'text': "Auto", 'sensor_value': '-1'},
                  {'symbol': '◐', 'text': "Low", 'sensor_value': '128'},
