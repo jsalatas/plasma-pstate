@@ -145,6 +145,19 @@ GridLayout {
         }
     }
 
+    function set_indicator_position(itemId) {
+        for(var i = toolbar.children.length; i > 0 ; i--) {
+            var button = toolbar.children[i-1];
+            if (button.itemId != itemId) {
+                continue
+            }
+
+            var res = button.mapToItem(toolbar, 0, 0)
+            toolbarIndicator.y = res.y
+            toolbarIndicator.height = button.height
+        }
+    }
+
     function show_item(itemId) {
         var item = undefined
         model.forEach(m => {
@@ -156,6 +169,8 @@ GridLayout {
             print("error: Couldn't find item with id=" + itemId)
             return
         }
+
+        set_indicator_position(itemId)
 
         var props = {'props': item, showIcon: false};
 
@@ -177,13 +192,28 @@ GridLayout {
 
 
     RowLayout {
+        spacing: toolbarIndicator.width
 
         // Tab bar
         GridLayout {
             Layout.alignment: Qt.AlignTop | Qt.AlignLeft
 
-            ColumnLayout {
-                id: toolbar
+            RowLayout {
+                ColumnLayout {
+                    id: toolbar
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                }
+                Rectangle {
+                    id: toolbarIndicator
+                    x: toolbar.width
+                    height: toolbar.height
+                    width: toolbar.width * 0.075
+                    color: theme.highlightColor
+
+                    Behavior on y { PropertyAnimation {} }
+                }
+
             }
         }
 
