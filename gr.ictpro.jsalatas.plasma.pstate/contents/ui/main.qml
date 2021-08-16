@@ -48,7 +48,12 @@ Item {
     property var sensors_model: Utils.get_sensors()
     property alias isReady: monitorDS.isReady
     property bool inTray: (plasmoid.parent === null || plasmoid.parent.objectName === 'taskItemContainer')
-    property var readCommand: (plasmoid.configuration.useSudoForReading ? 'sudo ' : '') + '/usr/share/plasma/plasmoids/gr.ictpro.jsalatas.plasma.pstate/contents/code/set_prefs.sh -read-all'
+
+    readonly property string set_prefs: '/usr/share/plasma/plasmoids/' +
+                                        'gr.ictpro.jsalatas.plasma.pstate/contents/code/' +
+                                        'set_prefs.sh'
+    property var readCommand: (plasmoid.configuration.useSudoForReading ? 'sudo ' : '') +
+                              set_prefs + ' -read-all'
 
     function sensor_short_name(long_name) {
         var parts = long_name.split('/');
@@ -231,7 +236,7 @@ Item {
         id: updater
         engine: 'executable'
 
-        property string commandSource: 'sudo /usr/share/plasma/plasmoids/gr.ictpro.jsalatas.plasma.pstate/contents/code/set_prefs.sh -'
+        readonly property string commandSource: 'sudo ' + set_prefs + ' -'
 
         onNewData: {
             disconnectSource(sourceName)
