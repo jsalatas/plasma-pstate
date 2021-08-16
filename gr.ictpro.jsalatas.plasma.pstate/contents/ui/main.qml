@@ -244,22 +244,18 @@ Item {
         property string commandSource: 'sudo /usr/share/plasma/plasmoids/gr.ictpro.jsalatas.plasma.pstate/contents/code/set_prefs.sh -'
 
         onNewData: {
-            updater.connectedSources = []
-            updater.connectedSources.length = 0
+            disconnectSource(sourceName)
+
             if (data['exit code'] > 0) {
                 print("    error: " + data.stderr)
             } else {
                 print("    done")
             }
         }
-        Component.onCompleted: {
-            updater.connectedSources = [];
-            updater.connectedSources.length = 0;
-        }
         function update(parameter, value) {
-            var command = updater.commandSource + parameter.replace(/_/g, '-') + ' ' + value
+            var command = commandSource + parameter.replace(/_/g, '-') + ' ' + value
             print("exec: " + command)
-            updater.connectedSources.push(command);
+            connectSource(command);
 
         }
     }
