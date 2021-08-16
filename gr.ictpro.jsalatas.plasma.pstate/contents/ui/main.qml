@@ -186,10 +186,7 @@ Item {
     Connections {
         target: plasmoid.configuration
         onUseSudoForReadingChanged: {
-            while(monitorDS.connectedSources.length) {
-                monitorDS.disconnectSource(monitorDS.connectedSources[0]);
-            }
-            monitorDS.connectSource(monitorDS.commandSource);
+            monitorDS.restart()
         }
     }
 
@@ -228,6 +225,21 @@ Item {
             connectSource(commandSource);
         }
         interval: 2000
+
+        function restart() {
+            stop()
+            start()
+        }
+
+        function stop() {
+            while(connectedSources.length) {
+                disconnectSource(connectedSources[0]);
+            }
+        }
+
+        function start() {
+            connectSource(commandSource);
+        }
     }
 
     PlasmaCore.DataSource {
@@ -244,10 +256,12 @@ Item {
             } else {
                 print("    done")
             }
-            monitorDS.connectSource(monitorDS.commandSource)
+
+            monitorDS.start()
         }
         function update(parameter, value) {
-            monitorDS.disconnectSource(monitorDS.commandSource)
+            monitorDS.stop()
+
             var command = commandSource + parameter.replace(/_/g, '-') + ' ' + value
             print("exec: " + command)
             connectSource(command);
