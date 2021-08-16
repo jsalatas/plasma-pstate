@@ -87,7 +87,7 @@ var sensors = {
     'lg_battery_charge_limit': {'value': undefined, 'unit':'', 'print': to_bool},
     'lg_usb_charge': {'value': undefined, 'unit':'', 'print': to_bool},
     'lg_fan_mode': {'value': undefined, 'unit':'', 'print': to_bool},
-    'powermizer': {'value': undefined, 'unit':'', 'print': to_string}, 
+    'powermizer': {'value': undefined, 'unit':'', 'print': to_string, 'rw_mode': 'w'},
     'intel_tcc_cur_state': {'value': undefined, 'unit':' °C', 'print': fmt_tcc},
     'intel_tcc_max_state': {'value': undefined, 'unit':' °C', 'print': fmt_tcc},
 
