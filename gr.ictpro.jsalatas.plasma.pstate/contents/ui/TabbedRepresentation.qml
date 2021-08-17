@@ -56,6 +56,7 @@ GridLayout {
             property var itemId
             contentItem: GridLayout {
                 Text {
+                    id: buttonText
                     text: button.symbolText
                     font.family: symbolsFont.name
                     font.pointSize: theme.smallestFont.pointSize * 2.5
@@ -68,8 +69,21 @@ GridLayout {
                     Layout.fillHeight: true
                 }
             }
-            onClicked: {
-                show_item(itemId)
+            background: Rectangle {
+                color: Qt.rgba(0, 0, 0, 0)
+            }
+            MouseArea {
+                anchors.fill: parent
+                hoverEnabled: true
+                onEntered: {
+                    buttonText.color = theme.highlightColor
+                }
+                onExited: {
+                    buttonText.color = theme.textColor
+                }
+                onClicked: {
+                    show_item(itemId)
+                }
             }
         }
     }
