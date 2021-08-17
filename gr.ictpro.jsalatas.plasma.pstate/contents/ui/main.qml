@@ -290,6 +290,7 @@ Item {
 
             if (data['exit code'] > 0) {
                 print("    error: " + data.stderr)
+                notify(sourceName)
             } else {
                 print("    done")
             }
@@ -307,6 +308,12 @@ Item {
                 nvidiaPowerMizerDS.update()
             }
         }
+        function notify(sourceName) {
+            var args = sourceName.replace(commandSource, "").split(" ")
+            var sensor = args[0].replace(/-/g, '_')
+            var value = get_value_text(sensor, args[1])
+            notificationSource.createNotification("Failed to set " + sensor + " to " + value)
+        }
     }
 
     NvidiaPowerMizerDS {
@@ -323,6 +330,27 @@ Item {
         dataSourceReady: main.dataSourceReady
         isReady: function() { return main.isReady }
     }
+
+    PlasmaCore.DataSource {
+        id: notificationSource
+        engine: "executable"
+
+        onNewData: {
+            disconnectSource(sourceName)
+        }
+        function createNotification(msg) {
+            var cmd = ["notify-send"]
+            cmd.push("-u", "normal")
+            cmd.push("-t", "5000")
+            cmd.push("-a", "\"P-state and CPUFreq Manager\"")
+            cmd.push("-i", "cpu")
+            cmd.push("-c", "hardware")
+            cmd.push("\""+msg+"\"")
+            print(cmd.join(" "))
+            connectSource(cmd.join(" "))
+        }
+    }
+
 
     function updateTooltip() {
         var toolTipSubText ='';
