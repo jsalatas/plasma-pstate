@@ -21,7 +21,7 @@ import QtQuick 2.3
 import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.1
 
-ColumnLayout {
+RowLayout {
     Layout.fillWidth: true
 
     property var sensor: []
@@ -71,38 +71,126 @@ ColumnLayout {
     }
     
     Label {
+        Layout.fillWidth: true
         Layout.alignment: Qt.AlignVCenter
         id: combobox_title
         color: theme.textColor
-        horizontalAlignment: Text.AlignRight
+        horizontalAlignment: Text.AlignLeft
         Layout.minimumWidth: units.gridUnit * 4
     }
 
     ComboBox {
         id: combobox
         textRole: "text"
+
+        property bool customHovered: false
+
         onActivated: {
             if(acceptingChanges) {
                 updateSensor(sensor[0], combobox.model[currentIndex].sensor_value)
             }
-
         }
+
         MouseArea {
             anchors.fill: parent
-            onWheel: {
-                // do nothing
+            hoverEnabled: true
+            onEntered: {
+                combobox.customHovered = true
             }
-            onPressed: {
-                // propogate to ComboBox
-                mouse.accepted = false;
+            onExited: {
+                combobox.customHovered = false
             }
-            onReleased: {
-                // propogate to ComboBox
-                mouse.accepted = false;
+            onClicked: {
+                combobox.down ?
+                    combobox.popup.close() :
+                    combobox.popup.open()
             }
         }
-        Layout.minimumWidth: units.gridUnit * 4
-        Layout.fillWidth: true
-        Layout.leftMargin: units.gridUnit
+
+        delegate: ItemDelegate {
+            id: itemDelegate
+            width: combobox.width
+            contentItem: Text {
+                text: modelData.text
+                color: theme.textColor
+                font: combobox.font
+                elide: Text.ElideRight
+                verticalAlignment: Text.AlignVCenter
+                horizontalAlignment: Text.AlignRight
+            }
+            highlighted: combobox.highlightedIndex == index
+            background: Rectangle {
+                color: theme.backgroundColor
+                border.color: Qt.rgba(0, 0, 0, 0)
+                radius: 0
+            }
+            MouseArea {
+                anchors.fill: parent
+                hoverEnabled: true
+                onEntered: {
+                    contentItem.color = theme.highlightColor
+                }
+                onExited: {
+                    contentItem.color = theme.textColor
+                }
+                onClicked: {
+                    combobox.currentIndex = index
+                    combobox.popup.close()
+                    combobox.onActivated(index)
+                }
+            }
+        }
+
+        indicator: Canvas {
+            id: canvas
+            x: combobox.width - width - combobox.rightPadding
+            y: combobox.topPadding + (combobox.availableHeight - height) / 2
+            width: units.gridUnit * 0.5
+            height: width * 0.75
+            contextType: "2d"
+
+            Connections {
+                target: combobox
+                function onDownChanged() { canvas.requestPaint(); }
+                function onCustomHoveredChanged() { canvas.requestPaint(); }
+            }
+
+            onPaint: {
+                var ctx = context
+                if (!context) {
+                    ctx = getContext ("2d");
+                }
+                ctx.reset();
+                ctx.moveTo(0, 0);
+                ctx.lineTo(width, 0);
+                ctx.lineTo(width / 2, height);
+                ctx.closePath();
+                ctx.fillStyle = combobox.down || combobox.customHovered ?
+                                        theme.highlightColor : theme.textColor;
+                ctx.fill();
+            }
+        }
+
+        contentItem: RowLayout {
+            Text {
+                Layout.leftMargin: 0
+                Layout.rightMargin: combobox.indicator.width * 2
+                Layout.alignment: Qt.AlignRight
+
+                text: combobox.displayText
+                font: combobox.font
+                color: combobox.pressed ? theme.textColor : theme.highlightColor
+                elide: Text.ElideRight
+                verticalAlignment: Text.AlignVCenter
+                horizontalAlignment: Text.AlignRight
+            }
+        }
+
+        background: Rectangle {
+            color: Qt.rgba(0, 0, 0, 0)
+            border.color: theme.highlightColor
+            border.width: combobox.down || combobox.customHovered ? 1 : 0
+            radius: 2
+        }
     }
 }
