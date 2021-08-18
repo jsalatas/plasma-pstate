@@ -110,10 +110,6 @@ RowLayout {
             if(pressed) {
                 updating = true
                 slider_value.text = get_value_text(sensor[0], value)
-            } else {
-                if(acceptingChanges) {
-                    updateSensor(sensor[0], value)
-                }
             }
         }
     }
