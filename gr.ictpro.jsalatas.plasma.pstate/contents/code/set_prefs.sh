@@ -36,11 +36,10 @@ DELL_SMM_HWMON=$(grep -r . /sys/class/hwmon/*/name  2>/dev/null | \
 
 
 check_lg_drivers() {
-    if [ -d $LG_LAPTOP_DRIVER ]; then
-        return 0
-    else
-        return 1
-    fi
+    ($(should_read "${_lg_battery_charge_limit}") || \
+        $(should_read "${_lg_fan_mode}") || \
+        $(should_read "${_lg_usb_charge}")) && \
+        [ -d $LG_LAPTOP_DRIVER ]
 }
 
 check_dell_thermal () {
@@ -65,6 +64,7 @@ check_nvidia () {
 }
 
 check_cpu_min_perf () {
+    $(should_read "${_cpu_min_perf}") && \
     [ -n "$CPU_MIN_PERF" ] && [ -f $CPU_MIN_PERF ]
 }
 
@@ -85,6 +85,7 @@ set_cpu_min_perf () {
 }
 
 check_cpu_max_perf () {
+    $(should_read "${_cpu_max_perf}") && \
     [ -n "$CPU_MAX_PERF" ] && [ -f $CPU_MAX_PERF ]
 }
 
@@ -105,6 +106,7 @@ set_cpu_max_perf () {
 }
 
 check_cpu_turbo () {
+    $(should_read "${_cpu_turbo}") && \
     [ -n "$CPU_TURBO" ] && [ -f $CPU_TURBO ]
 }
 
@@ -134,6 +136,7 @@ set_cpu_turbo () {
 }
 
 check_gpu_min_freq () {
+    $(should_read "${_gpu_min_freq}") && \
     [ -n "$GPU_MIN_FREQ" ] && [ -f $GPU_MIN_FREQ ]
 }
 
@@ -154,6 +157,7 @@ set_gpu_min_freq () {
 }
 
 check_gpu_max_freq () {
+    $(should_read "${_gpu_max_freq}") && \
     [ -n "$GPU_MAX_FREQ" ] && [ -f $GPU_MAX_FREQ ]
 }
 
@@ -173,7 +177,18 @@ set_gpu_max_freq () {
     echo "$json"
 }
 
+check_gpu_min_limit () {
+    $(should_read "${_gpu_min_limit}") && \
+    [ -n "$GPU_MIN_LIMIT" ] && [ -f $GPU_MIN_LIMIT ]
+}
+
+check_gpu_max_limit () {
+    $(should_read "${_gpu_max_limit}") && \
+    [ -n "$GPU_MAX_LIMIT" ] && [ -f $GPU_MAX_LIMIT ]
+}
+
 check_gpu_boost_freq () {
+    $(should_read "${_gpu_boost_freq}") && \
     [ -n "$GPU_BOOST_FREQ" ] && [ -f $GPU_BOOST_FREQ ]
 }
 
@@ -193,7 +208,13 @@ set_gpu_boost_freq () {
     echo "$json"
 }
 
+check_gpu_cur_freq () {
+    $(should_read "${_gpu_cur_freq}") && \
+    [ -n "$GPU_CUR_FREQ" ] && [ -f $GPU_CUR_FREQ ]
+}
+
 check_cpu_governor () {
+    $(should_read "${_cpu_governor}") && \
     [ -f /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor ]
 }
 
@@ -216,6 +237,7 @@ set_cpu_governor () {
 }
 
 check_energy_perf() {
+    $(should_read "${_cpufreq_epp}") && \
     [ -f "${CPUFREQ_EPP}" ]
 }
 
@@ -258,6 +280,7 @@ set_energy_perf () {
 }
 
 check_dell_thermal () {
+    $(should_read "${_thermal_mode}") || return 1
     smbios-thermal-ctl -g > /dev/null 2>&1
     OUT=$?
     if [ $OUT -eq 0 ]; then
@@ -320,6 +343,7 @@ set_lg_usb_charge()  {
 }
 
 check_intel_tcc() {
+    $(should_read "${_intel_tcc}") && \
     [ -n "${INTEL_TCC}" ] && [ -d "${INTEL_TCC}" ]
 }
 
@@ -341,6 +365,7 @@ set_intel_tcc_cur_state() {
 }
 
 check_dell_fan() {
+    $(should_read "${_dell_fan_mode}") && \
     [ -n "${DELL_SMM_HWMON}" ] && [ -d "${DELL_SMM_HWMON}" ] && \
         [ -f "${DELL_SMM_HWMON}"/pwm1_enable ]
 }
@@ -428,11 +453,11 @@ if check_gpu_max_freq; then
     read_gpu_max_freq
     append_json "\"gpu_max_freq\":\"${gpu_max_freq}\""
 fi
-if [ -f $GPU_MIN_LIMIT ]; then
+if check_gpu_min_limit; then
     gpu_min_limit=$(cat $GPU_MIN_LIMIT)
     append_json "\"gpu_min_limit\":\"${gpu_min_limit}\""
 fi
-if [ -f $GPU_MAX_LIMIT ]; then
+if check_gpu_max_limit; then
     gpu_max_limit=$(cat $GPU_MAX_LIMIT)
     append_json "\"gpu_max_limit\":\"${gpu_max_limit}\""
 fi
@@ -440,7 +465,7 @@ if check_gpu_boost_freq; then
     read_gpu_boost_freq
     append_json "\"gpu_boost_freq\":\"${gpu_boost_freq}\""
 fi
-if [ -f $GPU_CUR_FREQ ]; then
+if check_gpu_cur_freq; then
     gpu_cur_freq=$(cat $GPU_CUR_FREQ)
     append_json "\"gpu_cur_freq\":\"${gpu_cur_freq}\""
 fi
@@ -494,6 +519,46 @@ read_available () {
     fi
     json="${json}}"
     echo $json
+}
+
+print_val() {
+    eval "echo ${1}=\$${1}"
+}
+
+should_read() {
+    [ "${1}" = "1" ] || [ "${_read_all}" = "1" ]
+}
+
+eval_sensor_arg() {
+    case $1 in
+        "cpu_min_perf") eval "_${1}=1";;
+        "cpu_max_perf") eval "_${1}=1";;
+        "cpu_turbo") eval "_${1}=1";;
+        "gpu_min_freq") eval "_${1}=1";;
+        "gpu_max_freq") eval "_${1}=1";;
+        "gpu_min_limit") eval "_${1}=1";;
+        "gpu_max_limit") eval "_${1}=1";;
+        "gpu_boost_freq") eval "_${1}=1";;
+        "gpu_cur_freq") eval "_${1}=1";;
+        "cpu_governor") eval "_${1}=1";;
+        "energy_perf") eval "_${1}=1";;
+        "thermal_mode") eval "_${1}=1";;
+        "lg_battery_charge_limit") eval "_${1}=1";;
+        "lg_fan_mode") eval "_${1}=1";;
+        "lg_usb_charge") eval "_${1}=1";;
+        "powermizer") eval "_${1}=1";;
+        "intel_tcc_cur_state") eval "_${1}=1";;
+        "intel_tcc_max_state") eval "_${1}=1";;
+
+        "_dell_fan_mode") eval "_${1}=1";;
+    esac
+}
+
+parse_sensor_args() {
+    for var in "$@"
+    do
+        eval_sensor_arg "$var"
+    done
 }
 
 case $1 in
@@ -558,11 +623,17 @@ case $1 in
         ;;
 
     "-read-all")
+        _read_all=1
         read_all
         ;;
 
     "-read-available")
         read_available
+        ;;
+
+    "-read-some")
+        parse_sensor_args "$@"
+        read_all
         ;;
 
     *)
@@ -584,6 +655,7 @@ case $1 in
         echo "                  -dell-fan-mode ] value"
         echo "2: set_prefs.sh -read-all"
         echo "3: set_prefs.sh -read-available"
+        echo "4: set_prefs.sh -read-some"
         exit 3
         ;;
 esac
