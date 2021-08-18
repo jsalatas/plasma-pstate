@@ -39,12 +39,6 @@ sensors_model=(
     "dell_fan_mode"
 )
 
-read_all () {
-    json="{"
-    read_sensors_model
-    json="${json}}"
-    echo "$json"
-}
 
 # Append a json key/value to the string variable 'json'.
 #  e.g.
@@ -71,13 +65,6 @@ append_macro() {
     eval "$_cmd"
 }
 
-read_sensors_model() {
-    for sensor in "${sensors_model[@]}"
-    do
-        append_macro "$sensor"
-    done
-}
-
 arg_to_sensor() {
     #shellcheck disable=SC2001
     _arg=$(echo "$1" | sed -e "s/-/_/g")
@@ -88,6 +75,18 @@ arg_to_sensor() {
     else
         echo ""
     fi
+}
+
+read_all () {
+    json="{"
+
+    for sensor in "${sensors_model[@]}"
+    do
+        append_macro "$sensor"
+    done
+
+    json="${json}}"
+    echo "$json"
 }
 
 read_some() {
