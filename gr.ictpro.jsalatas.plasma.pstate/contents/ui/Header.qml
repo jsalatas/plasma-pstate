@@ -28,7 +28,7 @@ RowLayout {
     id: header
 
     Layout.topMargin: 5
-    Layout.bottomMargin: 10
+    Layout.bottomMargin: 5
 
     property alias symbol: icon.text
     property alias text: title.text
@@ -44,7 +44,7 @@ RowLayout {
         id: group
         Pstate.Group {
             Layout.topMargin: 5
-            Layout.bottomMargin: 10
+            Layout.bottomMargin: 5
         }
     }
 
@@ -52,7 +52,7 @@ RowLayout {
         id: radio
         Pstate.Radio {
             Layout.topMargin: 5
-            Layout.bottomMargin: 10
+            Layout.bottomMargin: 5
         }
     }
     
