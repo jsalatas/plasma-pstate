@@ -264,6 +264,7 @@ Item {
                 old_data = obj
 
                 var keys = Object.keys(obj);
+                var changes = false
                 for(var i=0; i< keys.length; i++) {
                     if (!sensors_model[keys[i]]) {
                         continue;
@@ -276,6 +277,7 @@ Item {
                             sensors_model[keys[i]]['value'] = true
                         }
                     } else {
+                        changes = changes || sensors_model[keys[i]]['value'] !== obj[keys[i]]
                         sensors_model[keys[i]]['value'] = obj[keys[i]];
                     }
                 }
@@ -283,7 +285,10 @@ Item {
                     dataSourceReady();
                     isReady = true;
                 }
-                sensorsValuesChanged();
+
+                if (changes) {
+                    sensorsValuesChanged();
+                }
             }
         }
         Component.onCompleted: {
