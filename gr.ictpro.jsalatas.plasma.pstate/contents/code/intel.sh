@@ -23,8 +23,6 @@ INTEL_TCC=$(grep -r . /sys/class/thermal/*/type 2>/dev/null | \
 
 
 check_cpu_min_perf () {
-    # shellcheck disable=SC2154
-    should_read "${_cpu_min_perf}" && \
     [ -n "$CPU_MIN_PERF" ] && [ -f $CPU_MIN_PERF ]
 }
 
@@ -45,8 +43,6 @@ set_cpu_min_perf () {
 }
 
 check_cpu_max_perf () {
-    # shellcheck disable=SC2154
-    should_read "${_cpu_max_perf}" && \
     [ -n "$CPU_MAX_PERF" ] && [ -f $CPU_MAX_PERF ]
 }
 
@@ -73,8 +69,6 @@ set_cpu_max_perf () {
 }
 
 check_cpu_turbo () {
-    # shellcheck disable=SC2154
-    should_read "${_cpu_turbo}" && \
     [ -n "$CPU_TURBO" ] && [ -f $CPU_TURBO ]
 }
 
@@ -110,8 +104,6 @@ set_cpu_turbo () {
 }
 
 check_gpu_min_freq () {
-    # shellcheck disable=SC2154
-    should_read "${_gpu_min_freq}" && \
     [ -n "$GPU_MIN_FREQ" ] && [ -f $GPU_MIN_FREQ ]
 }
 
@@ -138,8 +130,6 @@ set_gpu_min_freq () {
 }
 
 check_gpu_max_freq () {
-    # shellcheck disable=SC2154
-    should_read "${_gpu_max_freq}" && \
     [ -n "$GPU_MAX_FREQ" ] && [ -f $GPU_MAX_FREQ ]
 }
 
@@ -160,8 +150,6 @@ set_gpu_max_freq () {
 }
 
 check_gpu_min_limit () {
-    # shellcheck disable=SC2154
-    should_read "${_gpu_min_limit}" && \
     [ -n "$GPU_MIN_LIMIT" ] && [ -f $GPU_MIN_LIMIT ]
 }
 
@@ -171,8 +159,6 @@ read_gpu_min_limit () {
 }
 
 check_gpu_max_limit () {
-    # shellcheck disable=SC2154
-    should_read "${_gpu_max_limit}" && \
     [ -n "$GPU_MAX_LIMIT" ] && [ -f $GPU_MAX_LIMIT ]
 }
 
@@ -182,8 +168,6 @@ read_gpu_max_limit () {
 }
 
 check_gpu_boost_freq () {
-    # shellcheck disable=SC2154
-    should_read "${_gpu_boost_freq}" && \
     [ -n "$GPU_BOOST_FREQ" ] && [ -f $GPU_BOOST_FREQ ]
 }
 
@@ -204,8 +188,6 @@ set_gpu_boost_freq () {
 }
 
 check_gpu_cur_freq () {
-    # shellcheck disable=SC2154
-    should_read "${_gpu_cur_freq}" && \
     [ -n "$GPU_CUR_FREQ" ] && [ -f $GPU_CUR_FREQ ]
 }
 
@@ -215,15 +197,11 @@ read_gpu_cur_freq () {
 }
 
 check_intel_tcc() {
-    # shellcheck disable=SC2154
-    should_read "${_intel_tcc}" && \
-        [ -n "${INTEL_TCC}" ] && [ -d "${INTEL_TCC}" ]
+    [ -n "${INTEL_TCC}" ] && [ -d "${INTEL_TCC}" ]
 }
 
 check_intel_tcc_cur_state() {
-    # shellcheck disable=SC2154
-    should_read "${_intel_tcc_cur_state}" && \
-        [ -n "${INTEL_TCC}" ] && [ -d "${INTEL_TCC}" ]
+    [ -n "${INTEL_TCC}" ] && [ -d "${INTEL_TCC}" ]
 }
 
 read_intel_tcc_cur_state() {
@@ -240,9 +218,7 @@ set_intel_tcc_cur_state() {
 }
 
 check_intel_tcc_max_state() {
-    # shellcheck disable=SC2154
-    should_read "${_intel_tcc_max_state}" && \
-        [ -n "${INTEL_TCC}" ] && [ -d "${INTEL_TCC}" ]
+    [ -n "${INTEL_TCC}" ] && [ -d "${INTEL_TCC}" ]
 }
 
 read_intel_tcc_max_state() {

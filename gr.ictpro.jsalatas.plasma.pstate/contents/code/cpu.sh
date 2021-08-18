@@ -3,8 +3,6 @@
 CPUFREQ_EPP="${CPUFREQ}/energy_performance_preference"
 
 check_cpu_governor () {
-    # shellcheck disable=SC2154
-    should_read "${_cpu_governor}" && \
     [ -f /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor ]
 }
 
@@ -27,8 +25,6 @@ set_cpu_governor () {
 }
 
 check_energy_perf() {
-    # shellcheck disable=SC2154
-    should_read "${_energy_perf}" && \
     [ -f "${CPUFREQ_EPP}" ]
 }
 

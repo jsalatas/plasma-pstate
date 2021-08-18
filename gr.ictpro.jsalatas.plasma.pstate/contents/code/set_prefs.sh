@@ -46,43 +46,6 @@ read_all () {
     echo "$json"
 }
 
-print_val() {
-    eval "echo ${1}=\$${1}"
-}
-
-# Check if a sensor should be read
-# 1: Sensor name
-# return: true if the sensor exists on the running system
-#         true if _read_all=1
-should_read() {
-    [ "${1}" = "1" ] || [ "${_read_all}" = "1" ]
-}
-
-# Does the sensors model contain a sensor name
-# 1: sensor name
-# return: true if the sensors model contains the sensor name
-valid_sensor() {
-    printf '%s\n' "${sensors_model[@]}" | grep -q -P "^${1}\$"
-}
-
-# Set the sensor variable to 1 if it exists
-#  e.g. If the sensor name is 'foo_bar' and it is found on this system then
-#       the following variable is set:
-#       _foo_bar=1
-# 1: sensor name
-set_have_sensor() {
-    if valid_sensor "${1}"; then
-        eval "_${1}=1"
-    fi
-}
-
-parse_sensor_args() {
-    for var in "$@"
-    do
-        set_have_sensor "$var"
-    done
-}
-
 # Append a json key/value to the string variable 'json'.
 #  e.g.
 #   append_json '"foo":"bar"'
@@ -111,11 +74,7 @@ append_macro() {
 read_sensors_model() {
     for sensor in "${sensors_model[@]}"
     do
-        case $sensor in
-            *)
-                # eval "append_${sensor}";;
-                append_macro "$sensor";;
-        esac
+        append_macro "$sensor"
     done
 }
 
@@ -131,10 +90,24 @@ arg_to_sensor() {
     fi
 }
 
+read_some() {
+    _all_sensors=$(printf '%s\n' "${sensors_model[@]}")
+
+    json="{"
+
+    for sensor in "${@}"
+    do
+        echo "${_all_sensors}" | grep -q -P "^${sensor}\$" || continue
+        append_macro "${sensor}"
+    done
+
+    json="${json}}"
+    echo "$json"
+}
+
 case $1 in
 
     "-read-all")
-        _read_all=1
         read_all
         ;;
 
@@ -143,8 +116,7 @@ case $1 in
         ;;
 
     "-read-some")
-        parse_sensor_args "$@"
-        read_all
+        read_some "${@:2}"
         ;;
 
     *)

@@ -4,8 +4,6 @@ DELL_SMM_HWMON=$(grep -r . /sys/class/hwmon/*/name  2>/dev/null | \
                  grep  "name:dell_smm"  | sed 's/\/name.*//')
 
 check_thermal_mode () {
-    # shellcheck disable=SC2154
-    should_read "${_thermal_mode}" || return 1
     smbios-thermal-ctl -g > /dev/null 2>&1
     OUT=$?
     if [ $OUT -eq 0 ]; then
@@ -31,8 +29,6 @@ set_thermal_mode () {
 }
 
 check_dell_fan_mode() {
-    # shellcheck disable=SC2154
-    should_read "${_dell_fan_mode}" && \
     [ -n "${DELL_SMM_HWMON}" ] && [ -d "${DELL_SMM_HWMON}" ] && \
         [ -f "${DELL_SMM_HWMON}"/pwm1_enable ]
 }

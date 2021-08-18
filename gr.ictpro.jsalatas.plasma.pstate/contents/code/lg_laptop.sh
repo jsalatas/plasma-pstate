@@ -7,8 +7,7 @@ LG_USB_CHARGE=$LG_LAPTOP_DRIVER/usb_charge
 
 
 check_lg_battery_charge_limit() {
-    # shellcheck disable=SC2154
-    should_read "${_lg_battery_charge_limit}" && [ -d $LG_LAPTOP_DRIVER ]
+    [ -d $LG_LAPTOP_DRIVER ]
 }
 
 read_lg_battery_charge_limit() {
@@ -34,8 +33,7 @@ set_lg_battery_charge_limit(){
 }
 
 check_lg_fan_mode() {
-    # shellcheck disable=SC2154
-    should_read "${_lg_fan_mode}" && [ -d $LG_LAPTOP_DRIVER ]
+    [ -d $LG_LAPTOP_DRIVER ]
 }
 
 read_lg_fan_mode() {
@@ -61,8 +59,7 @@ set_lg_fan_mode() {
 }
 
 check_lg_usb_charge() {
-    # shellcheck disable=SC2154
-    should_read "${_lg_usb_charge}" && [ -d $LG_LAPTOP_DRIVER ]
+    [ -d $LG_LAPTOP_DRIVER ]
 }
 
 read_lg_usb_charge() {
