@@ -90,6 +90,8 @@ var sensors = {
     'powermizer': {'value': undefined, 'unit':'', 'print': to_string, 'rw_mode': 'w'},
     'intel_tcc_cur_state': {'value': undefined, 'unit':' °C', 'print': fmt_tcc},
     'intel_tcc_max_state': {'value': undefined, 'unit':' °C', 'print': fmt_tcc},
+    'intel_rapl_short': {'value': undefined, 'unit':' W', 'print': to_int},
+    'intel_rapl_long': {'value': undefined, 'unit':' W', 'print': to_int},
     'dell_fan_mode': {'value': undefined, 'unit': '', 'print': to_string, 'rw_mode': 'w'},
 
 }
@@ -137,7 +139,13 @@ var model =  [
                 {'symbol': 'k', 'text': 'Balance Performance', 'sensor_value': 'balance_performance'},
                 {'symbol': 'l', 'text': 'Balance Power', 'sensor_value': 'balance_power'},
                 {'symbol': 'f', 'text': 'Power', 'sensor_value': 'power'}
-            ]}
+            ]},
+            {'type': 'group', 'text': "Running Average Power Limit (RAPL)",
+                'items' :[
+                    {'type': 'slider', 'text': "Short Term", 'min': 1, 'max': 200, 'sensor': 'intel_rapl_short' },
+                    {'type': 'slider', 'text': "Long Term", 'min': 1, 'max': 100, 'sensor': 'intel_rapl_long' },
+                ]
+            }
         ]
     },
     {'type': 'header', 'id': 'thermalManagement', 'text': 'Thermal Management', 'icon': 'b',

@@ -36,6 +36,8 @@ sensors_model=(
     "powermizer"
     "intel_tcc_cur_state"
     "intel_tcc_max_state"
+    "intel_rapl_short"
+    "intel_rapl_long"
     "dell_fan_mode"
 )
 

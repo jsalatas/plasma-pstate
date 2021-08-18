@@ -21,6 +21,15 @@ GPU_CUR_FREQ=$GPU/gt_cur_freq_mhz
 INTEL_TCC=$(grep -r . /sys/class/thermal/*/type 2>/dev/null | \
             grep  "type:TCC Offset" | sed 's/\/type.*//')
 
+INTEL_RAPL=$(grep -r . /sys/class/powercap/intel-rapl/*/name 2>/dev/null | \
+             grep name:package-0 | sed 's/\/name:package-0//')
+INTEL_RAPL_LONG=$(grep . "${INTEL_RAPL}"/constraint_*_name 2>/dev/null | \
+                  grep long_term | sed 's/\/*_name:long_term//')
+INTEL_RAPL_LONG=${INTEL_RAPL_LONG}_power_limit_uw
+INTEL_RAPL_SHORT=$(grep . "${INTEL_RAPL}"/constraint_*_name 2>/dev/null | \
+                   grep short_term | sed 's/\/*_name:short_term//')
+INTEL_RAPL_SHORT=${INTEL_RAPL_SHORT}_power_limit_uw
+
 
 check_cpu_min_perf () {
     [ -n "$CPU_MIN_PERF" ] && [ -f $CPU_MIN_PERF ]
@@ -224,4 +233,40 @@ check_intel_tcc_max_state() {
 read_intel_tcc_max_state() {
     intel_tcc_max_state="$(cat "${INTEL_TCC}"/max_state)"
     export intel_tcc_max_state
+}
+
+check_intel_rapl_short() {
+    [ -n "${INTEL_RAPL}" ] && [ -f "${INTEL_RAPL_SHORT}" ]
+}
+
+read_intel_rapl_short() {
+    intel_rapl_short=$(( $(cat "${INTEL_RAPL_SHORT}") / 1000000 ))
+}
+
+set_intel_rapl_short() {
+    printf "%s" $(($1 * 1000000)) > "${INTEL_RAPL_SHORT}" 2> /dev/null
+    printf "1" > "${INTEL_RAPL}/enabled" 2> /dev/null
+    read_intel_rapl_short
+    json="{"
+    json="${json}\"intel_rapl_short\":\"${intel_rapl_short}\""
+    json="${json}}"
+    echo "$json"
+}
+
+check_intel_rapl_long() {
+    [ -n "${INTEL_RAPL}" ] && [ -f "${INTEL_RAPL_LONG}" ]
+}
+
+read_intel_rapl_long() {
+    intel_rapl_long=$(( $(cat "${INTEL_RAPL_LONG}") / 1000000 ))
+}
+
+set_intel_rapl_long() {
+    printf "%s" "$(($1 * 1000000))" > "${INTEL_RAPL_LONG}" 2> /dev/null
+    printf "1" > "${INTEL_RAPL}/enabled" 2> /dev/null
+    read_intel_rapl_long
+    json="{"
+    json="${json}\"intel_rapl_long\":\"${intel_rapl_long}\""
+    json="${json}}"
+    echo "$json"
 }
