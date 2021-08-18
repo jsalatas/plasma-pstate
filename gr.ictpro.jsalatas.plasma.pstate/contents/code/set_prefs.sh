@@ -119,66 +119,19 @@ read_sensors_model() {
     done
 }
 
+arg_to_sensor() {
+    #shellcheck disable=SC2001
+    _arg=$(echo "$1" | sed -e "s/-/_/g")
+    _arg="${_arg:1}"
+    _arg=$(printf '%s\n' "${sensors_model[@]}" | grep -P "^${_arg}\$")
+    if [ -n "${_arg}" ]; then
+        echo "${_arg}"
+    else
+        echo ""
+    fi
+}
+
 case $1 in
-    "-cpu-min-perf")
-        set_cpu_min_perf "$2"
-        ;;
-
-    "-cpu-max-perf")
-        set_cpu_max_perf "$2"
-        ;;
-
-    "-cpu-turbo")
-        set_cpu_turbo "$2"
-        ;;
-
-    "-gpu-min-freq")
-        set_gpu_min_freq "$2"
-        ;;
-
-    "-gpu-max-freq")
-        set_gpu_max_freq "$2"
-        ;;
-
-    "-gpu-boost-freq")
-        set_gpu_boost_freq "$2"
-        ;;
-
-    "-cpu-governor")
-        set_cpu_governor "$2"
-        ;;
-
-    "-energy-perf")
-        set_energy_perf "$2"
-        ;;
-
-    "-thermal-mode")
-        set_thermal_mode "$2"
-        ;;
-
-    "-lg-battery-charge-limit")
-        set_lg_battery_charge_limit "$2"
-    ;;
-
-    "-lg-fan-mode")
-        set_lg_fan_mode "$2"
-    ;;
-
-    "-lg-usb-charge")
-        set_lg_usb_charge "$2"
-    ;;
-
-    "-powermizer")
-        set_powermizer "$2"
-        ;;
-
-    "-intel-tcc-cur-state")
-        set_intel_tcc_cur_state "$2"
-        ;;
-
-    "-dell-fan-mode")
-        set_dell_fan_mode "$2"
-        ;;
 
     "-read-all")
         _read_all=1
@@ -195,6 +148,12 @@ case $1 in
         ;;
 
     *)
+        _sensor=$(arg_to_sensor "$1")
+        if [ -n "${_sensor}" ]; then
+            eval "set_${_sensor} ${2}"
+            exit 0
+        fi
+
         echo "Usage:"
         echo "1: set_prefs.sh [ -cpu-min-perf |"
         echo "                  -cpu-max-perf |"
