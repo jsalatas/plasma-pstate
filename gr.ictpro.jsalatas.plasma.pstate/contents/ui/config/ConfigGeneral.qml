@@ -7,7 +7,9 @@ Item {
     property alias cfg_showIntelGPU: showIntelGPUCheckbox.checked
     property string cfg_customIcon: plasmoid.configuration.customIcon
     property alias cfg_useSudoForReading: useSudoForReadingCheckbox.checked
+    property alias cfg_passiveMode: passiveModeCheckBox.checked
     property alias cfg_pollingInterval: pollingInterval.value
+    property alias cfg_sensorInterval: sensorInterval.value
 
     GridLayout {
         Layout.fillWidth: true
@@ -45,6 +47,12 @@ Item {
             Layout.columnSpan: 2
         }
 
+        CheckBox {
+            id: passiveModeCheckBox
+            text: i18n('Passive Mode')
+            Layout.columnSpan: 2
+        }
+
         Label {
             text: i18n("Polling Interval (seconds):")
             Layout.alignment: Qt.AlignRight
@@ -52,6 +60,20 @@ Item {
 
         SpinBox {
             id: pollingInterval
+
+            minimumValue: 2
+            maximumValue: 3600
+
+            enabled: !cfg_passiveMode
+        }
+
+        Label {
+            text: i18n("Sensor update interval (seconds):")
+            Layout.alignment: Qt.AlignRight
+        }
+
+        SpinBox {
+            id: sensorInterval
 
             minimumValue: 2
             maximumValue: 3600

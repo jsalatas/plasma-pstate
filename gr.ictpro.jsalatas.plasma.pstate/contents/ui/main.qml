@@ -54,8 +54,12 @@ Item {
                                         'gr.ictpro.jsalatas.plasma.pstate/contents/code/' +
                                         'set_prefs.sh'
 
-    property int pollingInterval: plasmoid.configuration.pollingInterval ?
-                                  (plasmoid.configuration.pollingInterval * 1000) : 2000
+    property bool passiveMode: plasmoid.configuration.passiveMode
+    property int pollingInterval: plasmoid.configuration.passiveMode ? 0:
+                                    plasmoid.configuration.pollingInterval ?
+                                    (plasmoid.configuration.pollingInterval * 1000) : 2000
+
+    property int sensorInterval: plasmoid.configuration.sensorInterval * 1000
 
     function sensor_short_name(long_name) {
         var parts = long_name.split('/');
@@ -154,31 +158,40 @@ Item {
 
         onNewData: {
             var source_short_name = sensor_short_name(sourceName);
+            var changes = false
 
             if(source_short_name.startsWith('fan')) {
                 if (sensors_model['fan_speeds'] != undefined &&
                     sensors_model['fan_speeds']['value'] != undefined)
                 {
+                    changes = changes || sensors_model['fan_speeds']['value'][source_short_name] != data.value;
                     sensors_model['fan_speeds']['value'][source_short_name] = data.value;
                 }
             } else {
                 switch (source_short_name) {
                     case 'AverageClock': {
+                        changes = changes || sensors_model['cpu_cur_freq']['value'] != data.value
                         sensors_model['cpu_cur_freq']['value'] = data.value
                         break;
                     }
                     case 'Package_id_0': {
+                        changes = changes || sensors_model['package_temp']['value'] != data.value
                         sensors_model['package_temp']['value'] = data.value
                         break;
                     }
                     case 'TotalLoad': {
+                        changes = changes || sensors_model['cpu_cur_load']['value'] != data.value
                         sensors_model['cpu_cur_load']['value'] = data.value
                         break;
                     }
                 }
             }
+
+            if (passiveMode || changes) {
+                sensorsChanged()
+            }
         }
-        interval: pollingInterval
+        interval: sensorInterval
 
         function sensorsChanged() {
            var t = Date.now()
@@ -202,19 +215,34 @@ Item {
                 sensors_model['battery_percentage']['value'] = bat_charge;
             }
         }
-        interval: pollingInterval
+        interval: sensorInterval
     }
 
     Connections {
         target: plasmoid.configuration
         onUseSudoForReadingChanged: {
-            monitorDS.restart()
+            if (passiveMode === false) {
+                monitorDS.restart()
+            }
         }
 
         onPollingIntervalChanged: {
             monitorDS.interval = pollingInterval
-            powermanagementDS.interval = pollingInterval
-            systemmonitorDS.interval = pollingInterval
+        }
+
+        onPassiveModeChanged: {
+            if (passiveMode == true) {
+                monitorDS.stop()
+                monitorDS.interval = 0
+            } else if (passiveMode == false) {
+                monitorDS.interval = pollingInterval
+                monitorDS.start()
+            }
+        }
+
+        onSensorIntervalChanged: {
+            systemmonitorDS.interval = sensorInterval
+            powermanagementDS.interval = sensorInterval
         }
     }
 
