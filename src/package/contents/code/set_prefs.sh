@@ -34,6 +34,7 @@ sensors_model=(
     "lg_fan_mode"
     "lg_usb_charge"
     "powermizer"
+    "nvidia_runtime_status"
     "intel_tcc_cur_state"
     "intel_tcc_max_state"
     "intel_rapl_short"

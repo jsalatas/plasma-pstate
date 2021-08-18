@@ -1,5 +1,10 @@
 #!/bin/bash
 
+
+NV_PCI_DEV=$(grep -r . /sys/class/drm/card?/device/vendor 2>/dev/null | \
+             grep vendor:0x10de | sed 's/\/vendor:.*//' | head -n1)
+NV_RUNTIME_STATUS=${NV_PCI_DEV}/power/runtime_status
+
 check_powermizer () {
     # nvidia-settings -q GpuPowerMizerMode > /dev/null 2>&1
     # OUT=$?
@@ -18,5 +23,18 @@ read_powermizer() {
 
 set_powermizer () {
     nvidia-settings -a "[gpu:0]/GpuPowerMizerMode=$1" > /dev/null
+    echo "{}"
+}
+
+check_nvidia_runtime_status() {
+    [ -n "${NV_PCI_DEV}" ] && [ -f "${NV_RUNTIME_STATUS}" ]
+}
+
+read_nvidia_runtime_status() {
+    nvidia_runtime_status=$(cat "${NV_RUNTIME_STATUS}")
+    export nvidia_runtime_status
+}
+
+set_nvidia_runtime_status() {
     echo "{}"
 }

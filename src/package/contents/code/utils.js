@@ -80,6 +80,7 @@ var sensors = {
     'lg_usb_charge': {'value': undefined, 'unit':'', 'print': to_bool},
     'lg_fan_mode': {'value': undefined, 'unit':'', 'print': to_bool},
     'powermizer': {'value': undefined, 'unit':'', 'print': to_string, 'rw_mode': 'w'},
+    'nvidia_runtime_status': {'value': undefined, 'unit':'', 'print': to_string, 'rw_mode': 'r'},
     'intel_tcc_cur_state': {'value': undefined, 'unit':' °C', 'print': fmt_tcc},
     'intel_tcc_max_state': {'value': undefined, 'unit':' °C', 'print': fmt_tcc},
     'intel_rapl_short': {'value': undefined, 'unit':' W', 'print': to_int},
@@ -180,6 +181,7 @@ var model =  [
     },
     {'type': 'header', 'id': 'nvidiaSettings', 'text': 'Nvidia Settings', 'icon': 'o',
         'vendors': ['nvidia'],
+        'sensors': ['nvidia_runtime_status'],
         'items': [
             {'type': 'combobox', 'text': 'PowerMizer', 'sensor': 'powermizer', 'items' :[
                  {'text': 'Adaptive', 'sensor_value': '0'},
