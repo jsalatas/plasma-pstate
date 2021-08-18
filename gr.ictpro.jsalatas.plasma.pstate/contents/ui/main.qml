@@ -258,29 +258,13 @@ Item {
             if (data['exit code'] > 0) {
                 print('monitorDS error: ' + data.stderr)
             } else {
-                var obj = JSON.parse(data.stdout);
 
                 Utils.remove_stale_data(obj, old_data, sensors_model);
                 old_data = obj
 
-                var keys = Object.keys(obj);
-                var changes = false
-                for(var i=0; i< keys.length; i++) {
-                    if (!sensors_model[keys[i]]) {
-                        continue;
-                    }
+                var obj = JSON.parse(data.stdout);
+                var changes = Utils.parse_sensor_data(obj)
 
-                    var rw_mode = sensors_model[keys[i]]['rw_mode']
-                    var old_val = sensors_model[keys[i]]['value']
-                    if (rw_mode == 'w'){
-                        if (old_val === undefined) {
-                            sensors_model[keys[i]]['value'] = true
-                        }
-                    } else {
-                        changes = changes || sensors_model[keys[i]]['value'] !== obj[keys[i]]
-                        sensors_model[keys[i]]['value'] = obj[keys[i]];
-                    }
-                }
                 if(!isReady) {
                     dataSourceReady();
                     isReady = true;
@@ -325,13 +309,16 @@ Item {
                 print("    error: " + data.stderr)
                 notify(sourceName)
             } else {
+                var obj = JSON.parse(data.stdout);
+                var changes = Utils.parse_sensor_data(obj)
+                sensorsValuesChanged();
                 print("    done")
             }
 
-            monitorDS.start()
+            // monitorDS.start()
         }
         function update(parameter, value) {
-            monitorDS.stop()
+            // monitorDS.stop()
 
             var command = commandSource + parameter.replace(/_/g, '-') + ' ' + value
             print("exec: " + command)
