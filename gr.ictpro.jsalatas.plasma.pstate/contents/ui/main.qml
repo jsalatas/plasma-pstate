@@ -47,6 +47,8 @@ Item {
     ]
     property var sensors_model: Utils.get_sensors()
     property var available_values: Utils.get_available_values()
+    property var sensors_detected: []
+
     property alias isReady: monitorDS.isReady
     property bool inTray: (plasmoid.parent === null || plasmoid.parent.objectName === 'taskItemContainer')
 
@@ -246,13 +248,15 @@ Item {
         }
     }
 
+
     PlasmaCore.DataSource {
         id: monitorDS
         engine: 'executable'
 
         property bool isReady: false
         property string commandSource: (plasmoid.configuration.useSudoForReading ? 'sudo ' : '') +
-                                       set_prefs + ' -read-all'
+                                       set_prefs +
+                                       (!isReady ? ' -read-all' : ' -read-some ' + sensors_detected.join(" "))
 
         onNewData: {
             if (data['exit code'] > 0) {
@@ -266,8 +270,14 @@ Item {
                 var changes = Utils.parse_sensor_data(obj)
 
                 if(!isReady) {
+                    sensors_detected = Utils.init_sensors_detected(sensors_model);
+                    print("sensors_detected: ", sensors_detected)
+                    disconnectSource(sourceName)
+
                     dataSourceReady();
                     isReady = true;
+
+                    connectSource(commandSource)
                 }
 
                 if (changes) {

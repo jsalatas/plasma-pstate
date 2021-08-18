@@ -311,3 +311,15 @@ function parse_sensor_data(obj) {
 
     return changes
 }
+
+function init_sensors_detected(sensors_model) {
+    var sensors_detected = []
+    var keys = Object.keys(sensors_model);
+    for (var i = 0; i < keys.length; i++) {
+        var sensor = sensors_model[keys[i]]
+        if (sensor['value'] !== undefined && !sensors_detected.includes(keys[i])) {
+            sensors_detected.push(keys[i])
+        }
+    }
+    return sensors_detected
+}
