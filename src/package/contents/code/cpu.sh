@@ -2,6 +2,10 @@
 
 CPUFREQ_EPP="${CPUFREQ}/energy_performance_preference"
 
+
+CPUFREQ_SCALING_MIN_FREQ=${CPUFREQ}/scaling_min_freq
+CPUFREQ_SCALING_MAX_FREQ=${CPUFREQ}/scaling_max_freq
+
 check_cpu_governor () {
     [ -f /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor ]
 }
@@ -62,6 +66,40 @@ set_energy_perf () {
     read_energy_perf
     json="{"
     json="${json}\"energy_perf\":\"${energy_perf}\""
+    json="${json}}"
+    echo "$json"
+}
+
+check_cpufreq_scaling_min_freq() {
+    [ -n "${CPUFREQ_SCALING_AVAIL_FREQ}" ] && [ -f "$CPUFREQ_SCALING_AVAIL_FREQ" ]
+}
+
+read_cpufreq_scaling_min_freq () {
+    cpufreq_scaling_min_freq=$(cat "${CPUFREQ_SCALING_MIN_FREQ}")
+}
+
+set_cpufreq_scaling_min_freq() {
+    printf "%s" "${1}" > "${CPUFREQ_SCALING_MIN_FREQ}" 2> /dev/null
+    read_cpufreq_scaling_min_freq
+    json="{"
+    json="${json}\"cpufreq_scaling_min_freq\":\"${cpufreq_scaling_min_freq}\""
+    json="${json}}"
+    echo "$json"
+}
+
+check_cpufreq_scaling_max_freq() {
+    [ -n "${CPUFREQ_SCALING_AVAIL_FREQ}" ] && [ -f "$CPUFREQ_SCALING_AVAIL_FREQ" ]
+}
+
+read_cpufreq_scaling_max_freq () {
+    cpufreq_scaling_max_freq=$(cat "${CPUFREQ_SCALING_MAX_FREQ}")
+}
+
+set_cpufreq_scaling_max_freq() {
+    printf "%s" "${1}" > "${CPUFREQ_SCALING_MAX_FREQ}" 2> /dev/null
+    read_cpufreq_scaling_max_freq
+    json="{"
+    json="${json}\"cpufreq_scaling_max_freq\":\"${cpufreq_scaling_max_freq}\""
     json="${json}}"
     echo "$json"
 }

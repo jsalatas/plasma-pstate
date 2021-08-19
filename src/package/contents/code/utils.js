@@ -49,6 +49,11 @@ function fmt_tcc(item) {
     return "-" + to_int(item);
 }
 
+function hz_to_mhz(item) {
+    var val = Math.round(parseFloat(item['value']), 0) / 1000;
+    return 0 == val || val ? val + item['unit'] : '';
+}
+
 var sensors = {
     // Informational
     'cpu_cur_load': {'value': undefined, 'unit':'%', 'print': to_int,
@@ -87,10 +92,13 @@ var sensors = {
     'intel_rapl_long': {'value': undefined, 'unit':' W', 'print': to_int},
     'dell_fan_mode': {'value': undefined, 'unit': '', 'print': to_string, 'rw_mode': 'w'},
 
+    'cpufreq_scaling_min_freq': {'value': undefined, 'unit':' MHz', 'print': hz_to_mhz},
+    'cpufreq_scaling_max_freq': {'value': undefined, 'unit':' MHz', 'print': hz_to_mhz},
 }
 
 var available_values = {
     'cpu_governor': [],
+    'cpu_scaling_available_frequencies': [],
 }
 
 var vendors = {
@@ -120,7 +128,16 @@ var model =  [
                 {'symbol': 'i', 'text': "Userspace", 'sensor_value': 'userspace'},
                 {'symbol': 'k', 'text': "Schedutil", 'sensor_value': 'schedutil'},
                 {'symbol': 'f', 'text': "Conservative", 'sensor_value': 'conservative'}
+            ]},
+            {'type': 'group', 'text': 'CPU Frequencies', 'items' :[
+                {'type': 'combobox', 'text': 'Min freq', 'sensor': 'cpufreq_scaling_min_freq',
+                    'items' : undefined, 'available_values': 'cpu_scaling_available_frequencies'
+                },
+                {'type': 'combobox', 'text': 'Max freq', 'sensor': 'cpufreq_scaling_max_freq',
+                    'items' : undefined, 'available_values': 'cpu_scaling_available_frequencies'
+                },
             ]}
+
         ]
     },
     {'type': 'header', 'id': 'energyPerf', 'text': 'Energy Performance', 'icon': 'h',

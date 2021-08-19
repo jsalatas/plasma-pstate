@@ -40,6 +40,8 @@ sensors_model=(
     "intel_rapl_short"
     "intel_rapl_long"
     "dell_fan_mode"
+    "cpufreq_scaling_min_freq"
+    "cpufreq_scaling_max_freq"
 )
 
 
