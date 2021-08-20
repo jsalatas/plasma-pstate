@@ -1,5 +1,5 @@
 # TODO: adapt "org.kde.plasma" here & elsewhere if needed (see README)
-add_definitions(-DTRANSLATION_DOMAIN=\"plasma_applet_org.kde.plasma.pstate\")
+add_definitions(-DTRANSLATION_DOMAIN=\"plasma_applet_gr.ictpro.jsalatas.plasma.pstate\")
 
 add_library(plasma_applet_pstate MODULE pstate.cpp)
 
@@ -13,4 +13,4 @@ target_link_libraries(plasma_applet_pstate
 
 install(TARGETS plasma_applet_pstate DESTINATION ${KDE_INSTALL_PLUGINDIR}/plasma/applets)
 
-plasma_install_package(package org.kde.plasma.pstate)
+plasma_install_package(package gr.ictpro.jsalatas.plasma.pstate)
