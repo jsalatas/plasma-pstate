@@ -14,3 +14,11 @@ target_link_libraries(plasma_applet_pstate
 install(TARGETS plasma_applet_pstate DESTINATION ${KDE_INSTALL_PLUGINDIR}/plasma/applets)
 
 plasma_install_package(package gr.ictpro.jsalatas.plasma.pstate)
+
+# Make the script executable
+install(FILES
+        package/contents/code/set_prefs.sh
+        DESTINATION
+        ${CMAKE_INSTALL_PREFIX}/share/plasma/plasmoids/gr.ictpro.jsalatas.plasma.pstate/contents/code/
+        PERMISSIONS
+        OWNER_EXECUTE OWNER_WRITE OWNER_READ)
