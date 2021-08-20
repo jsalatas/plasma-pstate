@@ -3,11 +3,12 @@ import org.kde.plasma.core 2.0 as PlasmaCore
 
 Item {
     id: availableValuesDS
-    property string commandSource: undefined
+    property var name: "LocalAvailableValues"
 
-    property var available_values
-    property var dataSourceReady
-    property var isReady
+    required property string commandSource
+    required property var available_values
+    required property var dataSourceReady
+    required property var isReady
 
 
     PlasmaCore.DataSource {
@@ -32,9 +33,10 @@ Item {
                     available_values[keys[i]] = values
                 }
 
-                if (isReady) {
+                if (isReady()) {
                     dataSourceReady();
                 }
+                print(JSON.stringify(available_values))
             }
         }
         Component.onCompleted: {

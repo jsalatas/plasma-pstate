@@ -25,6 +25,7 @@ import org.kde.plasma.core 2.0 as PlasmaCore
 
 import '../code/utils.js' as Utils
 
+import './DataSourceBackend' as DataSourceBackend
 Item {
     id: main
     
@@ -250,102 +251,31 @@ Item {
         }
     }
 
-
-    PlasmaCore.DataSource {
+    DataSourceBackend.Monitor {
         id: monitorDS
-        engine: 'executable'
 
-        property bool isReady: false
-        property string commandSource: (plasmoid.configuration.useSudoForReading ? 'sudo ' : '') +
-                                       set_prefs +
-                                       (!isReady ? ' -read-all' : ' -read-some ' + sensors_detected.join(" "))
-
-        onNewData: {
-            if (data['exit code'] > 0) {
-                print('monitorDS error: ' + data.stderr)
-            } else {
-
-                Utils.remove_stale_data(obj, old_data, sensors_model);
-                old_data = obj
-
-                var obj = JSON.parse(data.stdout);
-                var changes = Utils.parse_sensor_data(obj)
-
-                if(!isReady) {
-                    sensors_detected = Utils.init_sensors_detected(sensors_model);
-                    print("sensors_detected: ", sensors_detected)
-                    disconnectSource(sourceName)
-
-                    dataSourceReady();
-                    isReady = true;
-
-                    connectSource(commandSource)
-                }
-
-                if (changes) {
-                    sensorsValuesChanged();
-                }
-            }
-        }
-        Component.onCompleted: {
-            connectSource(commandSource);
-        }
-        interval: pollingInterval
-
-        function restart() {
-            stop()
-            start()
-        }
-
-        function stop() {
-            while(connectedSources.length) {
-                disconnectSource(connectedSources[0]);
-            }
-        }
-
-        function start() {
-            connectSource(commandSource);
-        }
+        set_prefs: main.set_prefs
+        sensors_model: main.sensors_model
+        sensors_detected: main.sensors_detected
+        dataSourceReady: main.dataSourceReady
+        sensorsValuesChanged: main.sensorsValuesChanged
     }
 
-    PlasmaCore.DataSource {
+    DataSourceBackend.Updater {
         id: updater
-        engine: 'executable'
+        set_prefs: main.set_prefs
+        sensors_model: main.sensors_model
+        sensors_detected: main.sensors_detected
+        sensorsValuesChanged: main.sensorsValuesChanged
+    }
 
-        readonly property string commandSource: 'sudo ' + set_prefs + ' -'
+    DataSourceBackend.AvailableValues {
+        commandSource: (plasmoid.configuration.useSudoForReading ? 'sudo ' : '') +
+                       set_prefs + ' -read-available'
 
-        onNewData: {
-            disconnectSource(sourceName)
-
-            if (data['exit code'] > 0) {
-                print("    error: " + data.stderr)
-                notify(sourceName)
-            } else {
-                var obj = JSON.parse(data.stdout);
-                var changes = Utils.parse_sensor_data(obj)
-                sensorsValuesChanged();
-                print("    done")
-            }
-
-            // monitorDS.start()
-        }
-        function update(parameter, value) {
-            // monitorDS.stop()
-
-            var command = commandSource + parameter.replace(/_/g, '-') + ' ' + value
-            print("exec: " + command)
-            connectSource(command);
-
-            if (parameter === 'powermizer') {
-                nvidiaPowerMizerDS.update()
-            }
-        }
-        function notify(sourceName) {
-            var args = sourceName.replace(commandSource, "").split(" ")
-            var sensor = args[0].replace(/-/g, '_')
-            var value = get_value_text(sensor, args[1])
-            notificationSource.createNotification("Failed to set " + sensor + " to " + value)
-        }
+        available_values: main.available_values
+        dataSourceReady: main.dataSourceReady
+        isReady: function() { return main.isReady }
     }
 
     NvidiaPowerMizerDS {
@@ -354,14 +284,6 @@ Item {
         dataSourceReady: main.dataSourceReady
     }
 
-    AvailableValuesDS {
-        commandSource: (plasmoid.configuration.useSudoForReading ? 'sudo ' : '') +
-                       set_prefs + ' -read-available'
-
-        available_values: main.available_values
-        dataSourceReady: main.dataSourceReady
-        isReady: function() { return main.isReady }
-    }
 
     PlasmaCore.DataSource {
         id: notificationSource
