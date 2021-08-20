@@ -229,7 +229,9 @@ Item {
         }
 
         onPollingIntervalChanged: {
+            monitorDS.stop()
             monitorDS.interval = pollingInterval
+            monitorDS.start()
         }
 
         onPassiveModeChanged: {
