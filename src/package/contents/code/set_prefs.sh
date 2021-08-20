@@ -116,6 +116,15 @@ write_sensor() {
     return 1
 }
 
+list_sensors() {
+    _out=
+    for sensor in "${sensors_model[@]}"
+    do
+        _out="${_out:+$_out }${sensor}"
+    done
+    echo "${_out}"
+}
+
 daemon() {
     export DAEMON_MODE=1
     while read -r line
@@ -161,6 +170,10 @@ main() {
 
         "-read-some")
             read_some "${@:2}"
+            ;;
+
+        "-list-sensors")
+            list_sensors
             ;;
 
         "-daemon")
