@@ -5,10 +5,10 @@ Item {
     id: availableValuesDS
     property var name: "LocalAvailableValues"
 
-    required property string commandSource
-    required property var available_values
-    required property var dataSourceReady
-    required property var isReady
+    /* required */ property string commandSource
+    /* required */ property var available_values
+    /* required */ property var dataSourceReady
+    /* required */ property var isReady
 
 
     PlasmaCore.DataSource {

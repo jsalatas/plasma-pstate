@@ -15,12 +15,12 @@ PlasmaCore.DataSource {
                                    set_prefs +
                                    (!isReady ? ' -read-all' : ' -read-some ' + sensors_detected.join(" "))
 
-    required property var set_prefs
-    required property var sensors_model
-    required property var sensors_detected
+    /* required */ property var set_prefs
+    /* required */ property var sensors_model
+    /* required */ property var sensors_detected
 
-    required property var dataSourceReady
-    required property var sensorsValuesChanged
+    /* required */ property var dataSourceReady
+    /* required */ property var sensorsValuesChanged
 
 
     onNewData: {

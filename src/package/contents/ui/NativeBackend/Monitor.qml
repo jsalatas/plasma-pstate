@@ -8,12 +8,12 @@ Item {
     property var name: "NativeMonitor"
     property bool isReady: false
 
-    required property var sensors_model
-    required property var sensors_detected
-    required property var available_values
+    /* required */ property var sensors_model
+    /* required */ property var sensors_detected
+    /* required */ property var available_values
 
-    required property var dataSourceReady
-    required property var sensorsValuesChanged
+    /* required */ property var dataSourceReady
+    /* required */ property var sensorsValuesChanged
 
     //
     // proxy the inner timer object

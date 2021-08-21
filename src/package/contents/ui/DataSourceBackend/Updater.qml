@@ -13,10 +13,10 @@ PlasmaCore.DataSource {
 
     readonly property string commandSource: 'sudo ' + set_prefs + ' -'
 
-    required property var set_prefs
-    required property var sensors_model
-    required property var sensors_detected
-    required property var sensorsValuesChanged
+    /* required */ property var set_prefs
+    /* required */ property var sensors_model
+    /* required */ property var sensors_detected
+    /* required */ property var sensorsValuesChanged
 
 
     onNewData: {
