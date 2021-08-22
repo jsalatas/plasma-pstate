@@ -43,9 +43,18 @@ read_dell_fan_mode() {
     fi
 }
 
+return_dell_fan_mode() {
+    read_dell_fan_mode
+    json="{"
+    json="${json}\"dell_fan_mode\":\"${dell_fan_mode}\""
+    json="${json}}"
+    echo "$json"
+}
+
 set_dell_fan_mode() {
     if [ "$1" -lt $((128/2)) ]; then
         printf "2" > "${DELL_SMM_HWMON}"/pwm1_enable 2> /dev/null
+        return_dell_fan_mode
         return 0
     fi
 
@@ -58,5 +67,7 @@ set_dell_fan_mode() {
     if [ -f "${DELL_SMM_HWMON}"/pwm2 ]; then
         printf "%s" "$1" > "${DELL_SMM_HWMON}"/pwm2 2> /dev/null
     fi
+
+    return_dell_fan_mode
 }
 
