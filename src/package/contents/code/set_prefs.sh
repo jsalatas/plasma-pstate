@@ -106,6 +106,16 @@ read_some() {
     echo "$json"
 }
 
+write_sensor() {
+    _sensor=$(arg_to_sensor "$1")
+    if [ -n "${_sensor}" ]; then
+        eval "set_${_sensor} ${2}"
+        return 0
+    fi
+
+    return 1
+}
+
 print_usage() {
     echo "Usage:"
     echo "1: set_prefs.sh [ -cpu-min-perf |"
@@ -142,14 +152,8 @@ case $1 in
     "-read-some")
         read_some "${@:2}"
         ;;
-
     *)
-        _sensor=$(arg_to_sensor "$1")
-        if [ -n "${_sensor}" ]; then
-            eval "set_${_sensor} ${2}"
-            exit 0
-        fi
-
+        write_sensor ${@}
         print_usage
         ;;
 
