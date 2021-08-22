@@ -13,6 +13,7 @@ X-KDE-PluginInfo-Version=1.0.6
 X-KDE-PluginInfo-Website=https://jsalatas.ictpro.gr
 X-KDE-ServiceTypes=Plasma/Applet
 X-Plasma-API=declarativeappletscript
+X-KDE-Library=plasma_applet_pstate
 X-Plasma-MainScript=ui/main.qml
 # X-Plasma-StandAloneApp=true
 X-KDE-PluginInfo-EnabledByDefault=true
