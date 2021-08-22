@@ -65,15 +65,21 @@ function fmt_tcc(item) {
 
 var sensors = {
     // Informational
-    'cpu_cur_load': {'value': undefined, 'unit':'%', 'print': to_int},
-    'cpu_cur_freq': {'value': undefined, 'unit':' MHz', 'print': to_int},
+    'cpu_cur_load': {'value': undefined, 'unit':'%', 'print': to_int,
+                     'sensor_type': 'sysmon'},
+    'cpu_cur_freq': {'value': undefined, 'unit':' MHz', 'print': to_int,
+                     'sensor_type': 'sysmon'},
     'gpu_cur_freq': {'value': undefined, 'unit':' MHz', 'print': to_int},
     'gpu_min_limit': {'value': undefined, 'unit':'', 'print': to_int},
     'gpu_max_limit': {'value': undefined, 'unit':'', 'print': to_int},
-    'battery_percentage': {'value': undefined, 'unit': '%', 'print': to_int},
-    'battery_remaining_time': {'value': undefined, 'print': to_time},
-    'package_temp': {'value': undefined, 'unit': ' \u2103', 'print': to_int},
-    'fan_speeds': {'value': {}, 'unit': ' RPM', 'print': array_to_int},
+    'battery_percentage': {'value': undefined, 'unit': '%', 'print': to_int,
+                           'sensor_type': 'sysmon'},
+    'battery_remaining_time': {'value': undefined, 'print': to_time,
+                               'sensor_type': 'sysmon'},
+    'package_temp': {'value': undefined, 'unit': ' \u2103', 'print': to_int,
+                     'sensor_type': 'sysmon'},
+    'fan_speeds': {'value': {}, 'unit': ' RPM', 'print': array_to_int,
+                   'sensor_type': 'sysmon'},
     // Tunable
     'cpu_min_perf': {'value': undefined, 'unit':'%', 'print': to_int},
     'cpu_max_perf': {'value': undefined, 'unit':'%', 'print': to_int},
@@ -270,4 +276,16 @@ function sensor_has_value(item) {
     }
 
     return true
+}
+
+function is_tune_sensor(sensor) {
+    return 'sensor_type' in sensor && sensor['sensor_type'] === 'tune';
+}
+
+function is_info_sensor(sensor) {
+    return 'sensor_type' in sensor && sensor['sensor_type'] === 'info';
+}
+
+function is_sysmon_sensor(sensor) {
+    return 'sensor_type' in sensor && sensor['sensor_type'] === 'sysmon';
 }
