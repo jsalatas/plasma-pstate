@@ -123,9 +123,7 @@ GridLayout {
     Connections {
         target: plasmoid.configuration
         onShowIntelGPUChanged: {
-            if(isReady) {
-                initialize()
-            }
+            initialize()
         }
     }
 

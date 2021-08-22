@@ -57,18 +57,14 @@ ColumnLayout {
     Connections {
         target: plasmoid.configuration
         onShowIntelGPUChanged: {
-            if(isReady) {
-                initialize()
-            }
+            initialize()
         }
     }
 
     Connections {
         target: plasmoid.configuration
         onUseSudoForReadingChanged: {
-            if(isReady) {
-                initialize()
-            }
+            initialize()
         }
     }
 

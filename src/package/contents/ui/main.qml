@@ -49,8 +49,6 @@ Item {
         /lmsensors\/.*fan/g
     ]
 
-    property bool isReady: false
-
     property var updater: undefined
     property var monitorDS: undefined
 
@@ -297,7 +295,6 @@ Item {
     SetPrefsManager {
         id: prefsManager
 
-        isReady: main.isReady
         sensors_model: main.sensors_model
         sensors_detected: main.sensors_detected
         available_values: main.available_values
@@ -323,12 +320,6 @@ Item {
                         .connect(prefsManager.handleSetValueResult)
                 }
                 firstInit.monitorReady()
-            }
-            // alias to dynamically loaded components
-            Binding {
-                target: main;
-                property: "isReady";
-                value: monitorLoader.item.isReady
             }
         }
         Component.onCompleted: {
