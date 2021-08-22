@@ -223,7 +223,9 @@ GridLayout {
                     id: toolbarIndicator
                     x: toolbar.width
                     height: toolbar.height
-                    width: toolbar.width * 0.075
+                    // This makes the plasmoid crash on removal.
+                    // width: toolbar.width * 0.075
+                    width: units.smallSpacing.toFixed(3) * 0.5
                     color: theme.highlightColor
 
                     Behavior on y { PropertyAnimation {} }
