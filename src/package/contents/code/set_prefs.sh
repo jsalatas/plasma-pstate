@@ -106,6 +106,29 @@ read_some() {
     echo "$json"
 }
 
+print_usage() {
+    echo "Usage:"
+    echo "1: set_prefs.sh [ -cpu-min-perf |"
+    echo "                  -cpu-max-perf |"
+    echo "                  -cpu-turbo |"
+    echo "                  -gpu-min-freq |"
+    echo "                  -gpu-max-freq |"
+    echo "                  -gpu-boost-freq |"
+    echo "                  -cpu-governor |"
+    echo "                  -energy-perf |"
+    echo "                  -thermal-mode |"
+    echo "                  -lg-battery-charge-limit |"
+    echo "                  -lg-fan-mode |"
+    echo "                  -lg-usb-charge |"
+    echo "                  -powermizer |"
+    echo "                  -intel-tcc-cur-state |"
+    echo "                  -dell-fan-mode ] value"
+    echo "2: set_prefs.sh -read-all"
+    echo "3: set_prefs.sh -read-available"
+    echo "4: set_prefs.sh -read-some"
+    exit 3
+}
+
 case $1 in
 
     "-read-all")
@@ -127,25 +150,7 @@ case $1 in
             exit 0
         fi
 
-        echo "Usage:"
-        echo "1: set_prefs.sh [ -cpu-min-perf |"
-        echo "                  -cpu-max-perf |"
-        echo "                  -cpu-turbo |"
-        echo "                  -gpu-min-freq |"
-        echo "                  -gpu-max-freq |"
-        echo "                  -gpu-boost-freq |"
-        echo "                  -cpu-governor |"
-        echo "                  -energy-perf |"
-        echo "                  -thermal-mode |"
-        echo "                  -lg-battery-charge-limit |"
-        echo "                  -lg-fan-mode |"
-        echo "                  -lg-usb-charge |"
-        echo "                  -powermizer |"
-        echo "                  -intel-tcc-cur-state |"
-        echo "                  -dell-fan-mode ] value"
-        echo "2: set_prefs.sh -read-all"
-        echo "3: set_prefs.sh -read-available"
-        echo "4: set_prefs.sh -read-some"
-        exit 3
+        print_usage
         ;;
+
 esac
