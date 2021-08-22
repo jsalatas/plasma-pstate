@@ -26,6 +26,8 @@ import org.kde.plasma.core 2.0 as PlasmaCore
 import '../code/utils.js' as Utils
 
 import './DataSourceBackend' as DataSourceBackend
+import './NativeBackend' as NativeBackend
+
 Item {
     id: main
     
@@ -250,6 +252,27 @@ Item {
             powermanagementDS.interval = sensorInterval
         }
     }
+
+
+    // NativeBackend.Monitor {
+    //     id: monitorDS
+
+    //     interval: pollingInterval
+    //     running: true
+    //     repeat: pollingInterval > 0
+    //     triggeredOnStart: true
+
+    //     // isReady: main.isReady
+    //     sensors_model: main.sensors_model
+    //     sensors_detected: main.sensors_detected
+    //     available_values: main.available_values
+    //     dataSourceReady: main.dataSourceReady
+    //     sensorsValuesChanged: main.sensorsValuesChanged
+    // }
+
+    // NativeBackend.Updater {
+    //     id: updater
+    // }
 
     DataSourceBackend.Monitor {
         id: monitorDS
