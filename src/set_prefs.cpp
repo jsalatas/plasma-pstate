@@ -76,7 +76,7 @@ void SetPrefs::startScript()
         return;
     }
 
-    m_proc.start("sudo", {"-n", SET_PREFS_SCRIPT, "-daemon"});
+    m_proc.start("pkexec", {SET_PREFS_SCRIPT, "-daemon"});
     m_proc.waitForStarted();
 }
 
