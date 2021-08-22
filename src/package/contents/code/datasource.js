@@ -1,6 +1,22 @@
 
 .import "utils.js" as Utils
 
+function remove_stale_data(data, old_data, sensors_model) {
+    var has_stale_data = false;
+
+    let diff = old_data.filter(x => !data.includes(x));
+
+    for (var i=0; i < diff.length; i++) {
+        if (!(diff[i] in sensors_model)) {
+            continue
+        }
+        sensors_model[diff[i]].value = undefined
+        has_stale_data = true;
+    }
+
+    return has_stale_data;
+}
+
 function parse_sensor_data(obj, ctx) {
     var sensors_model = ctx.sensors_model
     var keys = Object.keys(obj);
@@ -39,11 +55,16 @@ function init_sensors_detected(sensors_model, sensors_detected) {
 function handle_read_result(args, stdout, ctx) {
     var obj = JSON.parse(stdout);
 
-    print("handle_read_result args="+args)
-
-    if (args[0] == '-read-some') {
-        // Utils.remove_stale_data(obj, old_data, sensors_model);
-        // old_data = obj
+    var is_stale = false
+    if (args[0] == "-read-some") {
+        var prev_sensors = args.slice(1)
+        var sensors = Object.keys(obj)
+        is_stale = remove_stale_data(sensors, prev_sensors, ctx.sensors_model);
+        if (is_stale) {
+            print("expected keys: " + prev_sensors)
+            print("received keys: " + sensors)
+        }
+        old_data = sensors
     }
 
     var changes = parse_sensor_data(obj, ctx)
