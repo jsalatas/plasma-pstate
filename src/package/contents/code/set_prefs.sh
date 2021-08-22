@@ -116,6 +116,15 @@ write_sensor() {
     return 1
 }
 
+daemon() {
+    export DAEMON_MODE=1
+    while read -r line
+    do
+        # shellcheck disable=SC2068
+        main ${line}
+    done < "/dev/stdin"
+}
+
 print_usage() {
     echo "Usage:"
     echo "1: set_prefs.sh [ -cpu-min-perf |"
@@ -139,22 +148,41 @@ print_usage() {
     exit 3
 }
 
-case $1 in
+main() {
+    case $1 in
 
-    "-read-all")
-        read_all
-        ;;
+        "-read-all")
+            read_all
+            ;;
 
-    "-read-available")
-        read_available
-        ;;
+        "-read-available")
+            read_available
+            ;;
 
-    "-read-some")
-        read_some "${@:2}"
-        ;;
-    *)
-        write_sensor ${@}
-        print_usage
-        ;;
+        "-read-some")
+            read_some "${@:2}"
+            ;;
 
-esac
+        "-daemon")
+            daemon "$@"
+            ;;
+
+        "-exit")
+            exit 0
+            ;;
+
+        *)
+            if write_sensor "${@}"; then
+                return 0
+            fi
+
+            if [ ! ${DAEMON_MODE} ]; then
+                print_usage
+            else
+                echo "{\"error\":\"invalid arg\"}"
+            fi
+            ;;
+    esac
+}
+
+main "$@"
