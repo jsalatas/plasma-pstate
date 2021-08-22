@@ -10,12 +10,9 @@ Item {
     property var name: "NativeMonitor"
     property bool isReady: false
 
-    /* required */ property var sensors_model
-    /* required */ property var sensors_detected
-    /* required */ property var available_values
-
-    /* required */ property var dataSourceReady
-    /* required */ property var sensorsValuesChanged
+    signal handleReadResult(var args, string stdout)
+    signal handleReadAvailResult(string stdout)
+    signal handleSetValueResult(var arg, string stdout)
 
     //
     // proxy the inner timer object
@@ -71,16 +68,17 @@ Item {
             }
 
             if (args[0] === '-read-all' || args[0] === '-read-some') {
-                var changes = Ds.handle_read_result(args, data.stdout, nativeMonitor)
+                var changes = handleReadResult(args, data.stdout)
                 return
             }
 
             if (args[0] === '-read-available') {
-                Ds.handle_read_avail_result(data.stdout, nativeMonitor)
+                handleReadAvailResult(data.stdout)
                 return
             }
 
-            Ds.handle_set_value(args[0], data.stdout, nativeMonitor)
+
+            handleSetValueResult(args[0], data.stdout)
         }
     }
 

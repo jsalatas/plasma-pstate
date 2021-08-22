@@ -8,16 +8,14 @@ Item {
     id: availableValuesDS
     property var name: "LocalAvailableValues"
 
-    /* required */ property string commandSource
-    /* required */ property var available_values
-    /* required */ property var dataSourceReady
-    /* required */ property var isReady
+    /* required */ property var set_prefs
 
+    signal handleReadAvailResult(string stdout)
 
     PlasmaCore.DataSource {
         id: datasource
         engine: 'executable'
-        property alias commandSource: availableValuesDS.commandSource
+        readonly property string commandSource: 'sudo ' + set_prefs + ' -read-available'
 
 
         onNewData: {
@@ -28,7 +26,7 @@ Item {
             if (data['exit code'] > 0) {
                 print('monitorAvailableDS error: ' + data.stderr)
             } else {
-                Ds.handle_read_avail_result(data.stdout, availableValuesDS)
+                handleReadAvailResult(data.stdout)
 
                 print(JSON.stringify(available_values))
             }

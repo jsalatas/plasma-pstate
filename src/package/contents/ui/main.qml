@@ -48,6 +48,12 @@ Item {
         /lmsensors\/.*Package_id_0/g,
         /lmsensors\/.*fan/g
     ]
+
+    property bool isReady: false
+
+    property var updater: undefined
+    property var monitorDS: undefined
+
     property var sensors_model: Utils.get_sensors()
     property var available_values: Utils.get_available_values()
     property var sensors_detected: []
@@ -254,21 +260,36 @@ Item {
         }
     }
 
+    SetPrefsManager {
+        id: prefsManager
 
-    property var monitorDS: undefined
-    property bool isReady: false
+        isReady: main.isReady
+        sensors_model: main.sensors_model
+        sensors_detected: main.sensors_detected
+        available_values: main.available_values
+
+        Component.onCompleted: {
+            prefsManager.dataSourceReady.connect(main.dataSourceReady)
+            prefsManager.sensorsValuesChanged.connect(main.sensorsValuesChanged)
+        }
+    }
+
     Item {
         Loader {
             id: monitorLoader
             onLoaded: {
                 print("monitorLoader: loaded " + monitorLoader.item.name)
+                main.monitorDS = monitorLoader.item
+                monitorDS.handleReadResult
+                    .connect(prefsManager.handleReadResult)
+                if (hasNativeBackend) {
+                    monitorDS.handleReadAvailResult
+                        .connect(prefsManager.handleReadAvailResult)
+                    monitorDS.handleSetValueResult
+                        .connect(prefsManager.handleSetValueResult)
+                }
             }
             // alias to dynamically loaded components
-            Binding {
-                target: main;
-                property: "monitorDS";
-                value: monitorLoader.item
-            }
             Binding {
                 target: main;
                 property: "isReady";
@@ -283,46 +304,31 @@ Item {
                     running: true,
                     repeat: main.pollingInterval > 0,
                     triggeredOnStart: true,
-
-                    // isReady: main.isReady
-                    sensors_model: main.sensors_model,
-                    sensors_detected: main.sensors_detected,
-                    available_values: main.available_values,
-                    dataSourceReady: main.dataSourceReady,
-                    sensorsValuesChanged: main.sensorsValuesChanged,
                 }
                 monitorLoader.setSource(native_src, native_props);
             } else {
                 var local_src = "./DataSourceBackend/Monitor.qml"
                 var local_props = {
                     set_prefs: main.set_prefs,
-                    sensors_model: main.sensors_model,
-                    sensors_detected: main.sensors_detected,
-                    dataSourceReady: main.dataSourceReady,
-                    sensorsValuesChanged: main.sensorsValuesChanged,
                     pollingInterval: main.pollingInterval
-
                 }
                 monitorLoader.setSource(local_src, local_props);
             }
         }
     }
 
-    property var updater: undefined
     Item {
         Loader {
             id: updaterLoader
             onLoaded: {
                 print("updaterLoader: loaded " + updaterLoader.item.name)
-            }
-
-            Binding {
-                target: main;
-                property: "updater";
-                value: updaterLoader.item
+                main.updater = updaterLoader.item
+                if (!main.hasNativeBackend) {
+                    main.updater.handleSetValueResult
+                        .connect(prefsManager.handleSetValueResult)
+                }
             }
         }
-
         Component.onCompleted: {
             if (hasNativeBackend) {
                 var native_src = "./NativeBackend/Updater.qml"
@@ -333,9 +339,6 @@ Item {
                 var local_src = "./DataSourceBackend/Updater.qml"
                 var local_props = {
                     set_prefs: main.set_prefs,
-                    sensors_model: main.sensors_model,
-                    sensors_detected: main.sensors_detected,
-                    sensorsValuesChanged: main.sensorsValuesChanged
                 }
                 updaterLoader.setSource(local_src, local_props);
             }
@@ -347,21 +350,15 @@ Item {
             id: availableValuesLoader
             onLoaded: {
                 print("availableValuesLoader: loaded " + availableValuesLoader.item.name)
+                availableValuesLoader.item.handleReadAvailResult
+                    .connect(prefsManager.handleReadAvailResult)
             }
         }
-
         Component.onCompleted: {
             if (hasNativeBackend) {
             } else {
                 var local_src = "./DataSourceBackend/AvailableValues.qml"
-                var local_props = {
-                    commandSource: (plasmoid.configuration.useSudoForReading ? 'sudo ' : '') +
-                                   set_prefs + ' -read-available',
-
-                    available_values: main.available_values,
-                    dataSourceReady: main.dataSourceReady,
-                    isReady: function() { return main.isReady },
-                }
+                var local_props = { set_prefs: main.set_prefs, }
                 availableValuesLoader.setSource(local_src, local_props);
             }
         }

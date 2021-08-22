@@ -17,11 +17,8 @@ PlasmaCore.DataSource {
                                    (!isReady ? ' -read-all' : ' -read-some ' + sensors_detected.join(" "))
 
     /* required */ property var set_prefs
-    /* required */ property var sensors_model
-    /* required */ property var sensors_detected
 
-    /* required */ property var dataSourceReady
-    /* required */ property var sensorsValuesChanged
+    signal handleReadResult(var args, string stdout)
 
 
     onNewData: {
@@ -32,7 +29,7 @@ PlasmaCore.DataSource {
             var args = sourceName.split(' ')
             args = args.slice(args.indexOf(set_prefs) + 1)
 
-            var changes = Ds.handle_read_result(args, data.stdout, monitorDS)
+            handleReadResult(args, data.stdout)
 
             // Switch command from from -read-all to -read-some
             if (isReady != prevIsReady) {
