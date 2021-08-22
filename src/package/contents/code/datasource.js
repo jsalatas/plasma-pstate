@@ -45,7 +45,10 @@ function init_sensors_detected(sensors_model, sensors_detected) {
     var keys = Object.keys(sensors_model);
     for (var i = 0; i < keys.length; i++) {
         var sensor = sensors_model[keys[i]]
-        if (sensor['value'] !== undefined && !sensors_detected.includes(keys[i])) {
+        if (sensor['value'] !== undefined &&
+            !sensors_detected.includes(keys[i]) &&
+            !Utils.is_sysmon_sensor(sensor))
+        {
             sensors_detected.push(keys[i])
         }
     }
