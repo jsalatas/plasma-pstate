@@ -1,7 +1,11 @@
 # TODO: adapt "org.kde.plasma" here & elsewhere if needed (see README)
 add_definitions(-DTRANSLATION_DOMAIN=\"plasma_applet_gr.ictpro.jsalatas.plasma.pstate\")
 
-add_library(plasma_applet_pstate MODULE pstate.cpp)
+add_library(plasma_applet_pstate MODULE
+                pstate.cpp
+                command_result.cpp
+                set_prefs.cpp
+                )
 
 kcoreaddons_desktop_to_json(plasma_applet_pstate package/metadata.desktop SERVICE_TYPES plasma-applet.desktop)
 
