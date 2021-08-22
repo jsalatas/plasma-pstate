@@ -52,8 +52,9 @@ Item {
     property var available_values: Utils.get_available_values()
     property var sensors_detected: []
 
-    property alias isReady: monitorDS.isReady
     property bool inTray: (plasmoid.parent === null || plasmoid.parent.objectName === 'taskItemContainer')
+
+    property bool hasNativeBackend: plasmoid.nativeInterface.isReady !== undefined
 
     readonly property string set_prefs: '/usr/share/plasma/plasmoids/' +
                                         'gr.ictpro.jsalatas.plasma.pstate/contents/code/' +
@@ -254,51 +255,116 @@ Item {
     }
 
 
-    // NativeBackend.Monitor {
-    //     id: monitorDS
+    property var monitorDS: undefined
+    property bool isReady: false
+    Item {
+        Loader {
+            id: monitorLoader
+            onLoaded: {
+                print("monitorLoader: loaded " + monitorLoader.item.name)
+            }
+            // alias to dynamically loaded components
+            Binding {
+                target: main;
+                property: "monitorDS";
+                value: monitorLoader.item
+            }
+            Binding {
+                target: main;
+                property: "isReady";
+                value: monitorLoader.item.isReady
+            }
+        }
+        Component.onCompleted: {
+            if (hasNativeBackend) {
+                var native_src = "./NativeBackend/Monitor.qml"
+                var native_props = {
+                    interval: main.pollingInterval,
+                    running: true,
+                    repeat: main.pollingInterval > 0,
+                    triggeredOnStart: true,
 
-    //     interval: pollingInterval
-    //     running: true
-    //     repeat: pollingInterval > 0
-    //     triggeredOnStart: true
+                    // isReady: main.isReady
+                    sensors_model: main.sensors_model,
+                    sensors_detected: main.sensors_detected,
+                    available_values: main.available_values,
+                    dataSourceReady: main.dataSourceReady,
+                    sensorsValuesChanged: main.sensorsValuesChanged,
+                }
+                monitorLoader.setSource(native_src, native_props);
+            } else {
+                var local_src = "./DataSourceBackend/Monitor.qml"
+                var local_props = {
+                    set_prefs: main.set_prefs,
+                    sensors_model: main.sensors_model,
+                    sensors_detected: main.sensors_detected,
+                    dataSourceReady: main.dataSourceReady,
+                    sensorsValuesChanged: main.sensorsValuesChanged,
+                    pollingInterval: main.pollingInterval
 
-    //     // isReady: main.isReady
-    //     sensors_model: main.sensors_model
-    //     sensors_detected: main.sensors_detected
-    //     available_values: main.available_values
-    //     dataSourceReady: main.dataSourceReady
-    //     sensorsValuesChanged: main.sensorsValuesChanged
-    // }
-
-    // NativeBackend.Updater {
-    //     id: updater
-    // }
-
-    DataSourceBackend.Monitor {
-        id: monitorDS
-
-        set_prefs: main.set_prefs
-        sensors_model: main.sensors_model
-        sensors_detected: main.sensors_detected
-        dataSourceReady: main.dataSourceReady
-        sensorsValuesChanged: main.sensorsValuesChanged
+                }
+                monitorLoader.setSource(local_src, local_props);
+            }
+        }
     }
 
-    DataSourceBackend.Updater {
-        id: updater
-        set_prefs: main.set_prefs
-        sensors_model: main.sensors_model
-        sensors_detected: main.sensors_detected
-        sensorsValuesChanged: main.sensorsValuesChanged
+    property var updater: undefined
+    Item {
+        Loader {
+            id: updaterLoader
+            onLoaded: {
+                print("updaterLoader: loaded " + updaterLoader.item.name)
+            }
+
+            Binding {
+                target: main;
+                property: "updater";
+                value: updaterLoader.item
+            }
+        }
+
+        Component.onCompleted: {
+            if (hasNativeBackend) {
+                var native_src = "./NativeBackend/Updater.qml"
+                var native_props = {
+                }
+                updaterLoader.setSource(native_src, native_props);
+            } else {
+                var local_src = "./DataSourceBackend/Updater.qml"
+                var local_props = {
+                    set_prefs: main.set_prefs,
+                    sensors_model: main.sensors_model,
+                    sensors_detected: main.sensors_detected,
+                    sensorsValuesChanged: main.sensorsValuesChanged
+                }
+                updaterLoader.setSource(local_src, local_props);
+            }
+        }
     }
 
-    DataSourceBackend.AvailableValues {
-        commandSource: (plasmoid.configuration.useSudoForReading ? 'sudo ' : '') +
-                       set_prefs + ' -read-available'
+    Item {
+        Loader {
+            id: availableValuesLoader
+            onLoaded: {
+                print("availableValuesLoader: loaded " + availableValuesLoader.item.name)
+            }
+        }
 
-        available_values: main.available_values
-        dataSourceReady: main.dataSourceReady
-        isReady: function() { return main.isReady }
+        Component.onCompleted: {
+            if (hasNativeBackend) {
+            } else {
+                var local_src = "./DataSourceBackend/AvailableValues.qml"
+                var local_props = {
+                    commandSource: (plasmoid.configuration.useSudoForReading ? 'sudo ' : '') +
+                                   set_prefs + ' -read-available',
+
+                    available_values: main.available_values,
+                    dataSourceReady: main.dataSourceReady,
+                    isReady: function() { return main.isReady },
+                }
+                availableValuesLoader.setSource(local_src, local_props);
+            }
+        }
     }
 
     NvidiaPowerMizerDS {
