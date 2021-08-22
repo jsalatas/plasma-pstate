@@ -2,9 +2,11 @@ import QtQuick 2.3
 import org.kde.plasma.core 2.0 as PlasmaCore
 
 import '../../code/utils.js' as Utils
+import '../../code/datasource.js' as Ds
 
 
 Item {
+    id: nativeMonitor
     property var name: "NativeMonitor"
     property bool isReady: false
 
@@ -69,52 +71,16 @@ Item {
             }
 
             if (args[0] === '-read-all' || args[0] === '-read-some') {
-                var obj = JSON.parse(data.stdout);
-
-                Utils.remove_stale_data(obj, old_data, sensors_model);
-                old_data = obj
-
-                var changes = Utils.parse_sensor_data(obj)
-
-                if(!isReady) {
-                    sensors_detected = Utils.init_sensors_detected(sensors_model);
-                    print("sensors_detected: ", sensors_detected)
-
-                    dataSourceReady();
-                    isReady = true;
-                }
-
-                if (changes) {
-                    sensorsValuesChanged();
-                }
-
+                var changes = Ds.handle_read_result(args, data.stdout, nativeMonitor)
                 return
             }
 
             if (args[0] === '-read-available') {
-                var obj = JSON.parse(data.stdout);
-                var keys = Object.keys(obj);
-                for (var i=0; i < keys.length; i++) {
-                    var d = obj[keys[i]]
-                    var values = d.split(' ').filter(item => item.length > 0)
-                    available_values[keys[i]] = values
-                }
-
-                if (isReady) {
-                    dataSourceReady();
-                }
+                Ds.handle_read_avail_result(data.stdout, nativeMonitor)
                 return
             }
 
-            // Parse the result after setting a value
-            var arg_0 = args[0]
-            arg_0 = arg_0.substring(1)
-                         .split('-').join('_')
-             if (sensors_detected.includes(arg_0)) {
-                var obj = JSON.parse(data.stdout);
-                var changes = Utils.parse_sensor_data(obj)
-                sensorsValuesChanged();
-             }
+            Ds.handle_set_value(args[0], data.stdout, nativeMonitor)
         }
     }
 

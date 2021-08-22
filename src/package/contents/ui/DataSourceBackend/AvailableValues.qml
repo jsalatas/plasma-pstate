@@ -1,6 +1,9 @@
 import QtQuick 2.0
 import org.kde.plasma.core 2.0 as PlasmaCore
 
+import '../../code/datasource.js' as Ds
+
+
 Item {
     id: availableValuesDS
     property var name: "LocalAvailableValues"
@@ -25,17 +28,8 @@ Item {
             if (data['exit code'] > 0) {
                 print('monitorAvailableDS error: ' + data.stderr)
             } else {
-                var obj = JSON.parse(data.stdout);
-                var keys = Object.keys(obj);
-                for (var i=0; i < keys.length; i++) {
-                    var data = obj[keys[i]]
-                    var values = data.split(' ').filter(item => item.length > 0)
-                    available_values[keys[i]] = values
-                }
+                Ds.handle_read_avail_result(data.stdout, availableValuesDS)
 
-                if (isReady()) {
-                    dataSourceReady();
-                }
                 print(JSON.stringify(available_values))
             }
         }

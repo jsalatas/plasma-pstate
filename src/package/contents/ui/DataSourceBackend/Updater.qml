@@ -2,6 +2,7 @@ import QtQuick 2.3
 import org.kde.plasma.core 2.0 as PlasmaCore
 
 import '../../code/utils.js' as Utils
+import '../../code/datasource.js' as Ds
 
 
 PlasmaCore.DataSource {
@@ -26,9 +27,9 @@ PlasmaCore.DataSource {
             print("    error: " + data.stderr)
             notify(sourceName)
         } else {
-            var obj = JSON.parse(data.stdout);
-            var changes = Utils.parse_sensor_data(obj)
-            sensorsValuesChanged();
+            var cmd = sourceName.split(' ')[2]
+            Ds.handle_set_value(cmd, data.stdout, updater);
+
             print("    done")
         }
 

@@ -2,6 +2,7 @@ import QtQuick 2.3
 import org.kde.plasma.core 2.0 as PlasmaCore
 
 import '../../code/utils.js' as Utils
+import '../../code/datasource.js' as Ds
 
 
 PlasmaCore.DataSource {
@@ -27,26 +28,16 @@ PlasmaCore.DataSource {
         if (data['exit code'] > 0) {
             print('monitorDS error: ' + data.stderr)
         } else {
-            var obj = JSON.parse(data.stdout);
+            var prevIsReady = isReady;
+            var args = sourceName.split(' ')
+            args = args.slice(args.indexOf(set_prefs) + 1)
 
-            Utils.remove_stale_data(obj, old_data, sensors_model);
-            old_data = obj
+            var changes = Ds.handle_read_result(args, data.stdout, monitorDS)
 
-            var changes = Utils.parse_sensor_data(obj)
-
-            if(!isReady) {
-                sensors_detected = Utils.init_sensors_detected(sensors_model);
-                print("sensors_detected: ", sensors_detected)
-                disconnectSource(sourceName)
-
-                dataSourceReady();
-                isReady = true;
-
+            // Switch command from from -read-all to -read-some
+            if (isReady != prevIsReady) {
+                disconnectSource(sourceName);
                 connectSource(commandSource)
-            }
-
-            if (changes) {
-                sensorsValuesChanged();
             }
         }
     }
