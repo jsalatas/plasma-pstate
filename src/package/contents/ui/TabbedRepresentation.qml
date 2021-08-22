@@ -105,13 +105,6 @@ GridLayout {
         }
     }
 
-    Component.onCompleted: {
-        if(isReady) {
-            initialize()
-            sensorsValuesChanged()
-        }
-    }
-
     Connections {
         target: main
         onDataSourceReady: {
