@@ -52,3 +52,27 @@ function init_sensors_detected(sensors_model, sensors_detected) {
         }
     }
 }
+
+
+function filter_readable_sensors(sensors_detected) {
+    var readable = []
+    for (var i = 0; i < sensors_detected.length; i++) {
+        var sensor = sensors_detected[i]
+        if (!(sensor in sensors_model)) {
+            continue
+        }
+
+        // undefined rw_mode defaults to readable
+        if (!('rw_mode' in sensors_model[sensor])) {
+            readable.push(sensor)
+            continue
+        }
+
+        var rw_mode = sensors_model[sensor]['rw_mode']
+        if (rw_mode === 'r') {
+            readable.push(sensor)
+            continue
+        }
+    }
+    return readable
+}

@@ -9,6 +9,7 @@ Item {
     id: nativeMonitor
     property var name: "NativeMonitor"
     property bool isReady: false
+    property var args: ['-read-all']
 
     signal handleReadResult(var args, string stdout)
     signal handleReadAvailResult(string stdout)
@@ -35,7 +36,6 @@ Item {
     Timer {
         id: timer
         onTriggered: {
-            var args = !isReady ? ['-read-all'] : ['-read-some'].concat(sensors_detected)
             plasmoid.nativeInterface.setPrefs(args)
         }
     }
@@ -43,6 +43,8 @@ Item {
     Connections {
         target: main
         onDataSourceReady: {
+            var readable = Ds.filter_readable_sensors(sensors_detected)
+            args = !isReady ? ['-read-all'] : ['-read-some'].concat(readable)
             isReady = true
         }
     }
