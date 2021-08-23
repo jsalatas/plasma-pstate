@@ -17,6 +17,6 @@ read_powermizer() {
 }
 
 set_powermizer () {
-    nvidia-settings -a "[gpu:0]/GpuPowerMizerMode=$1" 2> /dev/null
+    nvidia-settings -a "[gpu:0]/GpuPowerMizerMode=$1" > /dev/null
     echo "{}"
 }
