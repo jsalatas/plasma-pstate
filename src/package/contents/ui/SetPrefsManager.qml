@@ -29,19 +29,7 @@ Item {
     function handleReadResult(args, stdout) {
         var obj = JSON.parse(stdout);
 
-        var is_stale = false
-        if (args[0] == "-read-some") {
-            var prev_sensors = args.slice(1)
-            var sensors = Object.keys(obj)
-            is_stale = Ds.remove_stale_data(sensors, prev_sensors, sensors_model);
-            if (is_stale) {
-                print("expected keys: " + prev_sensors)
-                print("received keys: " + sensors)
-            }
-            old_data = sensors
-        }
-
-        var changes = Ds.parse_sensor_data(obj)
+        var changes = Ds.parse_sensor_data(obj, args.splice(1))
 
         if(!hasReadSensors) {
             Ds.init_sensors_detected(sensors_model, sensors_detected);

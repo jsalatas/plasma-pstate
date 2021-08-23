@@ -1,28 +1,34 @@
 
 .import "utils.js" as Utils
 
-function remove_stale_data(data, old_data, sensors_model) {
-    var has_stale_data = false;
-
-    let diff = old_data.filter(x => !data.includes(x));
-
-    for (var i=0; i < diff.length; i++) {
-        if (!(diff[i] in sensors_model)) {
-            continue
+function array_unique(a) {
+    for(var i=0; i<a.length; ++i) {
+        for(var j=i+1; j<a.length; ++j) {
+            if(a[i] === a[j])
+                a.splice(j--, 1);
         }
-        sensors_model[diff[i]].value = undefined
-        has_stale_data = true;
     }
-
-    return has_stale_data;
+    return a;
 }
 
-function parse_sensor_data(obj) {
+function parse_sensor_data(obj, expected_sensors) {
     var keys = Object.keys(obj);
+    var orig_keys = keys;
+
+    if (expected_sensors) {
+        keys = array_unique(keys.concat(expected_sensors))
+    }
+
     var changes = false
     for(var i=0; i< keys.length; i++) {
         if (!sensors_model[keys[i]]) {
             continue;
+        }
+
+        // Clear sensor value that didn't report data
+        if (orig_keys.indexOf(keys[i]) == -1) {
+            sensors_model[keys[i]]['value'] = undefined
+            continue
         }
 
         var rw_mode = sensors_model[keys[i]]['rw_mode']
