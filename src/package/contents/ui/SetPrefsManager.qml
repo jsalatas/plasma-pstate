@@ -67,9 +67,7 @@ Item {
         if (sensors_detected.includes(arg_0)) {
             var obj = JSON.parse(stdout);
             var changes = Ds.parse_sensor_data(obj)
-            if (changes) {
-                sensorsValuesChanged();
-            }
+            sensorsValuesChanged();
         }
     }
 }
