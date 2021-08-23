@@ -19,6 +19,7 @@ SetPrefs::SetPrefs(QObject *parent) :
     connect(&m_proc, SIGNAL(finished(int)), this, SLOT(finished()));
 
     m_proc.start("sudo", {"-n" SET_PREFS_SCRIPT, "-daemon"});
+    m_proc.waitForStarted();
 }
 
 SetPrefs::~SetPrefs()
