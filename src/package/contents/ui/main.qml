@@ -80,7 +80,14 @@ Item {
 
     Plasmoid.compactRepresentation: CompactRepresentation { }
     // Plasmoid.fullRepresentation: FullRepresentation { }
-    Plasmoid.fullRepresentation: TabbedRepresentation { }
+
+
+    Plasmoid.fullRepresentation: TabbedRepresentation {
+        Component.onCompleted: {
+            firstInit.viewReady()
+        }
+    }
+
 
     Plasmoid.preferredRepresentation: Plasmoid.compactRepresentation
     Plasmoid.switchWidth: units.gridUnit * 15
@@ -96,6 +103,33 @@ Item {
         if (!inTray) {
             // not in tray
         }
+    }
+
+    FirstInit {
+        id: firstInit
+        Component.onCompleted: {
+            firstInit.beginStageOne.connect(onBeginStageOne)
+            firstInit.beginStageTwo.connect(onBeginStageTwo)
+            firstInit.initialized.connect(main.dataSourceReady)
+            /* emit */ firstInit.beginStageOne()
+        }
+
+        function onBeginStageOne() {
+            if (main.hasNativeBackend) {
+                nativeBackendInit.init(firstInit.scriptReady)
+            }
+        }
+
+        function onBeginStageTwo() {
+            if (main.hasNativeBackend) {
+                main.monitorDS.init()
+            }
+        }
+    }
+
+    NativeBackend.Init {
+        id: nativeBackendInit
+        hasNativeBackend: main.hasNativeBackend
     }
 
     onUpdateSensor: {
@@ -269,7 +303,7 @@ Item {
         available_values: main.available_values
 
         Component.onCompleted: {
-            prefsManager.dataSourceReady.connect(main.dataSourceReady)
+            prefsManager.setPrefsReady.connect(firstInit.dataReady)
             prefsManager.sensorsValuesChanged.connect(main.sensorsValuesChanged)
         }
     }
@@ -288,6 +322,7 @@ Item {
                     monitorDS.handleSetValueResult
                         .connect(prefsManager.handleSetValueResult)
                 }
+                firstInit.monitorReady()
             }
             // alias to dynamically loaded components
             Binding {
@@ -301,7 +336,7 @@ Item {
                 var native_src = "./NativeBackend/Monitor.qml"
                 var native_props = {
                     interval: main.pollingInterval,
-                    running: true,
+                    running: false,
                     repeat: main.pollingInterval > 0,
                     triggeredOnStart: true,
                 }
@@ -326,6 +361,8 @@ Item {
                 if (!main.hasNativeBackend) {
                     main.updater.handleSetValueResult
                         .connect(prefsManager.handleSetValueResult)
+
+                    firstInit.scriptReady()
                 }
             }
         }

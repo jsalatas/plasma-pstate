@@ -27,6 +27,11 @@ Item {
     property alias triggeredOnStart: timer.triggeredOnStart
 
 
+    function init() {
+        plasmoid.nativeInterface.setPrefs(['-read-available'])
+        start()
+    }
+
     Timer {
         id: timer
         onTriggered: {
@@ -80,9 +85,5 @@ Item {
 
             handleSetValueResult(args[0], data.stdout)
         }
-    }
-
-    Component.onCompleted: {
-        plasmoid.nativeInterface.setPrefs(['-read-available'])
     }
 }

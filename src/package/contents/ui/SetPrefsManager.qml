@@ -7,14 +7,23 @@ import '../code/datasource.js' as Ds
 Item {
     id: manager
 
-    property bool isReady: false
-
     /* required */ property var sensors_model
     /* required */ property var available_values
     /* required */ property var sensors_detected
 
     signal sensorsValuesChanged
-    signal dataSourceReady
+    signal setPrefsReady
+
+
+    // The last one to become true emits the signal.
+    property bool hasReadSensors: false
+    property bool hasReadAvailable: false
+
+    function doFirstInit() {
+        if (hasReadSensors && hasReadAvailable) {
+            setPrefsReady();
+        }
+    }
 
     // Parse the result of "set_prefs.sh -read-all" or "set_prefs.sh -read-some .."
     function handleReadResult(args, stdout) {
@@ -34,12 +43,12 @@ Item {
 
         var changes = Ds.parse_sensor_data(obj)
 
-        if(!isReady) {
+        if(!hasReadSensors) {
             Ds.init_sensors_detected(sensors_model, sensors_detected);
             print("sensors_detected: ", sensors_detected)
 
-            dataSourceReady();
-            isReady = true;
+            hasReadSensors = true;
+            doFirstInit();
         }
 
         if (changes) {
@@ -59,9 +68,8 @@ Item {
             available_values[keys[i]] = values
         }
 
-        if (isReady) {
-            dataSourceReady();
-        }
+        hasReadAvailable = true;
+        doFirstInit();
     }
 
     function handleSetValueResult(arg, stdout) {
