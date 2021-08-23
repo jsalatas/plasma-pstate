@@ -43,6 +43,15 @@ ColumnLayout {
         }
     }
 
+    Component {
+        id: combobox
+        Pstate.ComboBox {
+            Layout.leftMargin: units.gridUnit
+            Layout.topMargin: 0
+            Layout.bottomMargin: 0
+        }
+    }
+
     onItemsChanged: {
         for(var i = 0; i < items.length; i++) {
             switch (items[i]['type']) {
@@ -52,6 +61,10 @@ ColumnLayout {
                 }
                 case 'switch': {
                     switchbutton.createObject(group, {'props': items[i]})
+                    break
+                }
+                case 'combobox': {
+                    combobox.createObject(group, {'props': items[i]})
                     break
                 }
                 default: console.log("header: unkonwn type: " + items[i]['type'])

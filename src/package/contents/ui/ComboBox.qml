@@ -15,7 +15,7 @@ RowLayout {
     property bool acceptingChanges: false
     property alias text: combobox_title.text
     property var props
-    spacing: 10
+    spacing: 0
 
     onPropsChanged: {
         acceptingChanges = false
