@@ -207,7 +207,7 @@ GridLayout {
 
 
     RowLayout {
-        spacing: toolbarIndicator.width
+        spacing: 0
 
         // Tab bar
         GridLayout {
@@ -234,10 +234,10 @@ GridLayout {
             }
         }
 
-        // Tab bar indicator
+        // Vertical separator
         GridLayout {
             Rectangle {
-                height: stackView.height
+                id: separator
                 width: 1
                 color: Qt.rgba(theme.textColor.r,
                                theme.textColor.g,
@@ -246,8 +246,16 @@ GridLayout {
             }
         }
 
-        GridLayout {
+        RowLayout {
+            spacing: 0
             clip: true
+
+            // spacer
+            Rectangle {
+                width: units.smallSpacing
+                color: Qt.rgba(1, 1, 1, 0)
+                Layout.fillHeight: true
+            }
 
             StackView {
                 id: stackView
