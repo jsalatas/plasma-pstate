@@ -44,6 +44,11 @@ void Pstate::setPrefsFinished()
     emit isReadyChanged(m_isReady);
 }
 
+void Pstate::startScript()
+{
+    m_exec->startScript();
+}
+
 void Pstate::setPrefs(const QStringList &args)
 {
     if (m_exec) {

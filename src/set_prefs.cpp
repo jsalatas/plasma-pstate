@@ -18,8 +18,6 @@ SetPrefs::SetPrefs(QObject *parent) :
     connect(&m_proc, SIGNAL(started()), this, SLOT(started()));
     connect(&m_proc, SIGNAL(finished(int)), this, SLOT(finished()));
 
-    m_proc.start("sudo", {"-n" SET_PREFS_SCRIPT, "-daemon"});
-    m_proc.waitForStarted();
 }
 
 SetPrefs::~SetPrefs()
@@ -69,6 +67,17 @@ void SetPrefs::started()
 void SetPrefs::finished()
 {
     emit procFinished();
+}
+
+void SetPrefs::startScript()
+{
+    if (m_proc.state() != QProcess::NotRunning) {
+        fprintf(stderr, "%s m_proc already running.\n", __PRETTY_FUNCTION__);
+        return;
+    }
+
+    m_proc.start("sudo", {"-n", SET_PREFS_SCRIPT, "-daemon"});
+    m_proc.waitForStarted();
 }
 
 void SetPrefs::runCommand(QStringList args)

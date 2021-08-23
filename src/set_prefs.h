@@ -26,6 +26,7 @@ public:
 	SetPrefs(QObject *parent = nullptr);
     ~SetPrefs();
 
+    void startScript();
     void runCommand(QStringList args);
 
 signals:

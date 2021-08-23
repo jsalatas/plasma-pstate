@@ -35,6 +35,7 @@ signals:
     void isReadyChanged(bool isReady);
 
 public slots:
+    void startScript();
     void setPrefs(const QStringList &args);
 
 private:
