@@ -13,6 +13,7 @@ Item {
 
     signal sensorsValuesChanged
     signal setPrefsReady
+    signal update(string parameter, string value)
 
 
     // The last one to become true emits the signal.
@@ -68,6 +69,27 @@ Item {
             var obj = JSON.parse(stdout);
             var changes = Ds.parse_sensor_data(obj)
             sensorsValuesChanged();
+        }
+    }
+
+
+    function updateSensor(name, value) {
+        print("updating sensor " + name +": " + value)
+
+        var rw_mode = sensors_model[name]['rw_mode']
+        var old_val = sensors_model[name]['value']
+
+        if (rw_mode == 'w') {
+            /* emit */ update(name, value)
+            sensors_model[name]['value'] = value
+            sensorsValuesChanged();
+            return
+        }
+
+        if(value != old_val) {
+            /* emit */ update(name, value)
+        } else {
+            print("    same value")
         }
     }
 }

@@ -117,6 +117,9 @@ Item {
     }
 
     function initialized() {
+        main.updateSensor.connect(prefsManager.updateSensor)
+        prefsManager.update.connect(updater.update)
+
         toolTipMainText = plasmoid.toolTipMainText
         toolTipSubText = plasmoid.toolTipSubText
         toolTipTextFormat = plasmoid.toolTipTextFormat
@@ -156,25 +159,6 @@ Item {
         updateTooltip()
     }
 
-    onUpdateSensor: {
-        print("updating sensor " + name +": " + value)
-
-        var rw_mode = sensors_model[name]['rw_mode']
-        var old_val = sensors_model[name]['value']
-
-        if (rw_mode == 'w') {
-            updater.update(name, value)
-            sensors_model[name]['value'] = value
-            sensorsValuesChanged();
-            return
-        }
-
-        if(value != old_val) {
-            updater.update(name, value)
-        } else {
-            print("    same value")
-        }
-    }
 
     function get_value_text(sensor, value) {
         // lol! Is this the bwsat way to do it?
