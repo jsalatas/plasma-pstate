@@ -10,6 +10,7 @@ Item {
     property alias cfg_passiveMode: passiveModeCheckBox.checked
     property alias cfg_pollingInterval: pollingInterval.value
     property alias cfg_sensorInterval: sensorInterval.value
+    property alias cfg_monitorWhenHidden: monitorWhenHidden.checked
 
     GridLayout {
         Layout.fillWidth: true
@@ -77,6 +78,12 @@ Item {
 
             minimumValue: 2
             maximumValue: 3600
+        }
+
+        CheckBox {
+            id: monitorWhenHidden
+            text: i18n('Show sensors in tool tip')
+            Layout.columnSpan: 2
         }
     }
 }
