@@ -130,6 +130,11 @@ Item {
         }
     }
 
+    function shouldMonitor() {
+        return !inTray || plasmoid.expanded ||
+                plasmoid.configuration.monitorWhenHidden
+    }
+
     function startMonitors() {
         powermanagementDS.start()
         systemmonitorDS.start()
