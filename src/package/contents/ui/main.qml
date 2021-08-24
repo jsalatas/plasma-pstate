@@ -42,7 +42,7 @@ Item {
     property var available_values: Utils.get_available_values()
     property var sensors_detected: []
 
-    property bool inTray: (plasmoid.parent === null || plasmoid.parent.objectName === 'taskItemContainer')
+    property bool inTray: false
 
     property bool hasNativeBackend: plasmoid.nativeInterface.isReady !== undefined
 
@@ -79,12 +79,6 @@ Item {
     property var toolTipTextFormat
     property var icon
 
-    Component.onCompleted: {
-        if (!inTray) {
-            // not in tray
-        }
-    }
-
     FirstInit {
         id: firstInit
         Component.onCompleted: {
@@ -111,6 +105,13 @@ Item {
     NativeBackend.Init {
         id: nativeBackendInit
         hasNativeBackend: main.hasNativeBackend
+    }
+
+    Component.onCompleted: {
+        inTray = plasmoid.parent != null &&
+                 ((plasmoid.parent.pluginName ===
+                    'org.kde.plasma.private.systemtray') ||
+                  (plasmoid.parent.objectName === 'taskItemContainer'))
     }
 
     function initialized() {
