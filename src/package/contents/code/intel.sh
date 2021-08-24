@@ -10,7 +10,8 @@ if [ -f $INTEL_PSTATE/no_turbo ]; then
     CPU_TURBO_OFF="1"
 fi
 
-GPU=/sys/class/drm/card0
+GPU=$(grep -r . /sys/class/drm/card?/device/vendor 2>/dev/null | \
+      grep vendor:0x8086 | sed 's/\/device\/vendor:.*//' | head -n1)
 GPU_MIN_FREQ=$GPU/gt_min_freq_mhz
 GPU_MAX_FREQ=$GPU/gt_max_freq_mhz
 GPU_MIN_LIMIT=$GPU/gt_RP1_freq_mhz
