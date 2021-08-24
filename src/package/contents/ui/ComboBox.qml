@@ -26,6 +26,18 @@ RowLayout {
             filtered = filtered.filter(item => {
                 return values.includes(item['sensor_value'])
             })
+        } else if (filtered === undefined && props['available_values'] &&
+                   props['available_values'] in available_values)
+        {
+            var avail_vals = available_values[props['available_values']]
+
+            filtered = avail_vals.map(val => {
+                var text = val
+                if (sensors_model[props['sensor']]['print']) {
+                    text = main.get_value_text(props['sensor'], val)
+                }
+                return { 'text': text, 'sensor_value': val}
+            })
         }
 
         combobox.model = filtered
