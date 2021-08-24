@@ -52,6 +52,7 @@ Item {
 
     property int pollingInterval: plasmoid.configuration.pollingInterval ?
                                   (plasmoid.configuration.pollingInterval * 1000) : 2000
+    property int slowPollingInterval: (plasmoid.configuration.slowPollingInterval * 1000)
 
     function sensor_short_name(long_name) {
         var parts = long_name.split('/');
@@ -327,6 +328,16 @@ Item {
             monitorDS.stop()
             monitorDS.interval = pollingInterval
             monitorDS.start()
+        }
+
+        onSlowPollingIntervalChanged: {
+            slowPollingInterval = plasmoid.configuration.slowPollingInterval * 1000
+
+            if (plasmoid.expanded || plasmoid.monitorWhenHidden) {
+                stopMonitors()
+                setMonitorInterval(slowPollingInterval)
+                startMonitors()
+            }
         }
 
         onMonitorWhenHiddenChanged: {
