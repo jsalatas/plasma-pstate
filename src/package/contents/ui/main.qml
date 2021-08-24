@@ -142,6 +142,12 @@ Item {
         monitorDS.stop()
     }
 
+    function setMonitorInterval(interval) {
+        powermanagementDS.interval = interval
+        systemmonitorDS.interval = interval
+        monitorDS.interval = interval
+    }
+
     function useOriginalToolTip() {
         Plasmoid.toolTipMainText = toolTipMainText
         Plasmoid.toolTipSubText = toolTipSubText
