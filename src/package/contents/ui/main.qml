@@ -50,12 +50,8 @@ Item {
                                         'gr.ictpro.jsalatas.plasma.pstate/contents/code/' +
                                         'set_prefs.sh'
 
-    property bool passiveMode: plasmoid.configuration.passiveMode
-    property int pollingInterval: plasmoid.configuration.passiveMode ? 0:
-                                    plasmoid.configuration.pollingInterval ?
-                                    (plasmoid.configuration.pollingInterval * 1000) : 2000
-
-    property int sensorInterval: plasmoid.configuration.sensorInterval * 1000
+    property int pollingInterval: plasmoid.configuration.pollingInterval ?
+                                  (plasmoid.configuration.pollingInterval * 1000) : 2000
 
     function sensor_short_name(long_name) {
         var parts = long_name.split('/');
@@ -244,11 +240,11 @@ Item {
                 }
             }
 
-            if (passiveMode || changes) {
+            if (changes) {
                 sensorsChanged()
             }
         }
-        interval: sensorInterval
+        interval: pollingInterval
 
         function sensorsChanged() {
            var t = Date.now()
@@ -287,7 +283,7 @@ Item {
                 sensors_model['battery_percentage']['value'] = bat_charge;
             }
         }
-        interval: sensorInterval
+        interval: pollingInterval
 
         property var sources: ['Battery']
 
@@ -324,30 +320,13 @@ Item {
     Connections {
         target: plasmoid.configuration
         onUseSudoForReadingChanged: {
-            if (passiveMode === false) {
-                monitorDS.restart()
-            }
+            monitorDS.restart()
         }
 
         onPollingIntervalChanged: {
             monitorDS.stop()
             monitorDS.interval = pollingInterval
             monitorDS.start()
-        }
-
-        onPassiveModeChanged: {
-            if (passiveMode == true) {
-                monitorDS.stop()
-                monitorDS.interval = 0
-            } else if (passiveMode == false) {
-                monitorDS.interval = pollingInterval
-                monitorDS.start()
-            }
-        }
-
-        onSensorIntervalChanged: {
-            systemmonitorDS.interval = sensorInterval
-            powermanagementDS.interval = sensorInterval
         }
 
         onMonitorWhenHiddenChanged: {

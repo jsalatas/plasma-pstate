@@ -21,12 +21,6 @@
         <entry name="pollingInterval" type="Int">
             <default>2</default>
         </entry>
-        <entry name="passiveMode" type="Bool">
-            <default>false</default>
-        </entry>
-        <entry name="sensorInterval" type="Int">
-            <default>2</default>
-        </entry>
         <entry name="monitorWhenHidden" type="Bool">
             <default>false</default>
         </entry>
