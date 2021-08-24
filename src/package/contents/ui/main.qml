@@ -77,11 +77,10 @@ Item {
     Plasmoid.switchWidth: units.gridUnit * 15
     Plasmoid.switchHeight: units.gridUnit * 20
 
-
-    Plasmoid.toolTipMainText: '' //i18n('Intel pstate and Thermal Management')
-    Plasmoid.toolTipSubText: ''
-    Plasmoid.toolTipTextFormat: Text.RichText
-    Plasmoid.icon: ''
+    property var toolTipMainText
+    property var toolTipSubText
+    property var toolTipTextFormat
+    property var icon
 
     Component.onCompleted: {
         if (!inTray) {
@@ -95,6 +94,7 @@ Item {
             firstInit.beginStageOne.connect(onBeginStageOne)
             firstInit.beginStageTwo.connect(onBeginStageTwo)
             firstInit.initialized.connect(main.dataSourceReady)
+            firstInit.initialized.connect(main.initialized)
             /* emit */ firstInit.beginStageOne()
         }
 
@@ -116,6 +116,19 @@ Item {
         hasNativeBackend: main.hasNativeBackend
     }
 
+    function initialized() {
+        toolTipMainText = plasmoid.toolTipMainText
+        toolTipSubText = plasmoid.toolTipSubText
+        toolTipTextFormat = plasmoid.toolTipTextFormat
+        icon = plasmoid.icon
+
+        if (plasmoid.configuration.monitorWhenHidden) {
+            useCustomToolTip()
+        } else {
+            stopMonitors()
+        }
+    }
+
     function startMonitors() {
         powermanagementDS.start()
         systemmonitorDS.start()
@@ -126,6 +139,21 @@ Item {
         powermanagementDS.stop()
         systemmonitorDS.stop()
         monitorDS.stop()
+    }
+
+    function useOriginalToolTip() {
+        Plasmoid.toolTipMainText = toolTipMainText
+        Plasmoid.toolTipSubText = toolTipSubText
+        Plasmoid.toolTipTextFormat = toolTipTextFormat
+        Plasmoid.icon = icon
+    }
+
+    function useCustomToolTip() {
+        Plasmoid.toolTipMainText = ''
+        Plasmoid.toolTipSubText = ''
+        Plasmoid.toolTipTextFormat = Text.RichText
+        Plasmoid.icon = ''
+        updateTooltip()
     }
 
     onUpdateSensor: {
@@ -295,6 +323,18 @@ Item {
             })
         }
     }
+
+    Connections {
+        target: plasmoid
+        function onExpandedChanged() {
+            if (!plasmoid.configuration.monitorWhenHidden) {
+                if (plasmoid.expanded) {
+                    startMonitors()
+                } else {
+                    stopMonitors()
+                }
+            }
+        }
     }
 
     Connections {
@@ -324,6 +364,16 @@ Item {
         onSensorIntervalChanged: {
             systemmonitorDS.interval = sensorInterval
             powermanagementDS.interval = sensorInterval
+        }
+
+        onMonitorWhenHiddenChanged: {
+            if (!plasmoid.configuration.monitorWhenHidden) {
+                stopMonitors()
+                useOriginalToolTip()
+            } else {
+                startMonitors()
+                useCustomToolTip()
+            }
         }
     }
 
@@ -454,8 +504,11 @@ Item {
         }
     }
 
-
     function updateTooltip() {
+        if (!plasmoid.configuration.monitorWhenHidden) {
+            return
+        }
+
         var toolTipSubText ='';
         var txt = '';
 
