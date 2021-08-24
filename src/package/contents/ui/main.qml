@@ -42,6 +42,7 @@ Item {
     property var available_values: Utils.get_available_values()
     property var sensors_detected: []
 
+    property bool isInitialized: false
     property bool inTray: false
 
     property bool hasNativeBackend: plasmoid.nativeInterface.isReady !== undefined
@@ -125,6 +126,19 @@ Item {
 
         if (plasmoid.configuration.monitorWhenHidden) {
             useCustomToolTip()
+        }
+
+        if (plasmoid.expanded) {
+            setMonitorInterval(pollingInterval)
+        } else {
+            setMonitorInterval(slowPollingInterval)
+        }
+
+        isInitialized = true
+
+
+        if (shouldMonitor()) {
+            startMonitors()
         } else {
             stopMonitors()
         }
@@ -320,12 +334,20 @@ Item {
     Connections {
         target: plasmoid
         function onExpandedChanged() {
-            if (!plasmoid.configuration.monitorWhenHidden) {
-                if (plasmoid.expanded) {
-                    startMonitors()
-                } else {
-                    stopMonitors()
-                }
+            if (!main.isInitialized) {
+                return
+            }
+
+            stopMonitors()
+
+            if (plasmoid.expanded) {
+                setMonitorInterval(pollingInterval)
+            } else {
+                setMonitorInterval(slowPollingInterval)
+            }
+
+            if (shouldMonitor()) {
+                startMonitors()
             }
         }
     }
@@ -337,17 +359,23 @@ Item {
         }
 
         onPollingIntervalChanged: {
-            monitorDS.stop()
-            monitorDS.interval = pollingInterval
-            monitorDS.start()
+            pollingInterval = plasmoid.configuration.pollingInterval * 1000
+
+            stopMonitors()
+            setMonitorInterval(pollingInterval)
+
+            if (shouldMonitor()) {
+                startMonitors()
+            }
         }
 
         onSlowPollingIntervalChanged: {
             slowPollingInterval = plasmoid.configuration.slowPollingInterval * 1000
 
-            if (plasmoid.expanded || plasmoid.monitorWhenHidden) {
-                stopMonitors()
-                setMonitorInterval(slowPollingInterval)
+            stopMonitors()
+            setMonitorInterval(slowPollingInterval)
+
+            if (shouldMonitor()) {
                 startMonitors()
             }
         }
