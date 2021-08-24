@@ -9,6 +9,7 @@ Item {
     property alias cfg_useSudoForReading: useSudoForReadingCheckbox.checked
     property alias cfg_pollingInterval: pollingInterval.value
     property alias cfg_monitorWhenHidden: monitorWhenHidden.checked
+    property alias cfg_slowPollingInterval: slowPollingInterval.value
 
     GridLayout {
         Layout.fillWidth: true
@@ -62,6 +63,19 @@ Item {
             id: monitorWhenHidden
             text: i18n('Show sensors in tool tip')
             Layout.columnSpan: 2
+        }
+
+        Label {
+            text: i18n("Tool Tip polling interval (seconds):")
+        }
+
+        SpinBox {
+            id: slowPollingInterval
+
+            minimumValue: 2
+            maximumValue: 3600
+
+            enabled: monitorWhenHidden.checked
         }
     }
 }
