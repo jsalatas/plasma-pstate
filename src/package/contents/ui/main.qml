@@ -236,7 +236,6 @@ Item {
     PlasmaCore.DataSource {
         id: powermanagementDS
         engine: "powermanagement"
-        connectedSources: ['Battery']
         onDataChanged: {
             if(powermanagementDS.data["Battery"]) {
                 var bat_time = Number(powermanagementDS.data["Battery"]["Remaining msec"]) / 1000;
@@ -246,6 +245,25 @@ Item {
             }
         }
         interval: sensorInterval
+
+        property var sources: ['Battery']
+
+        function start() {
+            sources.forEach(source => {
+                if (connectedSources.indexOf(source) === -1) {
+                    connectSource(source)
+                }
+            })
+        }
+
+        function stop() {
+            sources.forEach(source => {
+                if (connectedSources.indexOf(source) !== -1) {
+                    disconnectSource(source)
+                }
+            })
+        }
+    }
     }
 
     Connections {
