@@ -116,6 +116,18 @@ Item {
         hasNativeBackend: main.hasNativeBackend
     }
 
+    function startMonitors() {
+        powermanagementDS.start()
+        systemmonitorDS.start()
+        monitorDS.start()
+    }
+
+    function stopMonitors() {
+        powermanagementDS.stop()
+        systemmonitorDS.stop()
+        monitorDS.stop()
+    }
+
     onUpdateSensor: {
         print("updating sensor " + name +": " + value)
 
