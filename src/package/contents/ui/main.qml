@@ -178,10 +178,13 @@ Item {
         engine: 'systemmonitor'
         property var timestamp: Date.now()
 
+        property var sources: []
+
         onSourceAdded: {
              if(monitor_source(source)) {
                  if(connectedSources.indexOf(source) == -1) {
                     connectSource(source);
+                    sources.push(source)
                  }
             }
         }
@@ -230,6 +233,22 @@ Item {
                 sensorsValuesChanged()
                 timestamp = t
             }
+        }
+
+        function start() {
+            sources.forEach(source => {
+                if (connectedSources.indexOf(source) === -1) {
+                    connectSource(source)
+                }
+            })
+        }
+
+        function stop() {
+            sources.forEach(source => {
+                if (connectedSources.indexOf(source) !== -1) {
+                    disconnectSource(source)
+                }
+            })
         }
     }
 
