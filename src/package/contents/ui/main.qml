@@ -145,14 +145,14 @@ Item {
         Plasmoid.toolTipMainText = toolTipMainText
         Plasmoid.toolTipSubText = toolTipSubText
         Plasmoid.toolTipTextFormat = toolTipTextFormat
-        Plasmoid.icon = icon
+        // Plasmoid.icon = icon
     }
 
     function useCustomToolTip() {
         Plasmoid.toolTipMainText = ''
         Plasmoid.toolTipSubText = ''
         Plasmoid.toolTipTextFormat = Text.RichText
-        Plasmoid.icon = ''
+        // Plasmoid.icon = ''
         updateTooltip()
     }
 
