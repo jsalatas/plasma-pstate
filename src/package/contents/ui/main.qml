@@ -26,6 +26,8 @@ Item {
         source: '../font/plasma-pstate.ttf'
     }
 
+    property var tabbedRep: undefined
+
     property var old_data: {}
 
     property var monitor_sources: [
@@ -64,9 +66,12 @@ Item {
     // Plasmoid.fullRepresentation: FullRepresentation { }
 
 
+
     Plasmoid.fullRepresentation: TabbedRepresentation {
+        id: tabbedRep
         Component.onCompleted: {
             firstInit.viewReady()
+            main.tabbedRep = tabbedRep
         }
     }
 
@@ -142,6 +147,8 @@ Item {
         } else {
             stopMonitors()
         }
+
+        tabbedRep.show_item("processorSettings")
     }
 
     function shouldMonitor() {
