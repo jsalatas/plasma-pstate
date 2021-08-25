@@ -162,24 +162,18 @@ GridLayout {
             return
         }
 
-        set_indicator_position(itemId)
 
         var props = {'props': item, showIcon: false};
-
-        if (tabbedRepresentation.currentItemId &&
-            tabbedRepresentation.currentItemId == itemId)
-        {
+        if (currentItemId && currentItemId == itemId) {
+            // clicking on the same item reloads it
             stackView.pop(StackView.Immediate)
             stackView.push(scrollComponent, props, StackView.Immediate)
-            return
         }
 
-        while (stackView.depth > 1) {
-            stackView.pop(StackView.PopTransition)
-        }
-
+        stackView.clear(StackView.PopTransition)
         stackView.push(scrollComponent, props, StackView.PushTransition)
         tabbedRepresentation.currentItemId = itemId
+        set_indicator_position(currentItemId)
     }
 
 
