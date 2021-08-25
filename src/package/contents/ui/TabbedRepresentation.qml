@@ -187,28 +187,31 @@ GridLayout {
         spacing: 0
 
         // Tab bar
-        GridLayout {
+        ColumnLayout {
             Layout.alignment: Qt.AlignTop | Qt.AlignLeft
 
-            RowLayout {
-                ColumnLayout {
-                    id: toolbar
-                    Layout.fillWidth: true
-                    Layout.fillHeight: true
-                }
-                Rectangle {
-                    id: toolbarIndicator
-                    x: toolbar.width
-                    height: toolbar.height
-                    // This makes the plasmoid crash on removal.
-                    // width: toolbar.width * 0.075
-                    width: units.smallSpacing.toFixed(3) * 0.5
-                    color: theme.highlightColor
-
-                    Behavior on y { PropertyAnimation {} }
-                }
-
+            ColumnLayout {
+                id: toolbar
+                Layout.fillWidth: true
+                Layout.fillHeight: true
             }
+
+            Item {
+                /* spacer */
+                Layout.fillHeight: true
+            }
+        }
+
+        Rectangle {
+            id: toolbarIndicator
+            x: toolbar.width
+            height: toolbar.height
+            // This makes the plasmoid crash on removal.
+            // width: toolbar.width * 0.075
+            width: units.smallSpacing.toFixed(3) * 0.5
+            color: theme.highlightColor
+
+            Behavior on y { PropertyAnimation {} }
         }
 
         // Vertical separator
