@@ -8,6 +8,7 @@
 
 
 #include <QtCore/QObject>
+#include <QSettings>
 #include <Plasma/Applet>
 
 #include "command_result.h"
@@ -37,6 +38,13 @@ signals:
 public slots:
     void startScript();
     void setPrefs(const QStringList &args);
+
+    QStringList getProfileList();
+    void saveProfileList(QStringList);
+
+    void saveProfile(QString name, QString data);
+    void deleteProfile(QString name);
+    QString getProfile(QString name);
 
 private:
     bool m_isReady;
