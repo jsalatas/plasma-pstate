@@ -42,6 +42,7 @@ GridLayout {
         ToolButton {
             id: button
             text: undefined
+            ToolTip.visible: hovered
             property var symbolText
             property var itemId
             contentItem: GridLayout {
@@ -142,7 +143,9 @@ GridLayout {
             switch (item.type) {
                 case 'header': {
                     var props = { symbolText: item['icon'], itemId: item['id'] }
-                    toolButton.createObject(toolbar, props)
+                    var obj = toolButton.createObject(toolbar, props)
+                    obj.ToolTip.text = item.text
+                    obj.ToolTip.delay = 1000
                     break
                 }
                 default: console.log("unkonwn type: " + item.type)
