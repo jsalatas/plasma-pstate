@@ -34,7 +34,10 @@ function to_time(item) {
 }
 
 function to_bool(item) {
-    return parseInt(item['value'], 10) == 1;
+    return (typeof(item['value']) == 'boolean' ? item['value'] :
+           typeof(item['value']) == 'string' ? item['value'] === 'true' :
+           typeof(item['value']) == 'number' ? !!parseInt(item['value'], 10) :
+           false).toString();
 }
 
 function to_string(item) {
