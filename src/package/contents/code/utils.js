@@ -41,7 +41,7 @@ function to_bool(item) {
 }
 
 function to_string(item) {
-    return item['value'];
+    return item['value'] !== undefined ? item['value'].toString() : "";
 }
 
 function fmt_tcc(item) {
