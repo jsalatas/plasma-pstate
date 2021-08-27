@@ -11,7 +11,7 @@ Item {
     /* required */ property var available_values
     /* required */ property var sensors_detected
 
-    signal sensorsValuesChanged
+    signal sensorsValuesChanged(bool force)
     signal setPrefsReady
     signal update(string parameter, string value)
 
@@ -41,7 +41,7 @@ Item {
         }
 
         if (changes) {
-            sensorsValuesChanged();
+            sensorsValuesChanged(false);
         }
 
         return changes
@@ -68,7 +68,7 @@ Item {
         if (sensors_detected.includes(arg_0)) {
             var obj = JSON.parse(stdout);
             var changes = Ds.parse_sensor_data(obj)
-            sensorsValuesChanged();
+            sensorsValuesChanged(true);
         }
     }
 

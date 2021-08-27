@@ -39,6 +39,7 @@ Item {
 
     property var updater: undefined
     property var monitorDS: undefined
+    property var timestamp: Date.now()
 
     property var sensors_model: Utils.get_sensors()
     property var available_values: Utils.get_available_values()
@@ -241,9 +242,22 @@ Item {
         return false;
     }
 
+    function sensorsValuesChangedInternal(force) {
+        var t = Date.now()
+        var dt = t - timestamp
+
+        var interval = plasmoid.expanded ? pollingInterval : slowPollingInterval
+
+        if (force === true || dt >= (interval * 0.5)) {
+            sensorsValuesChanged()
+            timestamp = t
+        }
+    }
+
     onSensorsValuesChanged: {
         updateTooltip();
     }
+
 
     PlasmaCore.DataSource {
         id: systemmonitorDS
@@ -425,7 +439,7 @@ Item {
 
         Component.onCompleted: {
             prefsManager.setPrefsReady.connect(firstInit.dataReady)
-            prefsManager.sensorsValuesChanged.connect(main.sensorsValuesChanged)
+            prefsManager.sensorsValuesChanged.connect(main.sensorsValuesChangedInternal)
         }
     }
 
