@@ -262,7 +262,6 @@ Item {
     PlasmaCore.DataSource {
         id: systemmonitorDS
         engine: 'systemmonitor'
-        property var timestamp: Date.now()
 
         property var sources: []
 
@@ -306,20 +305,9 @@ Item {
                 }
             }
 
-            if (changes) {
-                sensorsChanged()
-            }
+            sensorsValuesChangedInternal()
         }
         interval: pollingInterval
-
-        function sensorsChanged() {
-           var t = Date.now()
-            var dt = t - timestamp
-            if (dt >= interval) {
-                sensorsValuesChanged()
-                timestamp = t
-            }
-        }
 
         function start() {
             sources.forEach(source => {
