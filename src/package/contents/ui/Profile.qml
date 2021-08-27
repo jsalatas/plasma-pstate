@@ -503,6 +503,22 @@ ColumnLayout {
                     onActivated: comboboxItemClicked(index)
                     onAccepted: profileComboBoxAccepted()
                     onEditTextChanged: profileComboBoxAccepted()
+
+                    contentItem: TextField {
+                        id: textField
+
+                        padding: 0
+                        Layout.leftMargin: 0
+                        Layout.rightMargin: profileComboBox.indicator.width * 2
+
+                        focus:  profileComboBox.editable
+                        visible: profileComboBox.editable
+                        enabled: profileComboBox.editable
+
+                        text: profileComboBox.editable ?
+                                profileComboBox.editText :
+                                profileComboBox.displayText
+                    }
                 }
 
                 ColumnLayout {
