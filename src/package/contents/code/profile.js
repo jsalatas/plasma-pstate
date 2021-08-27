@@ -12,6 +12,24 @@ function deepCopy(p, c) {
     return c;
 }
 
+
+function getValueText(listViewItem, value) {
+
+    var item = listViewItem['item']
+    if (item['type'] === 'combobox' || item['type'] === 'radio') {
+        var subItems = item['items']
+        for (var i = 0; subItems && (i < subItems.length); i++) {
+            if (subItems[i]['sensor_value'] == value) {
+                return subItems[i]['text']
+            }
+        }
+    }
+
+    var valueText = main.get_value_text(item.sensor, value)
+    return valueText
+}
+
+
 /*
  * Push a sensor item to the array
  *
