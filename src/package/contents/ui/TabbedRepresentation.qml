@@ -86,6 +86,14 @@ GridLayout {
                                                   theme.textColor
                 }
             }
+
+            onActiveFocusChanged: {
+                if (activeFocus) {
+                    buttonText.color = theme.highlightColor
+                } else {
+                    buttonText.color = theme.textColor
+                }
+            }
         }
     }
 
