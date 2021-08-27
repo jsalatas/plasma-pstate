@@ -151,6 +151,24 @@ Item {
         tabbedRep.show_item("processorSettings")
     }
 
+    function enterEditMode() {
+        stopMonitors()
+        main.updateSensor.disconnect(prefsManager.updateSensor)
+        main.updateSensor.connect(main.phonyUpdateSensor)
+    }
+
+    function exitEditMode() {
+        main.updateSensor.disconnect(main.phonyUpdateSensor)
+        main.updateSensor.connect(prefsManager.updateSensor)
+        startMonitors()
+    }
+
+    function phonyUpdateSensor(name, value) {
+        sensors_model[name]['value'] = value
+        sensorsValuesChanged()
+    }
+
+
     function shouldMonitor() {
         return !inTray || plasmoid.expanded ||
                 plasmoid.configuration.monitorWhenHidden

@@ -27,6 +27,10 @@ GridLayout {
 
     property var currentItemId: undefined
 
+    property var profileView: undefined
+    property bool editMode: false
+
+
     Component {
         id: header
         Header {
@@ -46,8 +50,7 @@ GridLayout {
                     text: button.symbolText
                     font.family: symbolsFont.name
                     font.pointSize: theme.smallestFont.pointSize * 2.5
-                    color: theme.textColor
-
+                    color: editMode ? theme.backgroundColor : theme.textColor
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
 
@@ -57,18 +60,29 @@ GridLayout {
             }
             background: Rectangle {
                 color: Qt.rgba(0, 0, 0, 0)
+                radius: 2
             }
             MouseArea {
                 anchors.fill: parent
                 hoverEnabled: true
                 onEntered: {
-                    buttonText.color = theme.highlightColor
+                    buttonText.color = editMode ? theme.highlightColor :
+                                                  theme.highlightColor
                 }
                 onExited: {
-                    buttonText.color = theme.textColor
+                    buttonText.color = editMode ? theme.backgroundColor :
+                                                  theme.textColor
                 }
                 onClicked: {
                     show_item(itemId)
+                }
+            }
+
+            Connections {
+                target: tabbedRepresentation
+                onEditModeChanged: {
+                    buttonText.color = editMode ? theme.backgroundColor :
+                                                  theme.textColor
                 }
             }
         }
@@ -91,6 +105,13 @@ GridLayout {
         }
     }
 
+    Component {
+        id: profileComponent
+        Profile {
+
+        }
+    }
+
     Connections {
         target: main
         onDataSourceReady: {
@@ -109,8 +130,6 @@ GridLayout {
     function initialize() {
         remove_children()
         initialize_toolbar()
-
-        show_item(currentItemId ? currentItemId : "processorSettings")
     }
 
     function initialize_toolbar() {
@@ -138,19 +157,48 @@ GridLayout {
     }
 
     function set_indicator_position(itemId) {
+        var item = undefined
         for(var i = toolbar.children.length; i > 0 ; i--) {
             var button = toolbar.children[i-1];
             if (button.itemId != itemId) {
                 continue
             }
 
-            var res = button.mapToItem(toolbar, 0, 0)
+            item = button
+            break
+        }
+
+        if (!item && itemId === "profilePage") {
+            item = profileButton
+        }
+
+        if (item) {
+            var res = item.mapToItem(toolbar, 0, 0)
             toolbarIndicator.y = res.y
             toolbarIndicator.height = button.height
         }
     }
 
+    function onEnterEditMode() {
+        editMode = true
+    }
+
+    function onExitEditMode() {
+        editMode = false
+    }
+
     function show_item(itemId) {
+        if (itemId == "profilePage") {
+            if (currentItemId !== itemId) {
+                stackView.clear(StackView.PopTransition)
+                stackView.push(profileView, StackView.PushTransition)
+                currentItemId = itemId
+            }
+            set_indicator_position(currentItemId)
+
+            return
+        }
+
         var item = undefined
         model.forEach(m => {
             if (!item && m['id'] == itemId) {
@@ -176,23 +224,51 @@ GridLayout {
         set_indicator_position(currentItemId)
     }
 
+    Component.onCompleted: {
+        profileView = profileComponent.createObject()
+
+        profileView.enterEditMode.connect(onEnterEditMode)
+        profileView.exitEditMode.connect(onExitEditMode)
+
+        profileView.enterEditMode.connect(main.enterEditMode)
+        profileView.exitEditMode.connect(main.exitEditMode)
+
+        profileView.sensors_model = main.sensors_model
+    }
+
 
     RowLayout {
         spacing: 0
 
         // Tab bar
-        ColumnLayout {
-            Layout.alignment: Qt.AlignTop | Qt.AlignLeft
+        Rectangle {
+            Layout.preferredWidth: childrenRect.width
+            Layout.preferredHeight: tabbedRepresentation.height
+
+            color: editMode ? theme.textColor : Qt.rgba(0,0,0,0)
 
             ColumnLayout {
-                id: toolbar
-                Layout.fillWidth: true
-                Layout.fillHeight: true
-            }
+                height: tabbedRepresentation.height
 
-            Item {
-                /* spacer */
-                Layout.fillHeight: true
+                ColumnLayout {
+                    id: toolbar
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                }
+
+                Item {
+                    /* spacer */
+                    Layout.fillHeight: true
+                }
+
+                Loader {
+                    id: profileButton
+                    sourceComponent: toolButton
+                    onLoaded: {
+                        item.symbolText = /* Black Star */ "\u2605"
+                        item.itemId = "profilePage"
+                    }
+                }
             }
         }
 
