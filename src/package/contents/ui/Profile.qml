@@ -49,7 +49,8 @@ ColumnLayout {
                     var sensor = sensors_model[listItem.sensor]
                     profile.sensors[listItem.sensor] = sensor["value"]
 
-                    var valueText = get_value_text(listItem.sensor, sensor["value"])
+                    var valueText = ProfileUtils.getValueText(listItem,
+                                                              sensor["value"])
                     sensorListModel.set(i, {"valueText": valueText})
                 }
             }
@@ -92,9 +93,8 @@ ColumnLayout {
 
             if (keys.includes(listItem.sensor)) {
                 sensorListModel.setProperty(i, "checked", true)
-
                 var value = profile.sensors[listItem.sensor]
-                var valueText = main.get_value_text(listItem.sensor, value)
+                var valueText = ProfileUtils.getValueText(listItem, value)
                 sensorListModel.setProperty(i, "valueText", valueText)
             }    
         }
@@ -148,7 +148,8 @@ ColumnLayout {
         if (isChecked) {
             var _sensor = sensors_model[sensor]
             if (_sensor["value"] !== undefined) {
-                var valueText = get_value_text(listItem.sensor, _sensor["value"])
+                var valueText = ProfileUtils.getValueText(listItem,
+                                                          _sensor["value"])
                 sensorListModel.setProperty(index, "valueText", valueText)
             }
 
