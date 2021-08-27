@@ -330,11 +330,6 @@ ColumnLayout {
         showProfile(mgr.getProfile(model[currentIndex]), editMode)
     }
 
-    function applyProfileName() {
-        var oldName = profileNames[currentIndex]
-        var newName = profileComboBox.editText
-        mgr.setProfileName(oldName, newName)
-    }
 
     function showMessage(message) {
         hasMessage = true
@@ -378,7 +373,7 @@ ColumnLayout {
             listModelItems = ProfileUtils.findSensorItems(Utils.get_model())
             sensorListModel.clear()
 
-            profileComboBox.accepted.connect(profileView.applyProfileName)
+            profileComboBox.accepted.connect(profileView.profileComboBoxAccepted)
             profileView.profileNames = mgr.profileNames
             currentIndex = -1
         }
