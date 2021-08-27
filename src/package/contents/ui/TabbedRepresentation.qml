@@ -270,6 +270,8 @@ GridLayout {
                     onLoaded: {
                         item.symbolText = /* Black Star */ "\u2605"
                         item.itemId = "profilePage"
+                        item.ToolTip.text = "Profiles"
+                        item.ToolTip.delay = 1000
                     }
                 }
             }
