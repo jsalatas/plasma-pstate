@@ -33,14 +33,12 @@ function parse_sensor_data(obj, expected_sensors) {
 
         var rw_mode = sensors_model[keys[i]]['rw_mode']
         var old_val = sensors_model[keys[i]]['value']
-        if (rw_mode == 'w'){
-            if (old_val === undefined) {
-                sensors_model[keys[i]]['value'] = true
-            }
-        } else {
+
+        if (rw_mode == 'w') {
             changes = changes || sensors_model[keys[i]]['value'] !== obj[keys[i]]
-            sensors_model[keys[i]]['value'] = obj[keys[i]];
         }
+
+        sensors_model[keys[i]]['value'] = obj[keys[i]];
     }
 
     return changes
