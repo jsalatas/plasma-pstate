@@ -28,8 +28,6 @@ Item {
 
     property var tabbedRep: undefined
 
-    property var old_data: {}
-
     property var monitor_sources: [
         /cpu\/system\/AverageClock/g,
         /cpu\/system\/TotalLoad/g,
