@@ -45,8 +45,9 @@ GridLayout {
             ToolTip.visible: hovered
             property var symbolText
             property var itemId
-            contentItem: GridLayout {
-                Text {
+            Layout.alignment: Qt.AlignVCenter | Qt.AlignHCenter
+
+            contentItem: Text {
                     id: buttonText
                     text: button.symbolText
                     font.family: symbolsFont.name
@@ -54,10 +55,7 @@ GridLayout {
                     color: editMode ? theme.backgroundColor : theme.textColor
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
-
-                    Layout.fillWidth: true
-                    Layout.fillHeight: true
-                }
+                    anchors.fill: parent
             }
             background: Rectangle {
                 color: Qt.rgba(0, 0, 0, 0)
