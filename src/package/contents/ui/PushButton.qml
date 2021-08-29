@@ -18,7 +18,7 @@ Item {
     property string sensor_value
     property bool active: false
     property bool updating: false
-    property var sensor: []
+    property var sensorModel: undefined
     property bool acceptingChanges: false
 
     property color borderColor: updating ? '#ff0000' :
@@ -30,18 +30,24 @@ Item {
                                                   theme.textColor.b, 0.4))
     property color buttonColor: active ? theme.highlightColor : theme.textColor
 
-    Component.onCompleted: {
-        sensorsValuesChanged()
+    function onValueChanged() {
+        acceptingChanges = false
+        updating = false
+        active = sensorModel.value == sensor_value
+        acceptingChanges = true
     }
 
-    Connections {
-        target: main
-        onSensorsValuesChanged: {
-            acceptingChanges = false
-            updating = false
-            active = sensors_model[sensor[0]]['value'] == sensor_value
-            acceptingChanges = true
-        }
+    onSensorModelChanged: {
+        sensorModel.onValueChanged.connect(onValueChanged)
+        acceptingChanges = true
+    }
+
+    Component.onCompleted: {
+        onValueChanged()
+    }
+
+    Component.onDestruction: {
+        sensorModel.onValueChanged.disconnect(onValueChanged)
     }
 
     Rectangle {
@@ -57,7 +63,7 @@ Item {
             onClicked: {
                 if(acceptingChanges) {
                     updating = true
-                    updateSensor(sensor[0], sensor_value)
+                    updateSensor(sensorModel.sensor, sensor_value)
                 }
             }
         }

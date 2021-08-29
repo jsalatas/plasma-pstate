@@ -233,7 +233,8 @@ function is_present(item_vendors) {
         for(var j=0; j< item_vendors.length; j++) {
             var vendor = vendors[item_vendors[j]]
             for(var k=0; k<vendor['provides'].length; k++) {
-                if(sensors_model[vendor['provides'][k]]['value'] !== undefined) {
+                var sensor = main.sensorsMgr.getSensor(vendor['provides'][k])
+                if(sensor.value !== undefined) {
                     return true;
                     break;
                 }
@@ -246,11 +247,16 @@ function is_present(item_vendors) {
 }
 
 function sensor_has_value(item) {
+
+    var sensorNames = main.sensorsMgr.getKeys()
+
     if (item.type === 'header') {
         if (item.sensors) {
             for (var i = item.sensors.length - 1; i >= 0; i--) {
                 var sensor = item.sensors[i]
-                if (sensor in sensors_model && !!sensors_model[sensor]['value']) {
+                if (sensorNames.includes(sensor) && (main.sensorsMgr.hasKey(sensor) &&
+                    !!main.sensorsMgr.getSensor(sensor).value))
+                {
                     return true
                 }
             }
@@ -279,21 +285,40 @@ function sensor_has_value(item) {
         return false
     }
 
-    if (item.sensor in sensors_model) {
-        return sensors_model[item.sensor]['value'] !== undefined
+    if (main.sensorsMgr.hasKey(item.sensor)) {
+        return main.sensorsMgr.getSensor(item.sensor).value !== undefined
     }
 
     return true
 }
 
-function is_tune_sensor(sensor) {
-    return 'sensor_type' in sensor && sensor['sensor_type'] === 'tune';
+function is_tune_sensor(sensorModel) {
+    return sensorModel.sensor_type === 'tune';
 }
 
-function is_info_sensor(sensor) {
-    return 'sensor_type' in sensor && sensor['sensor_type'] === 'info';
+function is_info_sensor(sensorModel) {
+    return sensorModel.sensor_type === 'info';
 }
 
-function is_sysmon_sensor(sensor) {
-    return 'sensor_type' in sensor && sensor['sensor_type'] === 'sysmon';
+function is_sysmon_sensor(sensorModel) {
+    return sensorModel.sensor_type === 'sysmon';
+}
+
+function get_sensors_text(sensors) {
+    var res = '';
+    if(sensors === undefined) {
+        return res
+    }
+
+    for(var i = 0 ; i < sensors.length; i++) {
+        var value = sensorsMgr.getSensor(sensors[i]).getValueText()
+        if(value) {
+            if(res) {
+                res += ' | ';
+            }
+            res += value;
+        }
+    }
+
+    return res || 'N/A';
 }

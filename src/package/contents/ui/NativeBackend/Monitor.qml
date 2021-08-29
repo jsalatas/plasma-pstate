@@ -43,7 +43,7 @@ Item {
     Connections {
         target: main
         onDataSourceReady: {
-            var readable = Ds.filter_readable_sensors(sensors_detected)
+            var readable = Ds.filterReadableSensors(sensors_detected)
             args = !isReady ? ['-read-all'] : ['-read-some'].concat(readable)
             isReady = true
         }
@@ -75,7 +75,7 @@ Item {
             }
 
             if (args[0] === '-read-all' || args[0] === '-read-some') {
-                var changes = handleReadResult(args, data.stdout)
+                handleReadResult(args, data.stdout)
                 return
             }
 

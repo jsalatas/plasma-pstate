@@ -4,7 +4,6 @@ import org.kde.plasma.core 2.0 as PlasmaCore
 Item {
     id: nvidiaPowerMizer
 
-    property var sensors_model
     property var dataSourceReady
 
     PlasmaCore.DataSource {
@@ -64,8 +63,8 @@ Item {
                           " seconds")
                 }
 
-                sensors_model['powermizer']['value'] = val
-                sensorsValuesChanged()
+                var sensorModel = main.sensorsMgr.getSensor("powermizer")
+                sensorModel.value = val
 
                 if (previous_value === undefined) {
                     dataSourceReady()

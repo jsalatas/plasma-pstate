@@ -18,7 +18,6 @@ RowLayout {
 
     property alias symbol: icon.text
     property alias text: title.text
-    property var sensors: []
     property var items: []
 
     property var props
@@ -58,13 +57,6 @@ RowLayout {
         }
     }
 
-    Connections {
-        target: main
-        onSensorsValuesChanged: {
-            sensors_label.text = get_sensors_text(sensors);
-        }
-    }
-
     onItemsChanged: {
         // parent: controls
         for(var i = 0; i < items.length; i++) {
@@ -91,14 +83,68 @@ RowLayout {
                 }
                 default: console.log("header: unkonwn type: " + items[i]['type'])
             }
+
         }
     }
 
     onPropsChanged: {
         symbol = props['icon']
         text = props['text']
-        sensors = props['sensors']
         items = props['items']
+
+        var keys = props['sensors']
+        var prevLabel = undefined
+        for (var i = 0; keys && i < keys.length ; i++) {
+            var sensorModel = main.sensorsMgr.getSensor(keys[i])
+            var p = { "sensorModel": sensorModel, "prevLabel": prevLabel }
+            var label = sensorLabelComp.createObject(sensorLabels, p)
+            prevLabel = label
+
+            sensorModel.emitValueChanged()
+        }
+    }
+
+    Component {
+        id: sensorLabelComp
+
+        Label {
+            property string valueText: ""
+            property var sensorModel: undefined
+            property var prevLabel: undefined
+
+            Layout.bottomMargin: 5
+            Layout.rightMargin: 0
+
+            text: ""
+            font.pointSize: theme.smallestFont.pointSize
+            color: Qt.rgba(theme.textColor.r,
+                           theme.textColor.g,
+                           theme.textColor.b, 0.6)
+
+            visible: valueText !== "N/A"
+
+            onSensorModelChanged: {
+                sensorModel.onValueChanged.connect(onValueChanged)
+            }
+
+            function onValueChanged() {
+                valueText = sensorModel.getValueText()
+                if (!valueText || valueText === "") {
+                    valueText = "N/A"
+                }
+
+                var spacer = ""
+                if (prevLabel && prevLabel.visible) {
+                    spacer = "| "
+                }
+
+                text = spacer + valueText
+            }
+
+            Component.onDestruction: {
+                sensorModel.onValueChanged.disconnect(onValueChanged)
+            }
+        }
     }
 
     GridLayout {
@@ -134,21 +180,14 @@ RowLayout {
 
         Label  {
             id: spacer0
-            visible: sensors_label.text != 'N/A' && header.showIcon
+            visible: header.showIcon
         }
 
-        Label {
-            id: sensors_label
-            text: get_sensors_text(sensors)
 
-            Layout.bottomMargin: 5
-
-            font.pointSize: theme.smallestFont.pointSize
-            color: Qt.rgba(theme.textColor.r,
-                           theme.textColor.g,
-                           theme.textColor.b, 0.6)
-
-            visible: sensors_label.text != 'N/A'
+        RowLayout {
+            id: sensorLabels
+            Layout.fillWidth: false
+            Layout.fillHeight: false
         }
 
         Label  {

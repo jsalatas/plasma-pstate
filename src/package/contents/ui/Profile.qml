@@ -1,3 +1,7 @@
+/*
+    SPDX-FileCopyrightText: 2021 Vincent Grabner <frankenfruity@protonmail.com>
+    SPDX-License-Identifier: GPL-2.0-or-later
+*/
 import QtQuick 2.0
 import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.1
@@ -5,16 +9,19 @@ import QtQuick.Layouts 1.1
 import '../code/utils.js' as Utils
 import '../code/profile.js' as ProfileUtils
 
+import './Model' as Model
+
+
 ColumnLayout {
     id: profileView
-
-    /* required */ property var sensors_model
 
     property alias profileNames: profileComboBox.model
     property alias currentIndex: profileComboBox.currentIndex
     property alias editMode: profileComboBox.editable
 
     property var editMode: false
+
+    property var previousIndex: -1
 
     property var originalNames: undefined
     property var originalIndex: -1
@@ -32,39 +39,19 @@ ColumnLayout {
         dynamicRoles: true
     }
 
-    Connections {
-        target: main
-        onSensorsValuesChanged: {
-            if (!editMode) {
-                return
-            }
 
-            var profileName = profileNames[currentIndex]
-
-            var profile = mgr.getProfile(profileName)
-            for (var i = 0; i < sensorListModel.count; i++) {
-                var listItem = sensorListModel.get(i)
-
-                if (listItem.checked) {
-                    var sensor = sensors_model[listItem.sensor]
-                    profile.sensors[listItem.sensor] = sensor["value"]
-
-                    var valueText = ProfileUtils.getValueText(listItem,
-                                                              sensor["value"])
-                    sensorListModel.set(i, {"valueText": valueText})
-                }
+    function getCheckedSensors() {
+        var checkedSensors = []
+        for (var i = 0; i < sensorListModel.count; i++) {
+            var listItem = sensorListModel.get(i)
+            if (listItem.checked) {
+                checkedSensors.push(listItem.sensor)
             }
         }
+
+        return checkedSensors
     }
 
-    function applyProfileToSensorsModel(profile, sensorsModel) {
-        var keys = Object.keys(profile.sensors)
-        for (var i = 0; i < keys.length; i++) {
-            var sensor = keys[i]
-            var value = profile.sensors[sensor]
-            sensorsModel[sensor]['value'] = value
-        }
-    }
 
     /*
      * Populate the list view
@@ -77,26 +64,36 @@ ColumnLayout {
             if (sensors && !sensors.includes(item.sensor)) {
                 return
             }
-            if (sensors_model[item.sensor]["value"] === undefined) {
+            var sensorModel = main.sensorsMgr.getSensor(item.sensor)
+            if (sensorModel.value === undefined) {
                 return
             }
             sensorListModel.append(item)
         })
     }
 
-    function applyProfileToList(profile) {
-        // console.trace()
-        var keys = Object.keys(profile.sensors)
+    function applyProfile(profile) {
+        var keys = profile.getSensorNames()
 
         for (var i = 0; i < sensorListModel.count; i++) {
             var listItem = sensorListModel.get(i)
+            var isChecked = keys.includes(listItem.sensor)
 
-            if (keys.includes(listItem.sensor)) {
-                sensorListModel.setProperty(i, "checked", true)
-                var value = profile.sensors[listItem.sensor]
-                var valueText = ProfileUtils.getValueText(listItem, value)
-                sensorListModel.setProperty(i, "valueText", valueText)
-            }    
+            sensorListModel.setProperty(i, "checked", isChecked)
+
+            if (isChecked) {
+                var value = profile.getSensorValue(listItem.sensor)
+                var sensorModel = main.sensorsMgr.getSensor(listItem.sensor)
+
+                if (editMode) {
+                    sensorModel.value = value
+                } else {
+                    var valueText = ProfileUtils.getValueText(listItem,
+                                                              sensorModel,
+                                                              value)
+                    sensorListModel.setProperty(i, "valueText", valueText)
+                }
+            }
         }
     }
 
@@ -112,20 +109,17 @@ ColumnLayout {
             console.trace()
             return
         }
-        var keys = editMode ? undefined : Object.keys(profile.sensors)
-        populateList(keys)
-        applyProfileToList(profile)
 
-        if (editMode) {
-            applyProfileToSensorsModel(profile, sensors_model)
-        }
+        var keys = editMode ? undefined : profile.getSensorNames()
+        populateList(keys)
+        applyProfile(profile)
+    }
+
+    function onExitEditMode() {
+        clearMessage();
     }
 
     function listItemClicked(sensor) {
-        if (!editMode) {
-            return
-        }
-
         var index;
         var listItem;
 
@@ -140,92 +134,88 @@ ColumnLayout {
             return
         }
 
-        var isChecked = !listItem.checked
-        sensorListModel.setProperty(index, "checked", isChecked)
+        sensorListModel.setProperty(index, "checked", !listItem.checked)
 
-        var profile = mgr.getProfile(profileNames[currentIndex])
-
-        if (isChecked) {
-            var _sensor = sensors_model[sensor]
-            if (_sensor["value"] !== undefined) {
-                var valueText = ProfileUtils.getValueText(listItem,
-                                                          _sensor["value"])
-                sensorListModel.setProperty(index, "valueText", valueText)
-            }
-
-            profile.sensors[sensor] = _sensor["value"]
-        } else {
-            delete profile.sensors[sensor]
-            sensorListModel.setProperty(index, "valueText", "-")
-        }
+        var sensorModel = main.sensorsMgr.getSensor(sensor)
+        sensorModel.emitValueChanged()
     }
 
     function newButtonClicked() {
-        var profile = mgr.createProfile()
+        // Save current shadow profile
+        if (currentIndex > -1) {
+            mgr.applySensorModelValues(profileComboBox.model[currentIndex],
+                                       getCheckedSensors())
+        }
 
-        var model = profileNames
-        model.push(profile.name)
-        profileNames = model
-        currentIndex = model.length - 1
+        // Create new instance of a profile object
+        var profile = mgr.createProfile(profileNames)
+        var arr = profileComboBox.model
+        arr.push(profile.name)
+        profileComboBox.model = arr
 
+        // Show the new profile
+        currentIndex = arr.length - 1
+        profile = mgr.getProfile(profileComboBox.model[currentIndex])
         showProfile(profile, editMode)
+
+        // Ensure the new shadow profile will be saved
+        previousIndex = currentIndex
     }
 
     function editButtonClicked() {
-        /* emit */ enterEditMode()
+        if (editMode) {
+            return
+        }
 
         originalNames = profileNames.slice()
         originalIndex = currentIndex
 
+        /* emit */ enterEditMode()
+        editMode = true
+
         if (currentIndex > -1) {
-            var profile = mgr.getProfile(profileNames[currentIndex])
-            showProfile(profile, true)
-        } else {
-            sensorListModel.clear()
+            var profile = mgr.getProfile(profileComboBox.model[currentIndex])
+            showProfile(profile, editMode)
+        }
+    }
+
+
+    function cancelButtonClicked() {
+        if (!editMode) {
+            return
         }
 
-        editMode = true
+        /* emit */ exitEditMode()
+        editMode = false
+
+        profileNames = originalNames.slice()
+        currentIndex = originalIndex
+        previousIndex = currentIndex
+
+        if (currentIndex > -1) {
+            var profile = mgr.getProfile(profileComboBox.model[currentIndex])
+            showProfile(profile, editMode)
+        }
     }
+
 
     function saveButtonClicked() {
         print("Save " + profileComboBox.editText)
-
         if (currentIndex > -1) {
-            var oldName = profileNames[currentIndex]
-            var newName = profileComboBox.editText
-
-            var prevIndex = currentIndex
-            if (oldName !== newName) {
-                var res = mgr.setProfileName(oldName, newName)
-                
-                if (res) {
-                    var arr = profileNames.slice()
-
-                    // Update the combobox
-                    arr[currentIndex] = newName
-                    profileNames = arr
-                    currentIndex = prevIndex
-                } else {
-                    showMessage("Invalid profile name.")
-                    return
-                }
-            }
+            mgr.applySensorModelValues(profileComboBox.model[currentIndex],
+                                       getCheckedSensors())
         }
 
-        mgr.saveProfiles()
-        plasmoid.nativeInterface.saveProfileList(profileView.profileNames)
+        mgr.commitProfileChanges(profileNames)
 
-        if (currentIndex !== -1) {
-            var profile = mgr.getProfile(profileNames[currentIndex])
-            showProfile(profile)
-
-            profileComboBox.editText = profile.name
-        }
-
-        clearMessage()
-
-        editMode = false
         /* emit */ exitEditMode()
+        editMode = false
+
+        currentIndex = originalIndex
+        previousIndex = currentIndex
+
+        var profile = mgr.getProfile(profileComboBox.model[currentIndex])
+        showProfile(profile, false)
     }
 
     function deleteButtonClicked() {
@@ -236,9 +226,7 @@ ColumnLayout {
             return
         }
 
-        mgr.deleteProfile(profileNames[currentIndex])
-
-        var prevIndex = currentIndex
+        mgr.deleteProfile(profileComboBox.model[currentIndex])
 
         var idx = currentIndex
         var model = profileNames
@@ -249,35 +237,20 @@ ColumnLayout {
         if (currentIndex > -1) {
             var name = profileNames[currentIndex]
             var profile = mgr.getProfile(name)
-            showProfile(profile)
+            showProfile(profile, editMode)
         } else {
             sensorListModel.clear()
         }
+
+        previousIndex = currentIndex
     }
 
-    function cancelButtonClicked() {
-        if (!editMode) {
+
+    function applyButtonClicked() {
+        if (currentIndex === -1) {
             return
         }
 
-        clearMessage()
-
-        if (originalIndex > -1) {
-            var name = profileNames[originalIndex]
-            var profile = mgr.getProfile(name)
-            showProfile(profile, false)
-        } else {
-            sensorListModel.clear()
-        }
-
-        profileNames = originalNames
-        currentIndex = originalIndex
-        editMode = false
-
-        /* emit */ exitEditMode()
-    }
-
-    function applyButtonClicked() {
         var profile = mgr.getProfile(profileNames[currentIndex])
 
         var keys = Object.keys(profile.sensors)
@@ -289,17 +262,23 @@ ColumnLayout {
     }
 
     function comboboxItemClicked(index) {
-        if (!editMode) {
-            var name = profileNames[currentIndex]
-            var profile = mgr.getProfile(name)
-            showProfile(profile, editMode)
-            applyButtonClicked()
-            return
-        } else {        
-            var name = profileNames[currentIndex]
+        // Save current values to previous profile
+        if (editMode && previousIndex > -1) {
+            mgr.applySensorModelValues(profileComboBox.model[previousIndex],
+                                       getCheckedSensors())
+        }
+
+        if (index > -1) {
+            var name = profileNames[index]
             var profile = mgr.getProfile(name)
             showProfile(profile, editMode)
         }
+
+        if (!editMode) {
+            applyButtonClicked()
+        }
+
+        previousIndex = index
     }
 
     function upButtonClicked() {
@@ -312,8 +291,9 @@ ColumnLayout {
         model.splice(idx - 1, 0, item[0])
         profileNames = model
         currentIndex = idx - 1
+        previousIndex = currentIndex
 
-        showProfile(mgr.getProfile(model[currentIndex]), editMode)
+        showProfile(mgr.getProfile(profileNames[currentIndex]), editMode)
     }
 
     function downButtonClicked() {
@@ -326,8 +306,9 @@ ColumnLayout {
         model.splice(idx + 1, 0, item[0])
         profileNames = model
         currentIndex = idx + 1
+        previousIndex = currentIndex
 
-        showProfile(mgr.getProfile(model[currentIndex]), editMode)
+        showProfile(mgr.getProfile(profileNames[currentIndex]), editMode)
     }
 
 
@@ -353,31 +334,48 @@ ColumnLayout {
             return
         }
 
-        if (!mgr.validateName(newName)) {
+        if (!mgr.validateName(newName, profileNames)) {
             showMessage("Invalid profile name.")
         } else {
             clearMessage()
+
+            mgr.renameProfile(oldName, newName)
+
+            // refresh the combobox
+            var arr = profileNames
+            var idx = currentIndex
+            arr[currentIndex] = newName
+            profileNames = arr
+            currentIndex = idx
         }
     }
 
-    ProfileManager {
+
+    Model.ProfileManager {
         id: mgr
 
-        sensors_model: profileView.sensors_model
-        editMode: profileView.editMode
-
         Component.onCompleted: {
+            profileView.exitEditMode.connect(onExitEditMode)
+
             profileView.enterEditMode.connect(mgr.enterEditMode)
             profileView.exitEditMode.connect(mgr.exitEditMode)
+
+            mgr.loadProfiles()
 
             listModelItems = ProfileUtils.findSensorItems(Utils.get_model())
             sensorListModel.clear()
 
             profileComboBox.accepted.connect(profileView.profileComboBoxAccepted)
-            profileView.profileNames = mgr.profileNames
+            profileView.profileNames = mgr.getProfileNames()
             currentIndex = -1
+            previousIndex = currentIndex
+
+            var name = profileNames[0]
+            var profile = mgr.getProfile(name)
+            showProfile(profile, editMode)
         }
     }
+
 
     Component {
         id: sensorItemDelegate
@@ -388,6 +386,53 @@ ColumnLayout {
             enabled: profileView.editMode
 
             onClicked: listItemClicked(sensor)
+
+            // save the sensor here so it's accessible in onDestruction
+            property var sensorModel
+
+            function onValueChanged(sensorModel) {
+                var item = undefined
+
+                if (!editMode) {
+                    return
+                }
+
+                if (sensorListModel) {
+                    for (var i = 0; i < sensorListModel.count; i++) {
+                        var listItem = sensorListModel.get(i)
+                        if (listItem.sensor == sensorModel.sensor) {
+                            item = listItem
+                            break;
+                        }
+                    }
+                }
+
+                if (!item || !item.sensor) {
+                    print("error: sensorItemDelegate onValueChanged error no " +
+                          "item attached")
+                    console.trace()
+                    return
+                }
+
+
+                if (!item.checked) {
+                    valueText = "-"
+                    return
+                }
+
+                listItem.valueText = ProfileUtils.getValueText(item,
+                                                               sensorModel)
+            }
+
+            Component.onCompleted: {
+                sensorModel = main.sensorsMgr.getSensor(item.sensor)
+                sensorModel.onValueChangedCustom.connect(onValueChanged)
+            }
+
+            Component.onDestruction: {
+                sensorModel.onValueChangedCustom.disconnect(onValueChanged)
+                sensorModel = undefined
+            }
 
             ColumnLayout {
                 spacing: 0
@@ -659,7 +704,7 @@ ColumnLayout {
             Layout.preferredWidth: profileView.width
             Layout.preferredHeight: childrenRect.height
             visible: hasMessage
-            color: "red"
+            color: theme.negativeTextColor ? theme.negativeTextColor : "red"
 
             Label {
                 id: messageBoxLabel

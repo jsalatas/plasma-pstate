@@ -1,3 +1,7 @@
+/*
+    SPDX-FileCopyrightText: 2021 Vincent Grabner <frankenfruity@protonmail.com>
+    SPDX-License-Identifier: GPL-2.0-or-later
+*/
 import QtQuick 2.3
 
 import '../code/utils.js' as Utils
@@ -7,11 +11,9 @@ import '../code/datasource.js' as Ds
 Item {
     id: manager
 
-    /* required */ property var sensors_model
     /* required */ property var available_values
     /* required */ property var sensors_detected
 
-    signal sensorsValuesChanged(bool force)
     signal setPrefsReady
     signal update(string parameter, string value)
 
@@ -30,21 +32,16 @@ Item {
     function handleReadResult(args, stdout) {
         var obj = JSON.parse(stdout);
 
-        var changes = Ds.parse_sensor_data(obj, args.splice(1))
+        var x = args.splice(1)
+        Ds.parseSensorData(obj, x)
 
         if(!hasReadSensors) {
-            Ds.init_sensors_detected(sensors_model, sensors_detected);
+            Ds.initSensorsDetected(main.sensorsMgr, sensors_detected)
             print("sensors_detected: ", sensors_detected)
 
             hasReadSensors = true;
             doFirstInit();
         }
-
-        if (changes) {
-            sensorsValuesChanged(false);
-        }
-
-        return changes
     }
 
     // Parse the result of "set_prefs.sh -read-available"
@@ -57,6 +54,8 @@ Item {
             available_values[keys[i]] = values
         }
 
+        print("available_values: ", JSON.stringify(available_values))
+
         hasReadAvailable = true;
         doFirstInit();
     }
@@ -67,8 +66,8 @@ Item {
                      .split('-').join('_')
         if (sensors_detected.includes(arg_0)) {
             var obj = JSON.parse(stdout);
-            var changes = Ds.parse_sensor_data(obj)
-            sensorsValuesChanged(true);
+
+            Ds.parseSensorData(obj, undefined, true)
         }
     }
 
@@ -76,15 +75,16 @@ Item {
     function updateSensor(name, value) {
         print("updating sensor " + name +": " + value)
 
-        var rw_mode = sensors_model[name]['rw_mode']
-        var old_val = sensors_model[name]['value']
+        var sensorModel = main.sensorsMgr.getSensor(name)
+        var rw_mode = sensorModel.rw_mode
+        var old_val = sensorModel.value
 
         if (rw_mode == 'w') {
             /* emit */ update(name, value)
-            sensors_model[name]['value'] = value
-            sensorsValuesChanged();
+            main.sensorsMgr.setSensorValue(name, value)
             return
         }
+
 
         if(value != old_val) {
             /* emit */ update(name, value)

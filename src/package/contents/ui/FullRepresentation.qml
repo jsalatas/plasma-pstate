@@ -29,7 +29,6 @@ ColumnLayout {
         target: main
         onDataSourceReady: {
             initialize()
-            sensorsValuesChanged()
         }
     }
 

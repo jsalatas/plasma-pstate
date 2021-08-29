@@ -123,7 +123,6 @@ GridLayout {
         target: main
         onDataSourceReady: {
             initialize()
-            sensorsValuesChanged()
         }
     }
 
@@ -241,8 +240,6 @@ GridLayout {
 
         profileView.enterEditMode.connect(main.enterEditMode)
         profileView.exitEditMode.connect(main.exitEditMode)
-
-        profileView.sensors_model = main.sensors_model
     }
 
 

@@ -10,31 +10,45 @@ import QtQuick.Layouts 1.1
 RowLayout {
     Layout.fillWidth: true
 
-    property var sensor: []
+    property var sensorModel: undefined
     
     property bool acceptingChanges: false
     property alias text: combobox_title.text
     property var props
     spacing: 0
 
+
+    function onValueChanged() {
+        acceptingChanges = false
+        var value = sensorModel.value
+        for(var i = 0; i < combobox.model.length; i++) {
+            if(combobox.model[i].sensor_value == value) {
+                combobox.currentIndex = i
+            }
+        }
+        acceptingChanges = true
+    }
+
     onPropsChanged: {
         acceptingChanges = false
 
+        sensorModel = main.sensorsMgr.getSensor(props['sensor'])
+
         var filtered = props['items']
-        if (props['sensor'] in available_values) {
-            var values = available_values[props['sensor']]
+        if (sensorModel.sensor in available_values) {
+            var values = available_values[sensorModel.sensor]
             filtered = filtered.filter(item => {
                 return values.includes(item['sensor_value'])
             })
         } else if (filtered === undefined && props['available_values'] &&
                    props['available_values'] in available_values)
         {
-            var avail_vals = available_values[props['available_values']]
+            var avail_vals = available_values[[props['available_values']]]
 
             filtered = avail_vals.map(val => {
                 var text = val
-                if (sensors_model[props['sensor']]['print']) {
-                    text = main.get_value_text(props['sensor'], val)
+                if (sensorModel.print_func) {
+                    text = sensorModel.getValueText(val)
                 }
                 return { 'text': text, 'sensor_value': val}
             })
@@ -42,32 +56,20 @@ RowLayout {
 
         combobox.model = filtered
         text = props['text']
-        sensor.push(props['sensor'])
+        sensorModel.onValueChanged.connect(onValueChanged)
 
         acceptingChanges = true
     }
 
     Component.onCompleted: {
+        onValueChanged()
         acceptingChanges = true
-        sensorsValuesChanged()
     }
 
-    Connections {
-        target: main
-        onSensorsValuesChanged: {
-            acceptingChanges = false
-            if(sensor.length != 0) {
-                var value = sensors_model[sensor[0]]['value'];
-                for(var i = 0; i < combobox.model.length; i++) {
-                    if(combobox.model[i].sensor_value == value) {
-                        combobox.currentIndex = i
-                    }
-                }
-            }
-            acceptingChanges = true
-        }
+    Component.onDestruction: {
+        sensorModel.onValueChanged.disconnect(onValueChanged)
     }
-    
+
     Label {
         Layout.fillWidth: true
         Layout.alignment: Qt.AlignVCenter
@@ -85,7 +87,8 @@ RowLayout {
 
         onActivated: {
             if(acceptingChanges) {
-                updateSensor(sensor[0], combobox.model[currentIndex].sensor_value)
+                updateSensor(sensorModel.sensor,
+                             combobox.model[currentIndex].sensor_value)
             }
         }
 

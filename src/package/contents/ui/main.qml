@@ -14,10 +14,11 @@ import '../code/utils.js' as Utils
 import './DataSourceBackend' as DataSourceBackend
 import './NativeBackend' as NativeBackend
 
+import './Model' as Model
+
 Item {
     id: main
     
-    signal sensorsValuesChanged
     signal dataSourceReady
     signal updateSensor(string name, string value)
 
@@ -37,9 +38,7 @@ Item {
 
     property var updater: undefined
     property var monitorDS: undefined
-    property var timestamp: Date.now()
 
-    property var sensors_model: Utils.get_sensors()
     property var available_values: Utils.get_available_values()
     property var sensors_detected: []
 
@@ -64,8 +63,6 @@ Item {
     Plasmoid.compactRepresentation: CompactRepresentation { }
     // Plasmoid.fullRepresentation: FullRepresentation { }
 
-
-
     Plasmoid.fullRepresentation: TabbedRepresentation {
         id: tabbedRep
         Component.onCompleted: {
@@ -84,9 +81,19 @@ Item {
     property var toolTipTextFormat
     property var icon
 
+    property var sensorsMgr
+
+
+    Component {
+        id: sensorsMgrComponent
+        Model.SensorsManager {
+        }
+    }
+
     FirstInit {
         id: firstInit
         Component.onCompleted: {
+            sensorsMgr = sensorsMgrComponent.createObject()
             firstInit.beginStageOne.connect(onBeginStageOne)
             firstInit.beginStageTwo.connect(onBeginStageTwo)
             firstInit.initialized.connect(main.dataSourceReady)
@@ -95,6 +102,7 @@ Item {
         }
 
         function onBeginStageOne() {
+            sensorsMgr.loadSensors()
             if (main.hasNativeBackend) {
                 nativeBackendInit.init(firstInit.scriptReady)
             }
@@ -163,8 +171,7 @@ Item {
     }
 
     function phonyUpdateSensor(name, value) {
-        sensors_model[name]['value'] = value
-        sensorsValuesChanged()
+        sensorsMgr.setSensorValue(name, value)
     }
 
 
@@ -174,6 +181,9 @@ Item {
     }
 
     function startMonitors() {
+        if (!plasmoid.expanded) {
+            connectTooltipSensors()
+        }
         powermanagementDS.start()
         systemmonitorDS.start()
         monitorDS.start()
@@ -183,6 +193,10 @@ Item {
         powermanagementDS.stop()
         systemmonitorDS.stop()
         monitorDS.stop()
+
+        if (!plasmoid.expanded) {
+            disconnectTooltipSensors()
+        }
     }
 
     function setMonitorInterval(interval) {
@@ -206,30 +220,6 @@ Item {
         updateTooltip()
     }
 
-
-    function get_value_text(sensor, value) {
-        // lol! Is this the bwsat way to do it?
-        var obj = {'value': value, 'unit': sensors_model[sensor]['unit']}
-        return sensors_model[sensor]['print'](obj)
-    }
-
-    function get_sensors_text(sensors) {
-        var res = '';
-        if(sensors != undefined) {
-            for(var i = 0 ; i < sensors.length; i++) {
-                var value = sensors_model[sensors[i]]['print'](sensors_model[sensors[i]]);
-                if(value) {
-                    if(res) {
-                        res += ' | ';
-                    }
-                    res += value;
-                }
-            }
-        }
-
-        return res || 'N/A';
-    }
-
     function monitor_source(src) {
         for(var i=0; i < monitor_sources.length; i++) {
             if(src.match(monitor_sources[i])) {
@@ -239,23 +229,6 @@ Item {
 
         return false;
     }
-
-    function sensorsValuesChangedInternal(force) {
-        var t = Date.now()
-        var dt = t - timestamp
-
-        var interval = plasmoid.expanded ? pollingInterval : slowPollingInterval
-
-        if (force === true || dt >= (interval * 0.5)) {
-            sensorsValuesChanged()
-            timestamp = t
-        }
-    }
-
-    onSensorsValuesChanged: {
-        updateTooltip();
-    }
-
 
     PlasmaCore.DataSource {
         id: systemmonitorDS
@@ -274,36 +247,30 @@ Item {
 
         onNewData: {
             var source_short_name = sensor_short_name(sourceName);
-            var changes = false
 
             if(source_short_name.startsWith('fan')) {
-                if (sensors_model['fan_speeds'] != undefined &&
-                    sensors_model['fan_speeds']['value'] != undefined)
-                {
-                    changes = changes || sensors_model['fan_speeds']['value'][source_short_name] != data.value;
-                    sensors_model['fan_speeds']['value'][source_short_name] = data.value;
+                var sensorModel = sensorsMgr.getSensor('fan_speeds')
+                if (sensorModel.value !== undefined) {
+                    var arr = sensorModel.value
+                    arr[source_short_name] = data.value
+                    sensorModel.value = arr
                 }
             } else {
                 switch (source_short_name) {
                     case 'AverageClock': {
-                        changes = changes || sensors_model['cpu_cur_freq']['value'] != data.value
-                        sensors_model['cpu_cur_freq']['value'] = data.value
+                        sensorsMgr.setSensorValue('cpu_cur_freq', data.value)
                         break;
                     }
                     case 'Package_id_0': {
-                        changes = changes || sensors_model['package_temp']['value'] != data.value
-                        sensors_model['package_temp']['value'] = data.value
+                        sensorsMgr.setSensorValue('package_temp', data.value)
                         break;
                     }
                     case 'TotalLoad': {
-                        changes = changes || sensors_model['cpu_cur_load']['value'] != data.value
-                        sensors_model['cpu_cur_load']['value'] = data.value
+                        sensorsMgr.setSensorValue('cpu_cur_load', data.value)
                         break;
                     }
                 }
             }
-
-            sensorsValuesChangedInternal()
         }
         interval: pollingInterval
 
@@ -329,11 +296,13 @@ Item {
         engine: "powermanagement"
         onDataChanged: {
             if(powermanagementDS.data["Battery"]) {
+                var sensorModel = undefined
+
                 var bat_time = Number(powermanagementDS.data["Battery"]["Remaining msec"]) / 1000;
-                sensors_model['battery_remaining_time']['value'] = bat_time;
+                sensorsMgr.setSensorValue('battery_remaining_time', bat_time)
+
                 var bat_charge = powermanagementDS.data["Battery"]["Percent"];
-                sensors_model['battery_percentage']['value'] = bat_charge;
-                sensorsValuesChangedInternal()
+                sensorsMgr.setSensorValue('battery_percentage', bat_charge)
             }
         }
         interval: pollingInterval
@@ -420,13 +389,11 @@ Item {
     SetPrefsManager {
         id: prefsManager
 
-        sensors_model: main.sensors_model
         sensors_detected: main.sensors_detected
         available_values: main.available_values
 
         Component.onCompleted: {
             prefsManager.setPrefsReady.connect(firstInit.dataReady)
-            prefsManager.sensorsValuesChanged.connect(main.sensorsValuesChangedInternal)
         }
     }
 
@@ -519,7 +486,6 @@ Item {
 
     NvidiaPowerMizerDS {
         id: nvidiaPowerMizerDS
-        sensors_model: main.sensors_model
         dataSourceReady: main.dataSourceReady
     }
 
@@ -544,10 +510,32 @@ Item {
         }
     }
 
+
+    // One sensor from each monitor is enough
+    property var tooltipSensors: ['cpu_cur_load', 'gpu_cur_freq', 'battery_percentage' ]
+
+    function connectTooltipSensors() {
+        for (var i in tooltipSensors) {
+            var sensor = tooltipSensors[i]
+            var sensorModel = sensorsMgr.getSensor(sensor)
+            sensorModel.onValueChanged.connect(updateTooltip)
+        }
+    }
+
+    function disconnectTooltipSensors() {
+        for (var i in tooltipSensors) {
+            var sensor = tooltipSensors[i]
+            var sensorModel = sensorsMgr.getSensor(sensor)
+            sensorModel.onValueChanged.disconnect(updateTooltip)
+        }
+    }
+
     function updateTooltip() {
         if (!plasmoid.configuration.monitorWhenHidden) {
             return
         }
+
+        var loadText = Utils.get_sensors_text(['cpu_cur_load', 'cpu_cur_freq', 'gpu_cur_freq'])
 
         var toolTipSubText ='';
         var txt = '';
@@ -559,11 +547,11 @@ Item {
         toolTipSubText += '<span style="font-family: Plasma pstate Manager;"><font size="5">d</font></span>'
         toolTipSubText += '</td>'
         toolTipSubText += '<td style="text-align: left;">'
-        toolTipSubText += '<span>&nbsp;&nbsp;'+get_sensors_text(['cpu_cur_load', 'cpu_cur_freq', 'gpu_cur_freq'])+'</span>'
+        toolTipSubText += '<span>&nbsp;&nbsp;' + loadText +'</span>'
         toolTipSubText += '</td>'
         toolTipSubText += '</tr>'
 
-        txt = get_sensors_text(['battery_percentage', 'battery_remaining_time']);
+        txt = Utils.get_sensors_text(['battery_percentage', 'battery_remaining_time']);
         if(txt != 'N/A') {
             toolTipSubText += '<tr>'
             toolTipSubText += '<td style="text-align: center;">'
@@ -575,7 +563,7 @@ Item {
             toolTipSubText += '</tr>'
         }
 
-        txt = get_sensors_text(['package_temp', 'fan_speeds']);
+        txt = Utils.get_sensors_text(['package_temp', 'fan_speeds']);
         if (txt != 'N/A') {
             toolTipSubText += '<tr>'
             toolTipSubText += '<td style="text-align: center;">'

@@ -11,72 +11,81 @@ function array_unique(a) {
     return a;
 }
 
-function parse_sensor_data(obj, expected_sensors) {
-    var keys = Object.keys(obj);
-    var orig_keys = keys;
 
-    if (expected_sensors) {
-        keys = array_unique(keys.concat(expected_sensors))
-    }
+function filterReadableSensors(sensors_detected) {
+    var readable = []
 
-    var changes = false
-    for(var i=0; i< keys.length; i++) {
-        if (!sensors_model[keys[i]]) {
-            continue;
-        }
+    var sensorNames = main.sensorsMgr.getKeys()
 
-        // Clear sensor value that didn't report data
-        if (orig_keys.indexOf(keys[i]) == -1) {
-            sensors_model[keys[i]]['value'] = undefined
+    for (var i = 0; i < sensors_detected.length; i++) {
+        var sensor = sensors_detected[i]
+        if (!sensorNames.includes(sensor)) {
             continue
         }
 
-        var rw_mode = sensors_model[keys[i]]['rw_mode']
-        var old_val = sensors_model[keys[i]]['value']
+        var sensorModel = main.sensorsMgr.getSensor(sensor)
 
-        if (rw_mode == 'w') {
-            changes = changes || sensors_model[keys[i]]['value'] !== obj[keys[i]]
+        // undefined rw_mode defaults to readable
+        if (sensorModel.rw_mode === undefined) {
+            readable.push(sensor)
+            continue
         }
 
-        sensors_model[keys[i]]['value'] = obj[keys[i]];
+        if (sensorModel.rw_mode === 'r') {
+            readable.push(sensor)
+            continue
+        }
     }
-
-    return changes
+    return readable
 }
 
-function init_sensors_detected(sensors_model, sensors_detected) {
-    var keys = Object.keys(sensors_model);
+
+function initSensorsDetected(sensorsMgr, sensors_detected) {
+    var keys = sensorsMgr.getKeys()
     for (var i = 0; i < keys.length; i++) {
-        var sensor = sensors_model[keys[i]]
-        if (sensor['value'] !== undefined &&
-            !sensors_detected.includes(keys[i]) &&
-            !Utils.is_sysmon_sensor(sensor))
+        var sensorModel = sensorsMgr.getSensor(keys[i])
+        if (sensorModel.value !== undefined &&
+            !sensors_detected.includes(sensorModel.name) &&
+            !Utils.is_sysmon_sensor(sensorModel))
         {
             sensors_detected.push(keys[i])
         }
     }
 }
 
+function parseSensorData(obj, expected_sensors, force_update) {
+    var keys = Object.keys(obj);
+    var orig_keys = keys;
+    if (!main.sensorsMgr) {
+        return false
+    }
 
-function filter_readable_sensors(sensors_detected) {
-    var readable = []
-    for (var i = 0; i < sensors_detected.length; i++) {
-        var sensor = sensors_detected[i]
-        if (!(sensor in sensors_model)) {
+    if (expected_sensors) {
+        keys = array_unique(keys.concat(expected_sensors))
+    }
+
+    for(var i=0; i< keys.length; i++) {
+        if (!main.sensorsMgr.hasKey(keys[i])) {
+            continue;
+        }
+
+        var sensorModel = main.sensorsMgr.getSensor(keys[i])
+
+        // Clear sensor value that didn't report data
+        if (orig_keys.indexOf(keys[i]) == -1) {
+            sensorModel.value = undefined
             continue
         }
 
-        // undefined rw_mode defaults to readable
-        if (!('rw_mode' in sensors_model[sensor])) {
-            readable.push(sensor)
-            continue
+        var rw_mode = sensorModel.rw_mode
+        var old_val = sensorModel.value
+
+        if (rw_mode == 'w') {
+            sensorModel.value !== obj[keys[i]]
         }
 
-        var rw_mode = sensors_model[sensor]['rw_mode']
-        if (rw_mode === 'r') {
-            readable.push(sensor)
-            continue
+        if (force_update || obj[keys[i]] !== sensorModel.value) {
+            sensorModel.value = obj[keys[i]];
         }
     }
-    return readable
 }

@@ -16,60 +16,67 @@ RowLayout {
     property bool updating: false
 
 
-    property var sensor: []
-    property var min_sensor: []
-    property var max_sensor: []
-
-
     property alias text: slider_title.text
     property var props
     spacing: 10
 
-    onPropsChanged: {
+
+    property var sensorModel: undefined
+    property var sensorModelMin: undefined
+    property var sensorModelMax: undefined
+
+
+    function onValueChanged() {
+        if (pressed) {
+            return
+        }
         acceptingChanges = false
+
+        value = parseInt(sensorModel.value, 10);
+        slider_value.text = sensorModel.getValueText()
+
+        if (sensorModelMin) {
+            min = parseInt(sensorModelMin.value, 10);
+        }
+        if (sensorModelMax) {
+            max = parseInt(sensorModelMax.value, 10);
+        }
+
+        updating = false
+        acceptingChanges = true
+    }
+
+    onPropsChanged: {
         text = props['text']
-        sensor.push(props['sensor'])
+
+        sensorModel = main.sensorsMgr.getSensor(props['sensor'])
+        sensorModel.onValueChanged.connect(onValueChanged)
+
         if(isNaN(props['min'])) {
             min = 0
-            min_sensor.push(props['min'])
+            sensorModelMin = main.sensorsMgr.getSensor(props['min'])
         } else {
             min = props['min']
-            min_sensor = []
+            sensorModelMin = undefined
         }
         if(isNaN(props['max'])) {
             max = 100
-            max_sensor.push(props['max'])
+            sensorModelMax = main.sensorsMgr.getSensor(props['max'])
         } else {
             max = props['max']
-            max_sensor = []
+            sensorModelMax = undefined
         }
-        acceptingChanges = true
+
+        onValueChanged()
     }
 
     Component.onCompleted: {
+        onValueChanged()
         acceptingChanges = true
-        sensorsValuesChanged()
     }
 
-    Connections {
-        target: main
-        onSensorsValuesChanged: {
-            if(!pressed) {
-                acceptingChanges = false
-                if(sensor.length != 0) {
-                    value = parseInt(sensors_model[sensor[0]]['value'], 10);
-                    slider_value.text = get_sensors_text(sensor);
-                    updating = false
-                }
-                if(min_sensor.length != 0) {
-                    min = parseInt(sensors_model[min_sensor[0]]['value'], 10);
-                }
-                if(max_sensor.length != 0) {
-                    max = parseInt(sensors_model[max_sensor[0]]['value'], 10);
-                }
-                acceptingChanges = true
-            }
-        }
+    Component.onDestruction: {
+        sensorModel.onValueChanged.disconnect(onValueChanged)
     }
 
     Label {
@@ -89,13 +96,13 @@ RowLayout {
         onPressedChanged: {
             //need to resend here
             if(acceptingChanges) {
-                updateSensor(sensor[0], Math.round(value))
+                updateSensor(sensorModel.sensor, Math.round(value))
             }
         }
         onValueChanged: {
             if(pressed) {
                 updating = true
-                slider_value.text = get_value_text(sensor[0], value)
+                slider_value.text = sensorModel.getValueText(value)
             }
         }
     }

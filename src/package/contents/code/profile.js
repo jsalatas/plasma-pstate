@@ -1,4 +1,7 @@
 
+.import "utils.js" as Utils
+
+
 function deepCopy(p, c) {
     var c = c || {};
     for (var i in p) {
@@ -13,20 +16,21 @@ function deepCopy(p, c) {
 }
 
 
-function getValueText(listViewItem, value) {
+function getValueText(listViewItem, sensorModel, value) {
+
+    var v = (value !== undefined) ? value : sensorModel.value
 
     var item = listViewItem['item']
     if (item['type'] === 'combobox' || item['type'] === 'radio') {
         var subItems = item['items']
         for (var i = 0; subItems && (i < subItems.length); i++) {
-            if (subItems[i]['sensor_value'] == value) {
+            if (subItems[i]['sensor_value'] == v) {
                 return subItems[i]['text']
             }
         }
     }
 
-    var valueText = main.get_value_text(item.sensor, value)
-    return valueText
+    return sensorModel.getValueText(v)
 }
 
 
@@ -42,11 +46,9 @@ function pushValidItem(arr, item, header, group) {
     if (item["type"] === undefined || item["sensor"] === undefined) {
         return
     }
-    // if (!Utils.is_writeable(sensors_model[item.sensor])) {
-    //     return
-    // }
 
-    var sensor = main.sensors_model[item.sensor]
+    var sensors_model = Utils.get_sensors()
+    var sensor = sensors_model[item.sensor]
 
     arr.push({
         "sensor": item.sensor,
@@ -96,22 +98,4 @@ function findSensorItems(model) {
     var arr = []
     stepItems(arr, model, undefined, undefined)
     return arr
-}
-
-function findProfileIndex(profiles, name) {
-    for (var i = 0; i < profiles.length; i++) {
-        if (profiles[i].name === name) {
-            return i
-        }
-    }
-    return -1
-}
-
-function findProfile(profiles, name) {
-    for (var i = 0; i < profiles.length; i++) {
-        if (profiles[i].name === name) {
-            return profiles[i]
-        }
-    }
-    return undefined
 }

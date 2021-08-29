@@ -10,36 +10,35 @@ import QtQuick.Controls 2.2
 RowLayout {
     property alias text: checkbox_title.text
     property alias checked: checkBox.checked
-    property var sensor: []
     property bool acceptingChanges: false
 
     property var props
     spacing: 10
 
-    onPropsChanged: {
-        acceptingChanges = false
+    property var sensorModel: undefined
 
-        text = props['text']
-        sensor.push(props['sensor'])
+
+    function onValueChanged() {
+        acceptingChanges = false
+        checked = (sensorModel.value === 'true')
         acceptingChanges = true
+    }
+
+    onPropsChanged: {
+        text = props['text']
+
+        sensorModel = main.sensorsMgr.getSensor(props['sensor'])
+        sensorModel.onValueChanged.connect(onValueChanged)
+        onValueChanged()
     }
 
     Component.onCompleted: {
+        onValueChanged()
         acceptingChanges = true
-        sensorsValuesChanged()
     }
 
-    Connections {
-        target: main
-        onSensorsValuesChanged: {
-            acceptingChanges = false
-
-            if(sensor.length != 0) {
-                checked = sensors_model[sensor[0]]['value'] == 'true';
-            }
-
-            acceptingChanges = true
-        }
+    Component.onDestruction: {
+        sensorModel.onValueChanged.disconnect(onValueChanged)
     }
 
     Label {
@@ -55,7 +54,7 @@ RowLayout {
         id: checkBox
         onCheckedChanged: {
             if(acceptingChanges) {
-                updateSensor(sensor[0], checked)
+                updateSensor(sensorModel.sensor, checked)
             }
         }
     }
