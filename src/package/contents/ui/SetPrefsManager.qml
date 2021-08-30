@@ -11,7 +11,6 @@ import '../code/datasource.js' as Ds
 Item {
     id: manager
 
-    /* required */ property var available_values
     /* required */ property var sensors_detected
 
     signal setPrefsReady
@@ -48,11 +47,14 @@ Item {
     function handleReadAvailResult(stdout) {
         var obj = JSON.parse(stdout);
         var keys = Object.keys(obj);
+        var available_values = {}
         for (var i=0; i < keys.length; i++) {
             var d = obj[keys[i]]
             var values = d.split(' ').filter(item => item.length > 0)
             available_values[keys[i]] = values
         }
+
+        main.sensorsMgr.availableValues = available_values
 
         print("available_values: ", JSON.stringify(available_values))
 

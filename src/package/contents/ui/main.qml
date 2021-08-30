@@ -39,7 +39,6 @@ Item {
     property var updater: undefined
     property var monitorDS: undefined
 
-    property var available_values: Utils.get_available_values()
     property var sensors_detected: []
 
     property bool isInitialized: false
@@ -390,7 +389,6 @@ Item {
         id: prefsManager
 
         sensors_detected: main.sensors_detected
-        available_values: main.available_values
 
         Component.onCompleted: {
             prefsManager.setPrefsReady.connect(firstInit.dataReady)

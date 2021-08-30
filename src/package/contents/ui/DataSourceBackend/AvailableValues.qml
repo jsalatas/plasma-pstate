@@ -27,8 +27,6 @@ Item {
                 print('monitorAvailableDS error: ' + data.stderr)
             } else {
                 handleReadAvailResult(data.stdout)
-
-                print(JSON.stringify(available_values))
             }
         }
         Component.onCompleted: {

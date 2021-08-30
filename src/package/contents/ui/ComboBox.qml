@@ -35,24 +35,24 @@ RowLayout {
         sensorModel = main.sensorsMgr.getSensor(props['sensor'])
 
         var filtered = props['items']
-        if (sensorModel.sensor in available_values) {
-            var values = available_values[sensorModel.sensor]
+        var values = main.sensorsMgr.availableValues[sensorModel.sensor]
+
+        if (filtered && values) {
+            // Filter by values in the model view definition
             filtered = filtered.filter(item => {
                 return values.includes(item['sensor_value'])
             })
-        } else if (filtered === undefined && props['available_values'] &&
-                   props['available_values'] in available_values)
-        {
-            var avail_vals = available_values[[props['available_values']]]
+        }
 
-            filtered = avail_vals.map(val => {
-                var text = val
-                if (sensorModel.print_func) {
-                    text = sensorModel.getValueText(val)
-                }
+        var values = main.sensorsMgr.availableValues[props['available_values']]
+        if (!filtered && values) {
+            // Filter by values read from sysfs
+            filtered = values.map(val => {
+                var text = sensorModel.getValueText(val)
                 return { 'text': text, 'sensor_value': val}
             })
         }
+
 
         combobox.model = filtered
         text = props['text']

@@ -13,6 +13,8 @@ QtObject {
 
     property var sensorsMap: {}
 
+    property var availableValues: {}
+
     function loadSensors() {
         var sensors_model = Utils.get_sensors()
 
@@ -83,5 +85,4 @@ QtObject {
             sensorsMap[keys[i]].value = backup[keys[i]]
         }
     }
-
 }
