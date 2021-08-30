@@ -14,7 +14,8 @@ PlasmaCore.DataSource {
     property bool isReady: false
     property string commandSource: (plasmoid.configuration.useSudoForReading ? 'sudo ' : '') +
                                    set_prefs +
-                                   (!isReady ? ' -read-all' : ' -read-some ' + sensors_detected.join(" "))
+                                   (!isReady ? ' -read-all' :
+                                    ' -read-some ' + main.sensorsMgr.detectedSensors.join(" "))
 
     /* required */ property var set_prefs
 

@@ -15,6 +15,9 @@ QtObject {
 
     property var availableValues: {}
 
+    property var detectedSensors: []
+
+
     function loadSensors() {
         var sensors_model = Utils.get_sensors()
 
@@ -83,6 +86,26 @@ QtObject {
         var keys = Object.keys(backup)
         for (var i = 0; i < keys.length; i++) {
             sensorsMap[keys[i]].value = backup[keys[i]]
+        }
+    }
+
+    function initSensorsDetected() {
+        detectedSensors = []
+        var keys = getKeys()
+        for (var i = 0; i < keys.length; i++) {
+            var sensorModel = getSensor(keys[i])
+
+            if (detectedSensors.includes(sensorModel.name)) {
+                continue
+            }
+            if (sensorModel.value === undefined) {
+                continue
+            }
+            if (Utils.is_sysmon_sensor(sensorModel))
+            {
+                continue
+            }
+            detectedSensors.push(keys[i])
         }
     }
 }

@@ -39,8 +39,6 @@ Item {
     property var updater: undefined
     property var monitorDS: undefined
 
-    property var sensors_detected: []
-
     property bool isInitialized: false
     property bool inTray: false
 
@@ -387,8 +385,6 @@ Item {
 
     SetPrefsManager {
         id: prefsManager
-
-        sensors_detected: main.sensors_detected
 
         Component.onCompleted: {
             prefsManager.setPrefsReady.connect(firstInit.dataReady)

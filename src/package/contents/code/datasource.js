@@ -12,13 +12,13 @@ function array_unique(a) {
 }
 
 
-function filterReadableSensors(sensors_detected) {
+function filterReadableSensors(detectedSensors) {
     var readable = []
 
     var sensorNames = main.sensorsMgr.getKeys()
 
-    for (var i = 0; i < sensors_detected.length; i++) {
-        var sensor = sensors_detected[i]
+    for (var i = 0; i < detectedSensors.length; i++) {
+        var sensor = detectedSensors[i]
         if (!sensorNames.includes(sensor)) {
             continue
         }
@@ -37,20 +37,6 @@ function filterReadableSensors(sensors_detected) {
         }
     }
     return readable
-}
-
-
-function initSensorsDetected(sensorsMgr, sensors_detected) {
-    var keys = sensorsMgr.getKeys()
-    for (var i = 0; i < keys.length; i++) {
-        var sensorModel = sensorsMgr.getSensor(keys[i])
-        if (sensorModel.value !== undefined &&
-            !sensors_detected.includes(sensorModel.name) &&
-            !Utils.is_sysmon_sensor(sensorModel))
-        {
-            sensors_detected.push(keys[i])
-        }
-    }
 }
 
 function parseSensorData(obj, expected_sensors, force_update) {

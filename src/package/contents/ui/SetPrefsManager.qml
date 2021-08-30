@@ -11,8 +11,6 @@ import '../code/datasource.js' as Ds
 Item {
     id: manager
 
-    /* required */ property var sensors_detected
-
     signal setPrefsReady
     signal update(string parameter, string value)
 
@@ -35,8 +33,8 @@ Item {
         Ds.parseSensorData(obj, x)
 
         if(!hasReadSensors) {
-            Ds.initSensorsDetected(main.sensorsMgr, sensors_detected)
-            print("sensors_detected: ", sensors_detected)
+            main.sensorsMgr.initSensorsDetected()
+            print("detectedSensors: ", main.sensorsMgr.detectedSensors)
 
             hasReadSensors = true;
             doFirstInit();
@@ -66,7 +64,7 @@ Item {
         var arg_0 = arg
         arg_0 = arg_0.substring(1)
                      .split('-').join('_')
-        if (sensors_detected.includes(arg_0)) {
+        if (main.sensorsMgr.detectedSensors.includes(arg_0)) {
             var obj = JSON.parse(stdout);
 
             Ds.parseSensorData(obj, undefined, true)

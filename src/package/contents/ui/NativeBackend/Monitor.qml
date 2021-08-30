@@ -43,7 +43,8 @@ Item {
     Connections {
         target: main
         onDataSourceReady: {
-            var readable = Ds.filterReadableSensors(sensors_detected)
+            var detectedSensors = main.sensorsMgr.detectedSensors
+            var readable = Ds.filterReadableSensors(detectedSensors)
             args = !isReady ? ['-read-all'] : ['-read-some'].concat(readable)
             isReady = true
         }
