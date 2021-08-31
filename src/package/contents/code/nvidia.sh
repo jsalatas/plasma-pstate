@@ -1,8 +1,8 @@
 #!/bin/bash
 
 
-NV_PCI_DEV=$(grep -r . /sys/class/drm/card?/device/vendor 2>/dev/null | \
-             grep vendor:0x10de | sed 's/\/vendor:.*//' | head -n1)
+NV_PCI_DEV=$(grep -H 0x10de /sys/class/drm/card?/device/vendor 2>/dev/null | \
+             head -n1 | sed 's/\/vendor:.*//')
 NV_RUNTIME_STATUS=${NV_PCI_DEV}/power/runtime_status
 
 check_powermizer () {

@@ -17,8 +17,7 @@ Item {
         readonly property int maxIter: 5
         property int iterations: 0
 
-        property string commandCheck: "grep -r . /sys/class/drm/card?/device/vendor 2>/dev/null |" +
-                                      "grep vendor:0x10de"
+        property string commandCheck: "grep -H 0x10de /sys/class/drm/card?/device/vendor 2>/dev/null"
 
         property string commandSource: "nvidia-settings -q GpuPowerMizerMode | " +
                                        "grep \"Attribute 'GPUPowerMizerMode'\" | " +
