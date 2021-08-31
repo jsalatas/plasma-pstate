@@ -42,6 +42,8 @@ Item {
     property bool isInitialized: false
     property bool inTray: false
 
+    property bool editMode: false
+
     property bool hasNativeBackend: plasmoid.nativeInterface.isReady !== undefined
 
     readonly property string set_prefs: '/usr/share/plasma/plasmoids/' +
@@ -157,6 +159,7 @@ Item {
 
     function enterEditMode() {
         stopMonitors()
+        editMode = true
         main.updateSensor.disconnect(prefsManager.updateSensor)
         main.updateSensor.connect(main.phonyUpdateSensor)
     }
@@ -164,6 +167,7 @@ Item {
     function exitEditMode() {
         main.updateSensor.disconnect(main.phonyUpdateSensor)
         main.updateSensor.connect(prefsManager.updateSensor)
+        editMode = false
         startMonitors()
     }
 
@@ -173,6 +177,9 @@ Item {
 
 
     function shouldMonitor() {
+        if (editMode) {
+            return false
+        }
         return !inTray || plasmoid.expanded ||
                 plasmoid.configuration.monitorWhenHidden
     }
