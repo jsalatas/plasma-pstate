@@ -2,7 +2,7 @@
     SPDX-FileCopyrightText: 2021 Vincent Grabner <frankenfruity@protonmail.com>
     SPDX-License-Identifier: GPL-2.0-or-later
 */
-import QtQuick 2.0
+import QtQuick 2.4
 import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.1
 
@@ -622,14 +622,26 @@ ColumnLayout {
                         horizontalAlignment: Text.AlignHCenter
                         verticalAlignment: Text.AlignVCenter
                     }
-    
+                    TextMetrics {
+                        id: textMetrics
+                        font: editButton.contentItem.font
+                        text: editButton.text
+                    }
+                    Component.onCompleted: {
+                        // Binding the property causes a segfault on exit.
+                        // Workaround by assigning the value here.
+                        Layout.maximumWidth = (2 * textMetrics.width) +
+                                              (2 * units.smallSpacing)
+                    }
                     Layout.alignment: Qt.AlignVCenter | Text.AlignHCenter
                     ToolTip.text: "Edit profiles"
                     ToolTip.delay: 250
                     ToolTip.visible: hovered
                     onClicked: editButtonClicked()
                 }
+
                 ToolButton {
+                    id: newButton
                     text: /* New */ "🗎"
                     visible: editMode
                     contentItem: Text {
@@ -638,7 +650,15 @@ ColumnLayout {
                         horizontalAlignment: Text.AlignHCenter
                         verticalAlignment: Text.AlignVCenter
                     }
-
+                    TextMetrics {
+                        id: newTextMetrics
+                        font: newButton.contentItem.font
+                        text: newButton.text
+                    }
+                    Component.onCompleted: {
+                        Layout.maximumWidth = (2 * newTextMetrics.width) +
+                                              (2 * units.smallSpacing)
+                    }
                     Layout.alignment: Qt.AlignVCenter | Text.AlignHCenter
                     ToolTip.text: "New profile"
                     ToolTip.delay: 250
@@ -646,6 +666,7 @@ ColumnLayout {
                     onClicked: newButtonClicked()
                 }
                 ToolButton {
+                    id: delButton
                     text: /* Delete */ "🗑"
                     visible: editMode
                     contentItem: Text {
@@ -654,7 +675,15 @@ ColumnLayout {
                         horizontalAlignment: Text.AlignHCenter
                         verticalAlignment: Text.AlignVCenter
                     }
-
+                    TextMetrics {
+                        id: delTextMetrics
+                        font: delButton.contentItem.font
+                        text: delButton.text
+                    }
+                    Component.onCompleted: {
+                        Layout.maximumWidth = (2 * delTextMetrics.width) +
+                                              (2 * units.smallSpacing)
+                    }
                     Layout.alignment: Qt.AlignVCenter | Text.AlignHCenter
                     ToolTip.text: "Delete profile"
                     ToolTip.delay: 250
@@ -662,6 +691,7 @@ ColumnLayout {
                     onClicked: deleteButtonClicked()
                 }
                 ToolButton {
+                    id: cancelButton
                     text: /* Cancel */ "🗙"
                     visible: editMode
                     contentItem: Text {
@@ -670,7 +700,15 @@ ColumnLayout {
                         horizontalAlignment: Text.AlignHCenter
                         verticalAlignment: Text.AlignVCenter
                     }
-
+                    TextMetrics {
+                        id: cancelTextMetrics
+                        font: cancelButton.contentItem.font
+                        text: cancelButton.text
+                    }
+                    Component.onCompleted: {
+                        Layout.maximumWidth = (2 * cancelTextMetrics.width) +
+                                              (2 * units.smallSpacing)
+                    }
                     Layout.alignment: Qt.AlignVCenter | Text.AlignHCenter
                     ToolTip.text: "Discard changes"
                     ToolTip.delay: 250
@@ -678,6 +716,7 @@ ColumnLayout {
                     onClicked: cancelButtonClicked()
                 }
                 ToolButton {
+                    id: saveButton
                     text: /* Save */ "🗸"
                     enabled: editMode
                     visible: editMode
@@ -687,7 +726,15 @@ ColumnLayout {
                         horizontalAlignment: Text.AlignHCenter
                         verticalAlignment: Text.AlignVCenter
                     }
-
+                    TextMetrics {
+                        id: saveTextMetrics
+                        font: saveButton.contentItem.font
+                        text: saveButton.text
+                    }
+                    Component.onCompleted: {
+                        Layout.maximumWidth = (2 * saveTextMetrics.width) +
+                                              (2 * units.smallSpacing)
+                    }
                     Layout.alignment: Qt.AlignVCenter | Text.AlignHCenter
                     ToolTip.text: "Save changes"
                     ToolTip.delay: 250
