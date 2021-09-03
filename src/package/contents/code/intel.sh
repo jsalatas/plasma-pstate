@@ -19,16 +19,18 @@ GPU_MAX_LIMIT=$GPU/gt_RP0_freq_mhz
 GPU_BOOST_FREQ=$GPU/gt_boost_freq_mhz
 GPU_CUR_FREQ=$GPU/gt_cur_freq_mhz
 
-INTEL_TCC=$(grep -r . /sys/class/thermal/*/type 2>/dev/null | \
-            grep  "type:TCC Offset" | sed 's/\/type.*//')
 
-INTEL_RAPL=$(grep -r . /sys/class/powercap/intel-rapl/*/name 2>/dev/null | \
-             grep name:package-0 | sed 's/\/name:package-0//')
-INTEL_RAPL_LONG=$(grep . "${INTEL_RAPL}"/constraint_*_name 2>/dev/null | \
-                  grep long_term | sed 's/\/*_name:long_term//')
+
+INTEL_TCC=$(grep -H "TCC Offset" /sys/class/thermal/*/type 2>/dev/null | \
+            head -n1 | sed 's/\/type.*//')
+
+INTEL_RAPL=$(grep -H "package-0" /sys/class/powercap/intel-rapl/*/name 2>/dev/null | \
+             head -n1 | sed 's/\/name:package-0//')
+INTEL_RAPL_LONG=$(grep -H "long_term" "${INTEL_RAPL}"/constraint_*_name  2>/dev/null | \
+                  head -n1 | sed 's/\/*_name:long_term//')
 INTEL_RAPL_LONG=${INTEL_RAPL_LONG}_power_limit_uw
-INTEL_RAPL_SHORT=$(grep . "${INTEL_RAPL}"/constraint_*_name 2>/dev/null | \
-                   grep short_term | sed 's/\/*_name:short_term//')
+INTEL_RAPL_SHORT=$(grep -H "short_term" "${INTEL_RAPL}"/constraint_*_name  2>/dev/null | \
+                   head -n1 | sed 's/\/*_name:short_term//')
 INTEL_RAPL_SHORT=${INTEL_RAPL_SHORT}_power_limit_uw
 
 
