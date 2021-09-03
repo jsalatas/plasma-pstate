@@ -70,6 +70,29 @@ append_macro() {
     eval "$_cmd"
 }
 
+generate_read_sensor_func() {
+    _cmd="read_sensor() {
+            case \"\$1\" in
+         "
+    for sensor in "${sensors_model[@]}"
+    do
+        _subcmd="
+                \"${sensor}\")
+                    if check_${sensor}; then
+                        read_${sensor};
+                        append_json $(printf \"\\\\\"%s\\\\\":\\\\\"%s\\\\\"\" "${sensor}" \$\{"${sensor}"\});
+                    fi
+                    ;;
+                "
+        _cmd="${_cmd}${_subcmd}"
+    done
+    _cmd="${_cmd}
+            esac
+         }"
+    # echo "${_cmd}"
+    eval "${_cmd}"
+}
+
 arg_to_sensor() {
     #shellcheck disable=SC2001
     _arg=$(echo "$1" | sed -e "s/-/_/g")
@@ -87,7 +110,7 @@ read_all () {
 
     for sensor in "${sensors_model[@]}"
     do
-        append_macro "$sensor"
+        read_sensor "${sensor}"
     done
 
     json="${json}}"
@@ -102,7 +125,7 @@ read_some() {
     for sensor in "${@}"
     do
         echo "${_all_sensors}" | grep -q -P "^${sensor}\$" || continue
-        append_macro "${sensor}"
+        read_sensor "${sensor}"
     done
 
     json="${json}}"
@@ -201,4 +224,5 @@ main() {
     esac
 }
 
+generate_read_sensor_func
 main "$@"
