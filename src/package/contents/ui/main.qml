@@ -354,7 +354,10 @@ Item {
     Connections {
         target: plasmoid.configuration
         onUseSudoForReadingChanged: {
-            monitorDS.restart()
+            if (shouldMonitor()) {
+                stopMonitors
+                startMonitors()
+            }
         }
 
         onPollingIntervalChanged: {
