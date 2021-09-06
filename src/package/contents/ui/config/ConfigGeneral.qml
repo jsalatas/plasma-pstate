@@ -12,6 +12,7 @@ ColumnLayout {
     property alias cfg_pollingInterval: pollingInterval.value
     property alias cfg_monitorWhenHidden: monitorWhenHidden.checked
     property alias cfg_slowPollingInterval: slowPollingInterval.value
+    property bool cfg_hasNativeBackend: false
 
     Kirigami.FormLayout {
         Layout.fillHeight: true
@@ -38,6 +39,7 @@ ColumnLayout {
         CheckBox {
             id: useSudoForReadingCheckbox
             Kirigami.FormData.label: i18n('Use sudo for reading values')
+            visible: !cfg_hasNativeBackend
         }
 
         SpinBox {

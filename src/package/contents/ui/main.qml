@@ -127,6 +127,8 @@ Item {
     }
 
     function initialized() {
+        plasmoid.configuration.hasNativeBackend = hasNativeBackend
+
         main.updateSensor.connect(prefsManager.updateSensor)
         prefsManager.update.connect(updater.update)
 
