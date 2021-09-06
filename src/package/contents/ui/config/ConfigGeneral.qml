@@ -1,8 +1,10 @@
 import QtQuick 2.2
-import QtQuick.Controls 1.3
+import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.1
 
-Item {
+import org.kde.kirigami 2.3 as Kirigami
+
+ColumnLayout {
     property alias cfg_useDefaultIcon: useDefaultIconCheckbox.checked
     property alias cfg_showIntelGPU: showIntelGPUCheckbox.checked
     property string cfg_customIcon: plasmoid.configuration.customIcon
@@ -11,19 +13,12 @@ Item {
     property alias cfg_monitorWhenHidden: monitorWhenHidden.checked
     property alias cfg_slowPollingInterval: slowPollingInterval.value
 
-    GridLayout {
-        Layout.fillWidth: true
-        columns: 2
+    Kirigami.FormLayout {
+        Layout.fillHeight: true
 
         CheckBox {
             id: useDefaultIconCheckbox
-            text: i18n('Use Default Icon')
-            Layout.columnSpan: 2
-        }
-
-        Label {
-            text: i18n("Custom Icon:")
-            Layout.alignment: Qt.AlignRight
+            Kirigami.FormData.label: i18n('Use Default Icon')
         }
 
         IconPicker {
@@ -37,44 +32,35 @@ Item {
 
         CheckBox {
             id: showIntelGPUCheckbox
-            text: i18n('Show Intel GPU')
-            Layout.columnSpan: 2
+            Kirigami.FormData.label: i18n('Show Intel GPU')
         }
 
         CheckBox {
             id: useSudoForReadingCheckbox
-            text: i18n('Use sudo for reading values')
-            Layout.columnSpan: 2
-        }
-
-        Label {
-            text: i18n("Polling Interval (seconds):")
-            Layout.alignment: Qt.AlignRight
+            Kirigami.FormData.label: i18n('Use sudo for reading values')
         }
 
         SpinBox {
             id: pollingInterval
 
-            minimumValue: 2
-            maximumValue: 3600
+            Kirigami.FormData.label: i18n("Polling Interval (seconds):")
+
+            from: 2
+            to: 3600
         }
 
         CheckBox {
             id: monitorWhenHidden
-            text: i18n('Show sensors in tool tip')
-            Layout.columnSpan: 2
-        }
-
-        Label {
-            text: i18n("Tool Tip polling interval (seconds):")
+            Kirigami.FormData.label: i18n('Show sensors in tool tip')
         }
 
         SpinBox {
             id: slowPollingInterval
 
-            minimumValue: 2
-            maximumValue: 3600
+            Kirigami.FormData.label: i18n("Tool Tip polling interval (seconds):")
 
+            from: 2
+            to: 3600
             enabled: monitorWhenHidden.checked
         }
     }
