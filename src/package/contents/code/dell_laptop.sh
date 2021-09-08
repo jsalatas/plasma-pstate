@@ -51,7 +51,7 @@ return_dell_fan_mode() {
 }
 
 set_dell_fan_mode() {
-    if [ "$1" -lt $((128/2)) ]; then
+    if [ "$1" -lt $((255/3)) ]; then
         printf "2" > "${DELL_SMM_HWMON}"/pwm1_enable 2> /dev/null
         return_dell_fan_mode
         return 0
