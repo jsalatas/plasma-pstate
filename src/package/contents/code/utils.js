@@ -93,7 +93,7 @@ var sensors = {
     'intel_tcc_max_state': {'value': undefined, 'unit':' °C', 'print': fmt_tcc},
     'intel_rapl_short': {'value': undefined, 'unit':' W', 'print': to_int},
     'intel_rapl_long': {'value': undefined, 'unit':' W', 'print': to_int},
-    'dell_fan_mode': {'value': undefined, 'unit': '', 'print': to_string, 'rw_mode': 'w'},
+    'dell_fan_mode': {'value': undefined, 'unit': '', 'print': to_string,},
 
     'cpufreq_scaling_min_freq': {'value': undefined, 'unit':' MHz', 'print': hz_to_mhz},
     'cpufreq_scaling_max_freq': {'value': undefined, 'unit':' MHz', 'print': hz_to_mhz},
