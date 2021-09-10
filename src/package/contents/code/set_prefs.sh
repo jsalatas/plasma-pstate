@@ -137,7 +137,7 @@ read_some() {
 write_sensor() {
     _sensor=$(arg_to_sensor "$1")
     if [ -n "${_sensor}" ]; then
-        eval "set_${_sensor} ${2}"
+        eval "set_${_sensor}" "${@:2}"
         return 0
     fi
 
