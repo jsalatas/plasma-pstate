@@ -304,6 +304,13 @@ function is_sysmon_sensor(sensorModel) {
     return sensorModel.sensor_type === 'sysmon';
 }
 
+function is_enum_sensor(sensorModel) {
+    if (sensorModel && sensorModel.sensor_type) {
+        return sensorModel.sensor_type === 'enum';
+    }
+    return false
+}
+
 function get_sensors_text(sensors) {
     var res = '';
     if(sensors === undefined) {
