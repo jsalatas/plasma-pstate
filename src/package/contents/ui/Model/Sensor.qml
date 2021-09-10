@@ -17,6 +17,16 @@ QtObject {
     property var rw_mode: undefined
     property string sensor_type: ""
 
+    function copy(sensor) {
+        sensorObj.sensor = sensor.sensor
+        sensorObj.value = sensor.value
+        sensorObj.unit = sensor.unit
+        sensorObj.print_func = sensor.print_func
+        sensorObj.rw_mode = sensor.rw_mode
+        sensorObj.sensor_type = sensor.sensor_type
+        return sensorObj
+    }
+
     function getValueText(value) {
         if (print_func === undefined) {
             return value ? value.toString() : sensorObj.value.toString()
