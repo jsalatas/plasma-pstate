@@ -12,7 +12,7 @@ Item {
     id: manager
 
     signal setPrefsReady
-    signal update(string parameter, string value)
+    signal update(string parameter, var args)
 
 
     // The last one to become true emits the signal.
@@ -79,15 +79,17 @@ Item {
         var rw_mode = sensorModel.rw_mode
         var old_val = sensorModel.value
 
+        var args = [value]
+
         if (rw_mode == 'w') {
-            /* emit */ update(name, value)
+            /* emit */ update(name, args)
             main.sensorsMgr.setSensorValue(name, value)
             return
         }
 
 
         if(value != old_val) {
-            /* emit */ update(name, value)
+            /* emit */ update(name, args)
         } else {
             print("    same value")
         }
