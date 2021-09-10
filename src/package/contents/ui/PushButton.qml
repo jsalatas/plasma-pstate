@@ -33,7 +33,7 @@ Item {
     function onValueChanged() {
         acceptingChanges = false
         updating = false
-        active = sensorModel.value == sensor_value
+        active = sensorModel.value === sensor_value
         acceptingChanges = true
     }
 

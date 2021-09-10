@@ -53,7 +53,7 @@ Item {
 
             var val = parseInt(data.stdout)
 
-            if (previous_value != val || iterations >= maxIter) {
+            if (previous_value !== val || iterations >= maxIter) {
                 disconnectSource(sourceName)
 
                 if (iterations >= maxIter) {

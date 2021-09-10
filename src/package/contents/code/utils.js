@@ -237,14 +237,13 @@ function get_vendors() {
 }
 
 function is_present(item_vendors) {
-    if(item_vendors && item_vendors.length != 0) {
+    if(item_vendors && item_vendors.length !== 0) {
         for(var j=0; j< item_vendors.length; j++) {
             var vendor = vendors[item_vendors[j]]
             for(var k=0; k<vendor['provides'].length; k++) {
                 var sensor = main.sensorsMgr.getSensor(vendor['provides'][k])
                 if(sensor.value !== undefined) {
                     return true;
-                    break;
                 }
             }
         }
@@ -339,7 +338,7 @@ function get_sensors_text(sensors) {
 }
 
 function deepCopy(p, c) {
-    var c = c || {};
+    c = c || {};
     for (var i in p) {
         if (typeof p[i] === 'object') {
             c[i] = (p[i].constructor === Array) ? [] : {};

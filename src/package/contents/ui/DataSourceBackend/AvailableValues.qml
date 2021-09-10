@@ -6,7 +6,7 @@ import '../../code/datasource.js' as Ds
 
 Item {
     id: availableValuesDS
-    property var name: "LocalAvailableValues"
+    property string name: "LocalAvailableValues"
 
     /* required */ property var set_prefs
 

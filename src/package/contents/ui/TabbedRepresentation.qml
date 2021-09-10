@@ -168,7 +168,7 @@ GridLayout {
         var item = undefined
         for(var i = toolbar.children.length; i > 0 ; i--) {
             var button = toolbar.children[i-1];
-            if (button.itemId != itemId) {
+            if (button.itemId !== itemId) {
                 continue
             }
 
@@ -196,7 +196,7 @@ GridLayout {
     }
 
     function show_item(itemId) {
-        if (itemId == "profilePage") {
+        if (itemId === "profilePage") {
             if (currentItemId !== itemId) {
                 stackView.clear(StackView.PopTransition)
                 stackView.push(profileView, StackView.PushTransition)
@@ -209,7 +209,7 @@ GridLayout {
 
         var item = undefined
         model.forEach(m => {
-            if (!item && m['id'] == itemId) {
+            if (!item && m['id'] === itemId) {
                 item = m
             }
         })
@@ -220,7 +220,7 @@ GridLayout {
 
 
         var props = {'props': item, showIcon: false};
-        if (currentItemId && currentItemId == itemId) {
+        if (currentItemId && currentItemId === itemId) {
             // clicking on the same item reloads it
             stackView.pop(StackView.Immediate)
             stackView.push(scrollComponent, props, StackView.Immediate)

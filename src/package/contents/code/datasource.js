@@ -66,7 +66,7 @@ function parseSensorData(obj, expected_sensors, force_update) {
         var rw_mode = sensorModel.rw_mode
         var old_val = sensorModel.value
 
-        if (rw_mode == 'w') {
+        if (rw_mode === 'w') {
             sensorModel.value !== obj[keys[i]]
         }
 

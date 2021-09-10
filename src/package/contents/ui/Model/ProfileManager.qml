@@ -25,7 +25,7 @@ QtObject {
         var profileList = ni.getProfileList()
 
         profileComponent = Qt.createComponent("./Profile.qml");
-        if (profileComponent.status != Component.Ready) {
+        if (profileComponent.status !== Component.Ready) {
             print("Profile.qml component not ready.")
             return
         }
@@ -117,7 +117,7 @@ QtObject {
     }
 
     function validateName(newName, profileNames) {
-        if (!newName || newName == "" || newName.length > 256) {
+        if (!newName || newName === "" || newName.length > 256) {
             print("validateName: Name length error")
             return false
         }
@@ -184,14 +184,13 @@ QtObject {
                 // added new profile
                 profilesMap[shadowProfile.name] = shadowProfile
                 profilesMap[shadowProfile.name].name = keys[i]
-            } else if (shadowProfile.name != keys[i]) {
+            } else if (shadowProfile.name !== keys[i]) {
                 // renamed profile
                 profile.copy(shadowProfile)
                 profile.name = keys[i]
                 profilesMap[profile.name] = profile
             } else {
                 // update existing profile
-                var profile = profilesMap[shadowProfile.name]
                 profilesMap[shadowProfile.name] = profile.copy(shadowProfile)
             }
         }

@@ -21,7 +21,7 @@ RowLayout {
     property var items: []
 
     property var props
-    property var showIcon: true
+    property bool showIcon: true
 
     Layout.alignment: Qt.AlignTop | Qt.AlignLeft
 

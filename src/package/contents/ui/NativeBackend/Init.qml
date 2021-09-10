@@ -27,7 +27,7 @@ Item {
     Connections {
         target: hasNativeBackend ? plasmoid.nativeInterface : initId
         onCommandFinished: {
-            if (data.exitCode == 0 && data.args[0] == testCmd[0]) {
+            if (data.exitCode === 0 && data.args[0] === testCmd[0]) {
                 /* emit */ scriptReady()
             }
         }

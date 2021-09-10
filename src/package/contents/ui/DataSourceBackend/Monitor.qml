@@ -9,7 +9,7 @@ PlasmaCore.DataSource {
     id: monitorDS
     engine: 'executable'
 
-    property var name: "LocalMonitor"
+    property string name: "LocalMonitor"
 
     property bool isReady: false
     property string commandSource: (plasmoid.configuration.useSudoForReading ? 'pkexec ' : '') +

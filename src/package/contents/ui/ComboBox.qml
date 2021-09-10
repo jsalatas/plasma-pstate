@@ -23,7 +23,7 @@ RowLayout {
         acceptingChanges = false
         var value = sensorModel.value
         for(var i = 0; i < combobox.model.length; i++) {
-            if(combobox.model[i].sensor_value == value) {
+            if(combobox.model[i].sensor_value === value) {
                 combobox.currentIndex = i
             }
         }

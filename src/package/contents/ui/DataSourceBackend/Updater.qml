@@ -10,7 +10,7 @@ PlasmaCore.DataSource {
     id: updater
     engine: 'executable'
 
-    property var name: "LocalUpdater"
+    property string name: "LocalUpdater"
 
     readonly property string commandSource: 'pkexec ' + set_prefs + ' -'
 

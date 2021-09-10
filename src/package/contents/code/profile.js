@@ -3,7 +3,7 @@
 
 
 function deepCopy(p, c) {
-    var c = c || {};
+    c = c || {};
     for (var i in p) {
         if (typeof p[i] === 'object') {
             c[i] = (p[i].constructor === Array) ? [] : {};
@@ -24,7 +24,7 @@ function getValueText(listViewItem, sensorModel, value) {
     if (item['type'] === 'combobox' || item['type'] === 'radio') {
         var subItems = item['items']
         for (var i = 0; subItems && (i < subItems.length); i++) {
-            if (subItems[i]['sensor_value'] == v) {
+            if (subItems[i]['sensor_value'] === v) {
                 return subItems[i]['text']
             }
         }
@@ -70,16 +70,16 @@ function stepItems(arr, node, header, group) {
 
     if (Array.isArray(node)) {
         items = node
-    } else if (node.constructor == Object && "items" in node) {
+    } else if (node.constructor === Object && "items" in node) {
         if ("items" in node) {
             items = node["items"];
         }
     }
 
-    if (node["type"] == "header") {
+    if (node["type"] === "header") {
         header = node
     }
-    if (node["type"] == "group") {
+    if (node["type"] === "group") {
         group = node
     }
 

@@ -22,8 +22,8 @@ ColumnLayout {
     onPropsChanged: {
         text = props['text']
         items = props['items']
-        visible = props['visible'] == undefined ||
-                  eval('plasmoid.configuration.' + props['visible']) == true
+        visible = props['visible'] === undefined ||
+                  eval('plasmoid.configuration.' + props['visible']) === true
     }
 
     Component {

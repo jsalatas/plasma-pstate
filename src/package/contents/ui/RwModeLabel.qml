@@ -13,7 +13,7 @@ Label {
     visible: sensorModel.rw_mode === "w"
 
     property var sensorModel: undefined
-    property var isHovered: false
+    property bool isHovered: false
 
     ToolTip {
         text: "Write-only sensor"

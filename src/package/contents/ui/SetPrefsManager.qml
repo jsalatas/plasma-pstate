@@ -87,14 +87,14 @@ Item {
             name = enumSensors[0]
         }
 
-        if (rw_mode == 'w') {
+        if (rw_mode === 'w') {
             /* emit */ update(name, args)
             main.sensorsMgr.setSensorValue(name, value)
             return
         }
 
 
-        if(value != old_val) {
+        if(value !== old_val) {
             /* emit */ update(name, args)
         } else {
             print("    same value")

@@ -19,14 +19,14 @@ ColumnLayout {
     property alias currentIndex: profileComboBox.currentIndex
     property alias editMode: profileComboBox.editable
 
-    property var editMode: false
+    property bool editMode: false
 
-    property var previousIndex: -1
+    property int previousIndex: -1
 
     property var originalNames: undefined
-    property var originalIndex: -1
+    property int originalIndex: -1
 
-    property var hasMessage: false
+    property bool hasMessage: false
 
     // A flattened list of all tunable sensors (view model items)
     property var listModelItems: []
@@ -125,12 +125,12 @@ ColumnLayout {
 
         // find list item with sensor name
         for (index = sensorListModel.count - 1; index > -1; index--) {
-            var listItem = sensorListModel.get(index)
+            listItem = sensorListModel.get(index)
             if (listItem.sensor === sensor) {
                 break
             }
         }
-        if (index == -1) {
+        if (index === -1) {
             return
         }
 
@@ -330,7 +330,7 @@ ColumnLayout {
         var newName = profileComboBox.editText
         var oldName = profileNames[currentIndex]
 
-        if (newName == oldName || currentIndex === -1) {
+        if (newName === oldName || currentIndex === -1) {
             return
         }
 
@@ -400,7 +400,7 @@ ColumnLayout {
                 if (sensorListModel) {
                     for (var i = 0; i < sensorListModel.count; i++) {
                         var listItem = sensorListModel.get(i)
-                        if (listItem.sensor == sensorModel.sensor) {
+                        if (listItem.sensor === sensorModel.sensor) {
                             item = listItem
                             break;
                         }

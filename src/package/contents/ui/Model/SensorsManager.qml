@@ -23,7 +23,7 @@ QtObject {
         var sensors_model = Utils.get_sensors()
 
         sensorComponent = Qt.createComponent("./Sensor.qml");
-        if (sensorComponent.status != Component.Ready) {
+        if (sensorComponent.status !== Component.Ready) {
             print("Sensor.qml component not ready.")
             return
         }

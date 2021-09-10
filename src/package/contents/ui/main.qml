@@ -244,7 +244,7 @@ Item {
 
         onSourceAdded: {
              if(monitor_source(source)) {
-                 if(connectedSources.indexOf(source) == -1) {
+                 if(connectedSources.indexOf(source) === -1) {
                     connectSource(source);
                     sources.push(source)
                  }

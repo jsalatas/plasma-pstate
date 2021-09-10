@@ -7,7 +7,7 @@ import '../../code/datasource.js' as Ds
 
 Item {
     id: nativeMonitor
-    property var name: "NativeMonitor"
+    property string name: "NativeMonitor"
     property bool isReady: false
     property var args: ['-read-all']
 
@@ -65,12 +65,12 @@ Item {
             var exitCode = data.exitCode
             var args = data.args
 
-            if (exitCode != 0) {
+            if (exitCode !== 0) {
                 print('error: ' + data.stderr)
                 return
             }
 
-            if (args.length == 0) {
+            if (args.length === 0) {
                 print('error: Command result with no args.')
                 return
             }
