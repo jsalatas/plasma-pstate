@@ -8,6 +8,7 @@ import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.1
 
 RowLayout {
+    id: comboboxRoot
     Layout.fillWidth: true
 
     property var sensorModel: undefined
@@ -70,13 +71,22 @@ RowLayout {
         sensorModel.onValueChanged.disconnect(onValueChanged)
     }
 
-    Label {
-        Layout.fillWidth: true
-        Layout.alignment: Qt.AlignVCenter
-        id: combobox_title
-        color: theme.textColor
-        horizontalAlignment: Text.AlignLeft
-        Layout.minimumWidth: units.gridUnit * 4
+    RowLayout {
+        Label {
+            id: combobox_title
+            color: theme.textColor
+            horizontalAlignment: Text.AlignLeft
+            // Layout.minimumWidth: units.gridUnit * 4
+            Layout.alignment: Qt.AlignVCenter
+            Layout.fillWidth: false
+        }
+        RwModeLabel {
+            sensorModel: comboboxRoot.sensorModel
+        }
+        /* Spacer */
+        Item {
+            Layout.fillWidth: true
+        }
     }
 
     ComboBox {
