@@ -81,6 +81,12 @@ Item {
 
         var args = [value]
 
+        var enumSensors = sensorModel.sensor.split('/')
+        if (enumSensors.length > 1) {
+            args = enumSensors.slice(1).concat(args)
+            name = enumSensors[0]
+        }
+
         if (rw_mode == 'w') {
             /* emit */ update(name, args)
             main.sensorsMgr.setSensorValue(name, value)

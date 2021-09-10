@@ -90,6 +90,21 @@ QtObject {
         }
     }
 
+    function initEnumerableSensor(sensorModel) {
+        var enumSensors = sensorModel.value
+
+        for (var j = 0; enumSensors && j < enumSensors.length; j++) {
+            var enumSensorName = sensorModel.sensor + "/" + enumSensors[j]
+            var enumSensor = sensorComponent.createObject(sensorsMgr)
+            enumSensor = enumSensor.copy(sensorModel)
+            enumSensor.sensor = enumSensorName
+            enumSensor.sensor_type = ""
+
+            sensorsMap[enumSensorName] = enumSensor
+            detectedSensors.push(enumSensorName)
+        }
+    }
+
     function initSensorsDetected() {
         detectedSensors = []
         var keys = getKeys()
@@ -105,6 +120,10 @@ QtObject {
             if (Utils.is_sysmon_sensor(sensorModel))
             {
                 continue
+            }
+            if (Utils.is_enum_sensor(sensorModel))
+            {
+                initEnumerableSensor(sensorModel)
             }
             detectedSensors.push(keys[i])
         }

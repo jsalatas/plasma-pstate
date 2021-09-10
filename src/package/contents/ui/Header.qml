@@ -79,6 +79,19 @@ RowLayout {
         }
     }
 
+    function createEnumerableSensor(sensorModel, sensorItem) {
+        var enumRootName = sensorModel.sensor
+        var enumSensors = sensorModel.value
+
+        for (var j = 0; enumSensors && j < enumSensors.length; j++) {
+            var item = Utils.deepCopy(sensorItem)
+            item['sensor'] = enumRootName + "/" + enumSensors[j]
+            item['text'] = item['text'] + " / " + enumSensors[j]
+            item['value'] = ""
+            createItem(item)
+        }
+    }
+
     onItemsChanged: {
         // parent: controls
         for(var i = 0; i < items.length; i++) {
@@ -87,7 +100,15 @@ RowLayout {
             }
 
             var sensorItem = items[i]
-            createItem(sensorItem)
+
+            var sensorName = sensorItem['sensor']
+            var sensorModel = main.sensorsMgr.getSensor(sensorName)
+
+            if (Utils.is_enum_sensor(sensorModel)) {
+                createEnumerableSensor(sensorModel, sensorItem)
+            } else {
+                createItem(sensorItem)
+            }
         }
     }
 
