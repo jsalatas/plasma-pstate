@@ -114,11 +114,11 @@ set_cpu_turbo () {
 }
 
 check_gpu_min_freq () {
-    [ -n "$GPU_MIN_FREQ" ] && [ -f $GPU_MIN_FREQ ]
+    [ -n "$GPU_MIN_FREQ" ] && [ -f "$GPU_MIN_FREQ" ]
 }
 
 read_gpu_min_freq () {
-    gpu_min_freq=$(cat $GPU_MIN_FREQ)
+    gpu_min_freq=$(cat "$GPU_MIN_FREQ")
 }
 
 append_gpu_min_freq() {
@@ -130,7 +130,7 @@ append_gpu_min_freq() {
 set_gpu_min_freq () {
     gpuminfreq=$1
     if [ -n "$gpuminfreq" ] && [ "$gpuminfreq" != "0" ]; then
-        printf '%s\n' "$gpuminfreq" > $GPU_MIN_FREQ 2> /dev/null
+        printf '%s\n' "$gpuminfreq" > "$GPU_MIN_FREQ" 2> /dev/null
     fi
     read_gpu_min_freq
     json="{"
@@ -140,17 +140,17 @@ set_gpu_min_freq () {
 }
 
 check_gpu_max_freq () {
-    [ -n "$GPU_MAX_FREQ" ] && [ -f $GPU_MAX_FREQ ]
+    [ -n "$GPU_MAX_FREQ" ] && [ -f "$GPU_MAX_FREQ" ]
 }
 
 read_gpu_max_freq () {
-    gpu_max_freq=$(cat $GPU_MAX_FREQ)
+    gpu_max_freq=$(cat "$GPU_MAX_FREQ")
 }
 
 set_gpu_max_freq () {
     gpumaxfreq=$1
     if [ -n "$gpumaxfreq" ] && [ "$gpumaxfreq" != "0" ]; then
-        printf '%s\n' "$gpumaxfreq" > $GPU_MAX_FREQ 2> /dev/null
+        printf '%s\n' "$gpumaxfreq" > "$GPU_MAX_FREQ" 2> /dev/null
     fi
     read_gpu_max_freq
     json="{"
@@ -160,35 +160,35 @@ set_gpu_max_freq () {
 }
 
 check_gpu_min_limit () {
-    [ -n "$GPU_MIN_LIMIT" ] && [ -f $GPU_MIN_LIMIT ]
+    [ -n "$GPU_MIN_LIMIT" ] && [ -f "$GPU_MIN_LIMIT" ]
 }
 
 read_gpu_min_limit () {
-    gpu_min_limit="$(cat ${GPU_MIN_LIMIT})"
+    gpu_min_limit=$(cat "${GPU_MIN_LIMIT}")
     export gpu_min_limit
 }
 
 check_gpu_max_limit () {
-    [ -n "$GPU_MAX_LIMIT" ] && [ -f $GPU_MAX_LIMIT ]
+    [ -n "$GPU_MAX_LIMIT" ] && [ -f "$GPU_MAX_LIMIT" ]
 }
 
 read_gpu_max_limit () {
-    gpu_max_limit="$(cat ${GPU_MAX_LIMIT})"
+    gpu_max_limit=$(cat "${GPU_MAX_LIMIT}")
     export gpu_max_limit
 }
 
 check_gpu_boost_freq () {
-    [ -n "$GPU_BOOST_FREQ" ] && [ -f $GPU_BOOST_FREQ ]
+    [ -n "$GPU_BOOST_FREQ" ] && [ -f "$GPU_BOOST_FREQ" ]
 }
 
 read_gpu_boost_freq () {
-    gpu_boost_freq=$(cat $GPU_BOOST_FREQ)
+    gpu_boost_freq=$(cat "$GPU_BOOST_FREQ")
 }
 
 set_gpu_boost_freq () {
     gpuboostfreq=$1
     if [ -n "$gpuboostfreq" ] && [ "$gpuboostfreq" != "0" ]; then
-        printf '%s\n' "$gpuboostfreq" > $GPU_BOOST_FREQ 2> /dev/null
+        printf '%s\n' "$gpuboostfreq" > "$GPU_BOOST_FREQ" 2> /dev/null
     fi
     read_gpu_boost_freq
     json="{"
@@ -198,11 +198,11 @@ set_gpu_boost_freq () {
 }
 
 check_gpu_cur_freq () {
-    [ -n "$GPU_CUR_FREQ" ] && [ -f $GPU_CUR_FREQ ]
+    [ -n "$GPU_CUR_FREQ" ] && [ -f "$GPU_CUR_FREQ" ]
 }
 
 read_gpu_cur_freq () {
-    gpu_cur_freq="$(cat $GPU_CUR_FREQ)"
+    gpu_cur_freq="$(cat "$GPU_CUR_FREQ")"
     export gpu_cur_freq
 }
 
