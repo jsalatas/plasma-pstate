@@ -11,9 +11,9 @@ QtObject {
     objectName: "SensorsManager"
     id: sensorsMgr
 
-    property var sensorsMap: {}
+    property var sensorsMap: ({})
 
-    property var availableValues: {}
+    property var availableValues: ({})
 
     property var detectedSensors: []
 
@@ -27,8 +27,6 @@ QtObject {
             print("Sensor.qml component not ready.")
             return
         }
-
-        sensorsMap = {}
 
         var keys = Object.keys(sensors_model)
         for (var i = 0; i < keys.length; i++) {

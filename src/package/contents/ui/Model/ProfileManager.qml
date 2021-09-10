@@ -11,10 +11,10 @@ QtObject {
 
     property var profileComponent: undefined
 
-    property var profilesMap: {}
+    property var profilesMap: ({})
 
-    property var sensorsModelBackup: {}
-    property var shadowProfilesMap: {}
+    property var sensorsModelBackup: ({})
+    property var shadowProfilesMap: ({})
     property var deletedProfiles: []
 
     property bool editMode: false
@@ -30,7 +30,6 @@ QtObject {
             return
         }
 
-        profilesMap = {}
         for (var i = 0; i < profileList.length; i++) {
             var name = profileList[i]
             var data = ni.getProfile(name)

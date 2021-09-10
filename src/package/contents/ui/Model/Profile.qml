@@ -17,7 +17,7 @@ QtObject {
      * Data format:
      *  { sensor1: value, sensor2: value, ... }
      */
-    property var sensors: {}
+    property var sensors: ({})
 
     function copy(profile) {
         profileObject.name = profile.name
