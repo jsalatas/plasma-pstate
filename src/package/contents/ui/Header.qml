@@ -57,6 +57,28 @@ RowLayout {
         }
     }
 
+    function createItem(sensorItem) {
+        switch (sensorItem['type']) {
+            case 'radio': {
+                radio.createObject(controls, {'props': sensorItem})
+                break
+            }
+            case 'group': {
+                group.createObject(controls, {'props': sensorItem})
+                break
+            }
+            case 'switch': {
+                switchbutton.createObject(controls, {'props': sensorItem})
+                break
+            }
+            case 'combobox': {
+                combobox.createObject(controls, {'props': sensorItem})
+                break
+            }
+            default: console.log("header: unkonwn type: " + sensorItem['type'])
+        }
+    }
+
     onItemsChanged: {
         // parent: controls
         for(var i = 0; i < items.length; i++) {
@@ -64,26 +86,8 @@ RowLayout {
                 continue
             }
 
-            switch (items[i]['type']) {
-                case 'radio': {
-                    radio.createObject(controls, {'props': items[i]})
-                    break
-                }
-                case 'group': {
-                    group.createObject(controls, {'props': items[i]})
-                    break
-                }
-                case 'switch': {
-                    switchbutton.createObject(controls, {'props': items[i]})
-                    break
-                }
-                case 'combobox': {
-                    combobox.createObject(controls, {'props': items[i]})
-                    break
-                }
-                default: console.log("header: unkonwn type: " + items[i]['type'])
-            }
-
+            var sensorItem = items[i]
+            createItem(sensorItem)
         }
     }
 
