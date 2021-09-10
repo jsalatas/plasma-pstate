@@ -23,7 +23,7 @@ ColumnLayout {
         text = props['text']
         items = props['items']
         visible = props['visible'] === undefined ||
-                  eval('plasmoid.configuration.' + props['visible']) === true
+                  plasmoid.configuration[props['visible']] === true
     }
 
     Component {
