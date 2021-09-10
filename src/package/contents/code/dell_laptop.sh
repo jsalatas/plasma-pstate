@@ -34,9 +34,7 @@ check_dell_fan_mode() {
 }
 
 read_dell_fan_mode() {
-    if [ -f "${DELL_SMM_HWMON}"/pwm1 ]; then
-        dell_fan_mode=$(cat "${DELL_SMM_HWMON}"/pwm1)
-    else
+    if [ -f "${DELL_SMM_HWMON}"/pwm1_enable ]; then
         dell_fan_mode="0"
     fi
     export dell_fan_mode
@@ -51,22 +49,43 @@ return_dell_fan_mode() {
 }
 
 set_dell_fan_mode() {
-    if [ "$1" -lt $((255/3)) ]; then
-        printf "2" > "${DELL_SMM_HWMON}"/pwm1_enable 2> /dev/null
-        return_dell_fan_mode
-        return 0
-    fi
+    printf "%s" "${1}" > "${DELL_SMM_HWMON}"/pwm1_enable 2> /dev/null
+    echo "{\"dell_fan_mode\":\"${1}\"}"
+}
 
-    printf 1 > "${DELL_SMM_HWMON}"/pwm1_enable 2> /dev/null
+
+check_dell_fan_pwm() {
+    [ -n "${DELL_SMM_HWMON}" ] && [ -d "${DELL_SMM_HWMON}" ] && \
+        [ -f "${DELL_SMM_HWMON}"/pwm1_enable ]
+}
+
+read_dell_fan_pwm() {
+    mapfile -t _pwm < <(find "${DELL_SMM_HWMON}"/pwm? -printf "%f\n")
+    dell_fan_pwm=${_pwm[*]}
+    export dell_fan_pwm
 
     if [ -f "${DELL_SMM_HWMON}"/pwm1 ]; then
-        printf "%s" "$1" > "${DELL_SMM_HWMON}"/pwm1 2> /dev/null
+        dell_fan_pwm1=$(cat "${DELL_SMM_HWMON}"/pwm1)
+        append_json '"dell_fan_pwm\/pwm1":"'"${dell_fan_pwm1}"'"'
     fi
 
     if [ -f "${DELL_SMM_HWMON}"/pwm2 ]; then
-        printf "%s" "$1" > "${DELL_SMM_HWMON}"/pwm2 2> /dev/null
+        dell_fan_pwm2=$(cat "${DELL_SMM_HWMON}"/pwm2)
+        append_json '"dell_fan_pwm\/pwm2":"'"${dell_fan_pwm2}"'"'
     fi
 
-    return_dell_fan_mode
+    if [ -f "${DELL_SMM_HWMON}"/pwm3 ]; then
+        dell_fan_pwm3=$(cat "${DELL_SMM_HWMON}"/pwm3)
+        append_json '"dell_fan_pwm\/pwm3":"'"${dell_fan_pwm3}"'"'
+    fi
 }
 
+set_dell_fan_pwm() {
+    case "${1}" in
+        pwm1|pwm2|pwm3)
+            printf "%s" "${2}" > "${DELL_SMM_HWMON}/${1}" 2> /dev/null
+            ;;
+    esac
+
+    echo "{}"
+}

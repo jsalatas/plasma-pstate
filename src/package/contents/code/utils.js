@@ -93,7 +93,9 @@ var sensors = {
     'intel_tcc_max_state': {'value': undefined, 'unit':' °C', 'print': fmt_tcc},
     'intel_rapl_short': {'value': undefined, 'unit':' W', 'print': to_int},
     'intel_rapl_long': {'value': undefined, 'unit':' W', 'print': to_int},
-    'dell_fan_mode': {'value': undefined, 'unit': '', 'print': to_string,},
+    'dell_fan_mode': {'value': undefined, 'unit': '', 'print': to_string, 'rw_mode':'w'},
+
+    'dell_fan_pwm': {'value': undefined, 'unit': '', 'print': to_string, 'sensor_type':'enum'},
 
     'cpufreq_scaling_min_freq': {'value': undefined, 'unit':' MHz', 'print': hz_to_mhz},
     'cpufreq_scaling_max_freq': {'value': undefined, 'unit':' MHz', 'print': hz_to_mhz},
@@ -193,10 +195,16 @@ var model =  [
             {'type': 'switch', 'text': 'Silent Mode', 'sensor': 'lg_fan_mode'},
             {'type': 'radio', 'text': 'Dell Fan Mode', 'sensor': 'dell_fan_mode',
              'items' :[
-                 {'symbol': '◯', 'text': "Auto", 'sensor_value': '-1'},
+                 {'symbol': '◯', 'text': "Auto", 'sensor_value': '2'},
+                 {'symbol': '●', 'text': "Manual", 'sensor_value': '1'},
+            ]},
+
+            {'type': 'radio', 'text': 'Dell Fan', 'sensor': 'dell_fan_pwm',
+             'items' :[
+                 {'symbol': '◯', 'text': "Off", 'sensor_value': '0'},
                  {'symbol': '◐', 'text': "Low", 'sensor_value': '128'},
                  {'symbol': '●', 'text': "High", 'sensor_value': '255'},
-            ]}
+            ]},
         ]
     },
     {'type': 'header', 'id': 'nvidiaSettings', 'text': 'Nvidia Settings', 'icon': 'o',
