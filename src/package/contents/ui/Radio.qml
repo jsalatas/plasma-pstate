@@ -38,12 +38,21 @@ ColumnLayout {
         }
     }
 
-    Label {
-        id: radio_title
-        font.pointSize: theme.smallestFont.pointSize * 1.25
-        color: theme.textColor
-        visible: text != ''
-        Layout.fillWidth: true
+    RowLayout {
+        Label {
+            id: radio_title
+            font.pointSize: theme.smallestFont.pointSize * 1.25
+            color: theme.textColor
+            visible: text != ''
+            focus: false
+        }
+        RwModeLabel {
+            sensorModel: radio.sensorModel
+        }
+        /* Spacer */
+        Item {
+            Layout.fillWidth: true
+        }
     }
     RowLayout {
         id: buttons
