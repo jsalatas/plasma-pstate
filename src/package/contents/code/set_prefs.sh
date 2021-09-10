@@ -221,7 +221,8 @@ main() {
             if [ ! ${DAEMON_MODE} ]; then
                 print_usage
             else
-                echo "{\"error\":\"invalid arg\"}"
+                stdbuf -oL printf "{\"error\":\"invalid arg\"}" 1>&2
+                echo ""
             fi
             ;;
     esac
