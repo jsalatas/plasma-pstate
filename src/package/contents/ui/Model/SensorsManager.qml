@@ -17,11 +17,12 @@ QtObject {
 
     property var detectedSensors: []
 
+    property var sensorComponent
 
     function loadSensors() {
         var sensors_model = Utils.get_sensors()
 
-        var sensorComponent = Qt.createComponent("./Sensor.qml");
+        sensorComponent = Qt.createComponent("./Sensor.qml");
         if (sensorComponent.status != Component.Ready) {
             print("Sensor.qml component not ready.")
             return
