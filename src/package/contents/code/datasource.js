@@ -71,7 +71,12 @@ function parseSensorData(obj, expected_sensors, force_update) {
         }
 
         if (force_update || obj[keys[i]] !== sensorModel.value) {
-            sensorModel.value = obj[keys[i]];
+
+            if (Utils.is_enum_sensor(sensorModel)) {
+                sensorModel.value = obj[keys[i]].split(' ');
+            } else {
+                sensorModel.value = obj[keys[i]];
+            }
         }
     }
 }
