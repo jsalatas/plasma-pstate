@@ -80,7 +80,9 @@ generate_read_sensor_func() {
                 \"${sensor}\")
                     if check_${sensor}; then
                         read_${sensor};
-                        append_json $(printf \"\\\\\"%s\\\\\":\\\\\"%s\\\\\"\" "${sensor}" \$\{"${sensor}"\});
+                        if [ -n \"\${${sensor}}\" ]; then
+                            append_json $(printf \"\\\\\"%s\\\\\":\\\\\"%s\\\\\"\" "${sensor}" \$\{"${sensor}"\});
+                        fi
                     fi
                     ;;
                 "
