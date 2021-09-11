@@ -15,7 +15,7 @@ Item {
     PlasmaCore.DataSource {
         id: datasource
         engine: 'executable'
-        readonly property string commandSource: 'sudo ' + set_prefs + ' -read-available'
+        readonly property string commandSource: 'pkexec ' + set_prefs + ' -read-available'
 
 
         onNewData: {

@@ -12,7 +12,7 @@ PlasmaCore.DataSource {
     property var name: "LocalMonitor"
 
     property bool isReady: false
-    property string commandSource: (plasmoid.configuration.useSudoForReading ? 'sudo ' : '') +
+    property string commandSource: (plasmoid.configuration.useSudoForReading ? 'pkexec ' : '') +
                                    set_prefs +
                                    (!isReady ? ' -read-all' :
                                     ' -read-some ' + main.sensorsMgr.detectedSensors.join(" "))

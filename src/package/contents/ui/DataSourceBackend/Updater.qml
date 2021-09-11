@@ -12,7 +12,7 @@ PlasmaCore.DataSource {
 
     property var name: "LocalUpdater"
 
-    readonly property string commandSource: 'sudo ' + set_prefs + ' -'
+    readonly property string commandSource: 'pkexec ' + set_prefs + ' -'
 
     /* required */ property var set_prefs
 
