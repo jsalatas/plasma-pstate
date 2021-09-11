@@ -67,6 +67,7 @@ Item {
 
             if (exitCode !== 0) {
                 print('error: ' + data.stderr)
+                notificationSource.createNotification('error: ' + data.stderr)
                 return
             }
 
