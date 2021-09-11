@@ -47,8 +47,28 @@ function pushValidItem(arr, item, header, group) {
         return
     }
 
-    var sensors_model = Utils.get_sensors()
-    var sensor = sensors_model[item.sensor]
+    var sensorModel = main.sensorsMgr.getSensor(item.sensor)
+
+    if (Utils.is_enum_sensor(sensorModel)) {
+        print("pushValidItem " + JSON.stringify(sensorModel))
+        for (var i = 0; sensorModel.value && i < sensorModel.value.length; i++) {
+            var enumItem = Utils.deepCopy(item)
+            enumItem.sensor = sensorModel.sensor + "/" + sensorModel.value[i]
+            enumItem.text = enumItem.text + " / " + sensorModel.value[i]
+
+            arr.push({
+                "sensor": enumItem.sensor,
+                "item": enumItem,
+                "header": header,
+                "group": group ? group : {},
+                "valueText": "-",
+                "headerText": header.text,
+                "checked": false
+            })
+        }
+
+        return
+    }
 
     arr.push({
         "sensor": item.sensor,
