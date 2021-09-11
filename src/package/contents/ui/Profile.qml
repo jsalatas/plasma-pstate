@@ -350,32 +350,31 @@ ColumnLayout {
         }
     }
 
+    function initialize() {
+        profileView.exitEditMode.connect(onExitEditMode)
+
+        profileView.enterEditMode.connect(mgr.enterEditMode)
+        profileView.exitEditMode.connect(mgr.exitEditMode)
+
+        mgr.loadProfiles()
+
+        listModelItems = ProfileUtils.findSensorItems(Utils.get_model())
+        sensorListModel.clear()
+
+        profileComboBox.accepted.connect(profileView.profileComboBoxAccepted)
+        profileView.profileNames = mgr.getProfileNames()
+        currentIndex = -1
+        previousIndex = currentIndex
+
+        var name = profileNames[0]
+        var profile = mgr.getProfile(name)
+        showProfile(profile, editMode)
+    }
+
 
     Model.ProfileManager {
         id: mgr
-
-        Component.onCompleted: {
-            profileView.exitEditMode.connect(onExitEditMode)
-
-            profileView.enterEditMode.connect(mgr.enterEditMode)
-            profileView.exitEditMode.connect(mgr.exitEditMode)
-
-            mgr.loadProfiles()
-
-            listModelItems = ProfileUtils.findSensorItems(Utils.get_model())
-            sensorListModel.clear()
-
-            profileComboBox.accepted.connect(profileView.profileComboBoxAccepted)
-            profileView.profileNames = mgr.getProfileNames()
-            currentIndex = -1
-            previousIndex = currentIndex
-
-            var name = profileNames[0]
-            var profile = mgr.getProfile(name)
-            showProfile(profile, editMode)
-        }
     }
-
 
     Component {
         id: sensorItemDelegate
@@ -592,7 +591,7 @@ ColumnLayout {
                     ToolButton {
                         text: /* Down */ "▼"
                         visible: editMode
-                        enabled: profileNames && profileNames.length &&
+                        enabled: profileNames !== undefined && profileNames.length &&
                                     -1 < currentIndex && currentIndex < profileNames.length - 1
                         contentItem: Text {
                             text: parent.text

@@ -115,9 +115,12 @@ GridLayout {
     Component {
         id: profileComponent
         Profile {
+            id: profileView
 
         }
     }
+
+    property bool isInitialized: false
 
     Connections {
         target: main
@@ -134,8 +137,14 @@ GridLayout {
     }
 
     function initialize() {
+        if (isInitialized) {
+            return
+        }
         remove_children()
         initialize_toolbar()
+        profileView.initialize()
+
+        isInitialized = true
     }
 
     function initialize_toolbar() {
