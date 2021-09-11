@@ -33,10 +33,11 @@ PlasmaCore.DataSource {
 
         // monitorDS.start()
     }
-    function update(parameter, value) {
+    function update(parameter, args) {
         // monitorDS.stop()
 
-        var command = commandSource + parameter.replace(/_/g, '-') + ' ' + value
+        var command = commandSource + parameter.replace(/_/g, '-') + ' ' +
+                      args.join(' ')
         print("exec: " + command)
         connectSource(command);
 
