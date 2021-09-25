@@ -150,7 +150,7 @@ list_sensors() {
 
 daemon() {
     export DAEMON_MODE=1
-    while read -r -a line
+    while read -n 1024 -r -a line
     do
         main "${line[@]}"
     done < "/dev/stdin"
