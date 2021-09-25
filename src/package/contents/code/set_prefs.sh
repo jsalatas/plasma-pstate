@@ -150,10 +150,9 @@ list_sensors() {
 
 daemon() {
     export DAEMON_MODE=1
-    while read -r line
+    while read -r -a line
     do
-        # shellcheck disable=SC2068
-        main ${line}
+        main "${line[@]}"
     done < "/dev/stdin"
 }
 
