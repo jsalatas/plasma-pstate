@@ -20,7 +20,7 @@ read_cpu_scaling_available_frequencies () {
 }
 
 read_available () {
-    json="{"
+    json=""
     if check_cpu_available_governors; then
         read_cpu_available_governors
         append_json "\"cpu_governor\":\"${cpu_available_governors}\""
@@ -29,6 +29,5 @@ read_available () {
         read_cpu_scaling_available_frequencies
         append_json "\"cpu_scaling_available_frequencies\":\"${cpu_scaling_available_frequencies}\""
     fi
-    json="${json}}"
-    echo $json
+    echo "{${json}}"
 }

@@ -51,11 +51,7 @@ sensors_model=(
 #   append_json '"foo":"bar"'
 # 1: A json key/value
 append_json() {
-    if [ "${json#"${json%?}"}" = "{" ]; then
-        json="${json}${1}"
-    else
-        json="${json},${1}"
-    fi
+    json="${json}${json:+,}${1}"
 }
 
 # Helper macro to read sensor data and append it to the json string
@@ -109,21 +105,20 @@ arg_to_sensor() {
 }
 
 read_all () {
-    json="{"
+    json=""
 
     for sensor in "${sensors_model[@]}"
     do
         read_sensor "${sensor}"
     done
 
-    json="${json}}"
-    echo "$json"
+    echo "{${json}}"
 }
 
 read_some() {
     _all_sensors=$(printf '%s\n' "${sensors_model[@]}")
 
-    json="{"
+    json=""
 
     for sensor in "${@}"
     do
@@ -131,8 +126,7 @@ read_some() {
         read_sensor "${sensor}"
     done
 
-    json="${json}}"
-    echo "$json"
+    echo "{${json}}"
 }
 
 write_sensor() {
