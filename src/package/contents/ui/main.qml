@@ -493,7 +493,9 @@ Item {
 
     NvidiaPowerMizerDS {
         id: nvidiaPowerMizerDS
-        dataSourceReady: main.dataSourceReady
+        Component.onCompleted: {
+            nvidiaPowerMizerDS.dataSourceReady.connect(tabbedRep.initialize)
+        }
     }
 
 
