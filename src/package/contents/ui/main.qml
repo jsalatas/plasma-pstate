@@ -95,7 +95,6 @@ Item {
             sensorsMgr = sensorsMgrComponent.createObject()
             firstInit.beginStageOne.connect(onBeginStageOne)
             firstInit.beginStageTwo.connect(onBeginStageTwo)
-            firstInit.initialized.connect(main.dataSourceReady)
             firstInit.initialized.connect(main.initialized)
             /* emit */ firstInit.beginStageOne()
         }
@@ -157,7 +156,8 @@ Item {
             stopMonitors()
         }
 
-        tabbedRep.show_item("processorSettings")
+        main.tabbedRep.initialize()
+        main.tabbedRep.show_item("processorSettings")
     }
 
     function enterEditMode() {

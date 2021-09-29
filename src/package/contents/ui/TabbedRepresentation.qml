@@ -123,13 +123,6 @@ GridLayout {
     property bool isInitialized: false
 
     Connections {
-        target: main
-        onDataSourceReady: {
-            initialize()
-        }
-    }
-
-    Connections {
         target: plasmoid.configuration
         onShowIntelGPUChanged: {
             initialize()

@@ -26,13 +26,6 @@ ColumnLayout {
     }
 
     Connections {
-        target: main
-        onDataSourceReady: {
-            initialize()
-        }
-    }
-
-    Connections {
         target: plasmoid.configuration
         onShowIntelGPUChanged: {
             initialize()
