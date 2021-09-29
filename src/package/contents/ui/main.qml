@@ -19,7 +19,6 @@ import './Model' as Model
 Item {
     id: main
     
-    signal dataSourceReady
     signal updateSensor(string name, string value)
 
     FontLoader {
