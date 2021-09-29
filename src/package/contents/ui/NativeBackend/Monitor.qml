@@ -81,8 +81,9 @@ Item {
                 return
             }
 
-
-            handleSetValueResult(args[0], data.stdout)
+            if (args[0] === '-write-sensor') {
+                handleSetValueResult(args[1], data.stdout)
+            }
         }
     }
 }

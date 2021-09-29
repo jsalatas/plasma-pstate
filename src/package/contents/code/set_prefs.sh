@@ -92,11 +92,8 @@ generate_read_sensor_func() {
     eval "${_cmd}"
 }
 
-arg_to_sensor() {
-    #shellcheck disable=SC2001
-    _arg=$(echo "$1" | sed -e "s/-/_/g")
-    _arg="${_arg:1}"
-    _arg=$(printf '%s\n' "${sensors_model[@]}" | grep -P "^${_arg}\$")
+is_valid_sensor() {
+    _arg=$(printf '%s\n' "${sensors_model[@]}" | grep -P "^${1}\$")
     if [ -n "${_arg}" ]; then
         echo "${_arg}"
     else
@@ -130,7 +127,7 @@ read_some() {
 }
 
 write_sensor() {
-    _sensor=$(arg_to_sensor "$1")
+    _sensor=$(is_valid_sensor "$1")
     if [ -n "${_sensor}" ]; then
         eval "set_${_sensor}" "${@:2}"
         return 0
@@ -158,25 +155,20 @@ daemon() {
 
 print_usage() {
     echo "Usage:"
-    echo "1: set_prefs.sh [ -cpu-min-perf |"
-    echo "                  -cpu-max-perf |"
-    echo "                  -cpu-turbo |"
-    echo "                  -gpu-min-freq |"
-    echo "                  -gpu-max-freq |"
-    echo "                  -gpu-boost-freq |"
-    echo "                  -cpu-governor |"
-    echo "                  -energy-perf |"
-    echo "                  -thermal-mode |"
-    echo "                  -lg-battery-charge-limit |"
-    echo "                  -lg-fan-mode |"
-    echo "                  -lg-usb-charge |"
-    echo "                  -powermizer |"
-    echo "                  -intel-tcc-cur-state |"
-    echo "                  -dell-fan-mode ] value"
+    echo "1: set_prefs.sh -write-sensor <sensor-name> <value>"
     echo "2: set_prefs.sh -read-all"
     echo "3: set_prefs.sh -read-available"
     echo "4: set_prefs.sh -read-some"
     exit 3
+}
+
+print_json_error() {
+    if [ ! ${DAEMON_MODE} ]; then
+        print_usage
+    else
+        stdbuf -oL printf "{\"error\":\"invalid arg\"}" 1>&2
+        echo ""
+    fi
 }
 
 main() {
@@ -206,17 +198,17 @@ main() {
             exit 0
             ;;
 
-        *)
+        "-write-sensor")
+            shift 1
             if write_sensor "${@}"; then
                 return 0
             fi
 
-            if [ ! ${DAEMON_MODE} ]; then
-                print_usage
-            else
-                stdbuf -oL printf "{\"error\":\"invalid arg\"}" 1>&2
-                echo ""
-            fi
+            print_json_error
+            ;;
+
+        *)
+            print_json_error
             ;;
     esac
 }

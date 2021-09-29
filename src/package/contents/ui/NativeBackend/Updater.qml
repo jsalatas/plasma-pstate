@@ -4,14 +4,14 @@ Item {
     id: updater
     property var name: "NativeUpdater"
 
-    function update(parameter, args) {
-        var _args = ["-" + parameter.replace(/_/g, '-')]
+    function update(sensor, args) {
+        var _args = ["-write-sensor", sensor]
         _args = _args.concat(args)
 
         print("exec: " + _args)
         plasmoid.nativeInterface.setPrefs(_args)
 
-        if (parameter === 'powermizer') {
+        if (sensor === 'powermizer') {
             nvidiaPowerMizerDS.update()
         }
     }

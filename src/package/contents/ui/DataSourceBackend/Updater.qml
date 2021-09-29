@@ -12,7 +12,7 @@ PlasmaCore.DataSource {
 
     property string name: "LocalUpdater"
 
-    readonly property string commandSource: 'pkexec ' + set_prefs + ' -'
+    readonly property string commandSource: 'pkexec ' + set_prefs
 
     /* required */ property var set_prefs
 
@@ -33,15 +33,16 @@ PlasmaCore.DataSource {
 
         // monitorDS.start()
     }
-    function update(parameter, args) {
+    function update(sensor, args) {
         // monitorDS.stop()
 
-        var command = commandSource + parameter.replace(/_/g, '-') + ' ' +
-                      args.join(' ')
+        var command = [" -write-sensor", sensor]
+        command = commandSource + command.concat(args).join(' ')
+
         print("exec: " + command)
         connectSource(command);
 
-        if (parameter === 'powermizer') {
+        if (sensor === 'powermizer') {
             nvidiaPowerMizerDS.update()
         }
     }

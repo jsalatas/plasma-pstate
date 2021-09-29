@@ -60,11 +60,8 @@ Item {
         doFirstInit();
     }
 
-    function handleSetValueResult(arg, stdout) {
-        var arg_0 = arg
-        arg_0 = arg_0.substring(1)
-                     .split('-').join('_')
-        if (main.sensorsMgr.detectedSensors.includes(arg_0)) {
+    function handleSetValueResult(sensor, stdout) {
+        if (main.sensorsMgr.detectedSensors.includes(sensor)) {
             var obj = JSON.parse(stdout);
 
             Ds.parseSensorData(obj, undefined, true)
