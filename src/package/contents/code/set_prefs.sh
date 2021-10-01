@@ -54,19 +54,6 @@ append_json() {
     json="${json}${json:+,}${1}"
 }
 
-# Helper macro to read sensor data and append it to the json string
-# 1: Sensor name
-append_macro() {
-    _cmd="
-        if check_${1}; then
-            read_${1};
-            append_json $(printf \"\\\\\"%s\\\\\":\\\\\"%s\\\\\"\" "${1}" \$\{"${1}"\});
-        fi
-    "
-    # echo "$_cmd"
-    eval "$_cmd"
-}
-
 generate_read_sensor_func() {
     _cmd="read_sensor() {
             case \"\$1\" in
