@@ -85,6 +85,13 @@ generate_read_sensor_func() {
                 "
         _cmd="${_cmd}${_subcmd}"
     done
+
+    _cmd="${_cmd}
+                *)
+                    printf \"Invalid sensor \${1}\n\" 1>&2
+                    ;;
+    "
+
     _cmd="${_cmd}
             esac
          }"
