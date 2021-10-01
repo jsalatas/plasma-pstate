@@ -113,13 +113,10 @@ read_all () {
 }
 
 read_some() {
-    _all_sensors=$(printf '%s\n' "${sensors_model[@]}")
-
     json=""
 
     for sensor in "${@}"
     do
-        echo "${_all_sensors}" | grep -q -P "^${sensor}\$" || continue
         read_sensor "${sensor}"
     done
 
