@@ -99,7 +99,6 @@ QtObject {
             enumSensor.sensor_type = ""
 
             sensorsMap[enumSensorName] = enumSensor
-            detectedSensors.push(enumSensorName)
         }
     }
 
