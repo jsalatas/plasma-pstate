@@ -64,8 +64,8 @@ Item {
     Plasmoid.fullRepresentation: TabbedRepresentation {
         id: tabbedRep
         Component.onCompleted: {
-            firstInit.viewReady()
             main.tabbedRep = tabbedRep
+            firstInit.viewReady()
         }
     }
 
