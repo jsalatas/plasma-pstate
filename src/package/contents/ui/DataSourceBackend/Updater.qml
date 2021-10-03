@@ -48,8 +48,8 @@ PlasmaCore.DataSource {
     }
     function notify(sourceName) {
         var args = sourceName.replace(commandSource, "").split(" ")
-        var sensor = args[0].replace(/-/g, '_')
-        var value = get_value_text(sensor, args[1])
+        var sensorModel = main.sensorsMgr.getSensor(args[1])
+        var value = sensorModel.getValueText()
         notificationSource.createNotification("Failed to set " + sensor + " to " + value)
     }
 }
