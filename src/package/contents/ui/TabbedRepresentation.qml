@@ -135,7 +135,10 @@ GridLayout {
         }
         remove_children()
         initialize_toolbar()
-        profileView.initialize()
+
+        if (main.hasNativeBackend) {
+            profileView.initialize()
+        }
 
         isInitialized = true
     }
@@ -271,6 +274,7 @@ GridLayout {
 
                 Loader {
                     id: profileButton
+                    visible: main.hasNativeBackend
                     sourceComponent: toolButton
                     onLoaded: {
                         item.symbolText = /* Black Star */ "\u2605"
