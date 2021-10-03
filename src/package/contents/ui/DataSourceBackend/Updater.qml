@@ -25,8 +25,8 @@ PlasmaCore.DataSource {
             print("    error: " + data.stderr)
             notify(sourceName)
         } else {
-            var cmd = sourceName.split(' ')[2]
-            handleSetValueResult(cmd, data.stdout)
+            var sensor = sourceName.split(' ')[3]
+            handleSetValueResult(sensor, data.stdout)
 
             print("    done")
         }
