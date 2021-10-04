@@ -76,10 +76,10 @@ Item {
     Plasmoid.switchWidth: units.gridUnit * 15
     Plasmoid.switchHeight: units.gridUnit * 20
 
-    property var toolTipMainText
-    property var toolTipSubText
-    property var toolTipTextFormat
-    property var icon
+    property string toolTipMainText
+    property string toolTipSubText
+    property int toolTipTextFormat
+    property string icon
 
     property var sensorsMgr
 

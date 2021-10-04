@@ -2,7 +2,7 @@ import QtQuick 2.3
 
 Item {
     id: updater
-    property var name: "NativeUpdater"
+    property string name: "NativeUpdater"
 
     function update(sensor, args) {
         var _args = ["-write-sensor", sensor]
