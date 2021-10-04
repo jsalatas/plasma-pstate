@@ -51,9 +51,19 @@ QtObject {
         return Object.keys(profilesMap)
     }
 
+    function _getProfile(name) {
+        var keys = Object.keys(profilesMap)
+        for (var i = 0; i < keys.length; i++) {
+            if (profilesMap[keys[i]].name === name) {
+                return profilesMap[keys[i]]
+            }
+        }
+        return undefined
+    }
+
     function getProfile(name) {
         if (!editMode) {
-            return profilesMap[name]
+            return _getProfile(name)
         } else {
             return getShadow(name)
         }
@@ -65,7 +75,7 @@ QtObject {
         }
 
         if (!(name in shadowProfilesMap)) {
-            var p = profilesMap[name]
+            var p = _getProfile(name)
             var s = profileComponent.createObject()
             s = s.copy(p)
 
