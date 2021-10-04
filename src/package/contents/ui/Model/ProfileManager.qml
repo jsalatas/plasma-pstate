@@ -196,12 +196,21 @@ QtObject {
 
         for (var i = 0; i < deletedProfiles.length; i++) {
             var key = deletedProfiles[i]
-            if (key in shadowProfilesMap) {
-                delete shadowProfilesMap[key]
+
+            var keys = Object.keys(shadowProfilesMap)
+            for (var j = 0; j < keys.length; j++) {
+                if (shadowProfilesMap[keys[j]].name === key) {
+                    delete shadowProfilesMap[keys[j]]
+                    break
+                }
             }
-            if (key in profilesMap) {
-                delete profilesMap[key]
-                plasmoid.nativeInterface.deleteProfile(key)
+
+            var keys = Object.keys(profilesMap)
+            for (var j = 0; j < keys.length; j++) {
+                if (profilesMap[keys[j]].name === key) {
+                    delete profilesMap[keys[j]]
+                    break
+                }
             }
         }
 
