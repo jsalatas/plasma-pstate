@@ -65,6 +65,8 @@ Item {
         id: tabbedRep
         Component.onCompleted: {
             main.tabbedRep = tabbedRep
+
+            initializeNvidia()
             firstInit.viewReady()
         }
     }
@@ -490,10 +492,24 @@ Item {
         }
     }
 
+    function initializeNvidia() {
+        if (nvidiaPowerMizerDS && nvidiaPowerMizerDS.initialized) {
+            return
+        }
+        if (!tabbedRep || !tabbedRep.initialize) {
+            return
+        }
+        nvidiaPowerMizerDS.dataSourceReady.connect(tabbedRep.initialize)
+        nvidiaPowerMizerDS.initialized = true
+    }
+
     NvidiaPowerMizerDS {
         id: nvidiaPowerMizerDS
+
+        property bool initialized: false
+
         Component.onCompleted: {
-            nvidiaPowerMizerDS.dataSourceReady.connect(tabbedRep.initialize)
+            initializeNvidia()
         }
     }
 

@@ -4,6 +4,8 @@ import org.kde.plasma.core 2.0 as PlasmaCore
 Item {
     id: nvidiaPowerMizer
 
+    signal dataSourceReady()
+
     PlasmaCore.DataSource {
         id: datasource
         engine: 'executable'
@@ -20,8 +22,6 @@ Item {
         property string commandSource: "nvidia-settings -q GpuPowerMizerMode | " +
                                        "grep \"Attribute 'GPUPowerMizerMode'\" | " +
                                        "awk -F \"): \" '{print $2}' | awk -F \".\" '{print $1}'"
-
-       signal dataSourceReady()
 
         onNewData: {
             if (sourceName === commandCheck) {
