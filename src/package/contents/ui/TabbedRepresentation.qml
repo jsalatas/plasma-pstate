@@ -130,11 +130,12 @@ GridLayout {
     }
 
     function initialize() {
+        remove_children()
+        initialize_toolbar()
+
         if (isInitialized) {
             return
         }
-        remove_children()
-        initialize_toolbar()
 
         if (main.hasNativeBackend) {
             profileView.initialize()
