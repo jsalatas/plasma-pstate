@@ -158,7 +158,9 @@ Item {
         }
 
         main.tabbedRep.initialize()
-        main.tabbedRep.show_item("processorSettings")
+        if (main.tabbedRep.show_item) {
+            main.tabbedRep.show_item("processorSettings")
+        }
     }
 
     function enterEditMode() {
