@@ -275,18 +275,22 @@ GridLayout {
                     Layout.fillHeight: true
                 }
 
-                Loader {
-                    id: profileButton
-                    sourceComponent: main.hasNativeBackend ? toolButton : undefined
-                    onLoaded: {
-                        item.symbolText = /* Black Star */ "\u2605"
-                        item.itemId = "profilePage"
-                        item.ToolTip.text = "Profiles"
-                        item.ToolTip.delay = 1000
-                    }
+                ColumnLayout {
+                    Layout.alignment: Qt.AlignVCenter | Qt.AlignHCenter
 
-                    Layout.maximumWidth: theme.defaultFont.pointSize * 3.0
-                    Layout.maximumHeight: theme.defaultFont.pointSize * 3.0
+                    Loader {
+                        id: profileButton
+                        sourceComponent: main.hasNativeBackend ? toolButton : undefined
+                        onLoaded: {
+                            item.symbolText = /* Black Star */ "\u2605"
+                            item.itemId = "profilePage"
+                            item.ToolTip.text = "Profiles"
+                            item.ToolTip.delay = 1000
+                        }
+
+                        Layout.maximumWidth: theme.defaultFont.pointSize * 3.0
+                        Layout.maximumHeight: theme.defaultFont.pointSize * 3.0
+                    }
                 }
             }
         }
