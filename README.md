@@ -84,12 +84,3 @@ sudo chmod 755 /usr/share/plasma/plasmoids/gr.ictpro.jsalatas.plasma.pstate/cont
 Please feel free to clone, hack, and contribute anything you may find useful, 
 especially in relation to similar to Dell's Thermal Management Feature that 
 may be available in other hardware platforms.
-
-## Issues
-The widget uses a shell script that needs to be run as root user (sudo) and which apparently floods your log files with security related messages as described in [issue #16](https://github.com/jsalatas/plasma-pstate/issues/16). 
-
-If you want to get rid of these messages, please see a workaround at 
-
-https://github.com/jsalatas/plasma-pstate/wiki/Too-many-messages-in-system-log
-
-
