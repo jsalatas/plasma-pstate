@@ -47,6 +47,8 @@ GridLayout {
             property var itemId
             Layout.alignment: Qt.AlignVCenter | Qt.AlignHCenter
 
+            Layout.maximumWidth: theme.defaultFont.pointSize * 3.0
+            Layout.maximumHeight: theme.defaultFont.pointSize * 3.0
             contentItem: Text {
                     id: buttonText
                     text: button.symbolText
@@ -282,6 +284,9 @@ GridLayout {
                         item.ToolTip.text = "Profiles"
                         item.ToolTip.delay = 1000
                     }
+
+                    Layout.maximumWidth: theme.defaultFont.pointSize * 3.0
+                    Layout.maximumHeight: theme.defaultFont.pointSize * 3.0
                 }
             }
         }
