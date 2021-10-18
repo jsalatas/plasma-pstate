@@ -275,8 +275,7 @@ GridLayout {
 
                 Loader {
                     id: profileButton
-                    visible: main.hasNativeBackend
-                    sourceComponent: toolButton
+                    sourceComponent: main.hasNativeBackend ? toolButton : undefined
                     onLoaded: {
                         item.symbolText = /* Black Star */ "\u2605"
                         item.itemId = "profilePage"
