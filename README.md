@@ -58,7 +58,7 @@ First of all you need to be in sudoers' group. After that you can just clone
 the code and install it using the following commands:
 
 ```
-git clone https://github.com/jsalatas/plasma-pstate
+git clone https://github.com/frankenfruity/plasma-pstate
 cd plasma-pstate
 mkdir build
 cd build
