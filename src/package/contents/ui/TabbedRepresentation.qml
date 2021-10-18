@@ -189,7 +189,7 @@ GridLayout {
         if (item) {
             var res = item.mapToItem(toolbar, 0, 0)
             toolbarIndicator.y = res.y
-            toolbarIndicator.height = button.height
+            toolbarIndicator.height = item.height
         }
     }
 
