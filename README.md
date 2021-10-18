@@ -80,6 +80,35 @@ can be installed using the following command
 sudo apt install linux-tools-generic linux-tools-`uname -r`
 ```
 
+## Custom profiles
+
+A profile applies multiple settings at once.
+
+<a target="_blank" rel="noopener noreferrer" href="https://github.com/frankenfruity/plasma-pstate/raw/master/screenshots/Screenshot_5a.jpg"><img src="https://github.com/frankenfruity/plasma-pstate/raw/master/screenshots/Screenshot_5a.jpg"></a>
+
+Click the Edit profiles button to manage profiles.
+
+<a target="_blank" rel="noopener noreferrer" href="https://github.com/frankenfruity/plasma-pstate/raw/master/screenshots/Screenshot_5b.jpg"><img src="https://github.com/frankenfruity/plasma-pstate/raw/master/screenshots/Screenshot_5b.jpg"></a>
+
+In edit mode, use the toolbar buttons to create or delete a profile.
+
+<a target="_blank" rel="noopener noreferrer" href="https://github.com/frankenfruity/plasma-pstate/raw/master/screenshots/Screenshot_5c.jpg"><img src="https://github.com/frankenfruity/plasma-pstate/raw/master/screenshots/Screenshot_5c.jpg"></a>
+
+Edit a profile name in the text box.
+
+<a target="_blank" rel="noopener noreferrer" href="https://github.com/frankenfruity/plasma-pstate/raw/master/screenshots/Screenshot_5d.jpg"><img src="https://github.com/frankenfruity/plasma-pstate/raw/master/screenshots/Screenshot_5d.jpg"></a>
+
+Select the settings to be included in a profile.
+
+<a target="_blank" rel="noopener noreferrer" href="https://github.com/frankenfruity/plasma-pstate/raw/master/screenshots/Screenshot_5f.jpg"><img src="https://github.com/frankenfruity/plasma-pstate/raw/master/screenshots/Screenshot_5f.jpg"></a>
+
+Colors of the navigation bar are inverted in edit mode. The config menus modify the values of the current profile.
+
+<a target="_blank" rel="noopener noreferrer" href="https://github.com/frankenfruity/plasma-pstate/raw/master/screenshots/Screenshot_5e.jpg"><img src="https://github.com/frankenfruity/plasma-pstate/raw/master/screenshots/Screenshot_5e.jpg"></a>
+
+Save or discard changes to exit edit mode.
+
+<a target="_blank" rel="noopener noreferrer" href="https://github.com/frankenfruity/plasma-pstate/raw/master/screenshots/Screenshot_5g.jpg"><img src="https://github.com/frankenfruity/plasma-pstate/raw/master/screenshots/Screenshot_5g.jpg"></a>
 
 ## Contributions
 Please feel free to clone, hack, and contribute anything you may find useful, 
