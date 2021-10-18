@@ -70,14 +70,6 @@ can be installed using the following command
 ```
 sudo apt install linux-tools-generic linux-tools-`uname -r`
 ```
-## How to update
-Assuming that you have checked out the latest code, you just need to run the following commands as root:
-
-```
-sudo kpackagetool5 -g -t Plasma/Applet -u gr.ictpro.jsalatas.plasma.pstate
-
-sudo chmod 755 /usr/share/plasma/plasmoids/gr.ictpro.jsalatas.plasma.pstate/contents/code/set_prefs.sh 
-```
 
 
 ## Contributions
