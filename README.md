@@ -60,8 +60,17 @@ the code and install it using the following commands:
 ```
 git clone https://github.com/jsalatas/plasma-pstate
 cd plasma-pstate
-sudo ./install.sh
+mkdir build
+cd build
+cmake -DCMAKE_INSTALL_PREFIX:PATH=/usr -DCMAKE_BUILD_TYPE=Release ..
+make
+make install
+
+cd ..
+cp ./src/plasma_pstate.policy /usr/share/polkit-1/actions/
+chmod 644 /usr/share/polkit-1/actions/plasma_pstate.policy
 ```
+
 **Notice:** If your processor doesn't support EPP(ie older generations without 
 HWP), then you need also to install the ``x86_energy_perf_policy`` which (in 
 case of Ubuntu 18.04 distros) is provided by the ``linux-tools`` package and 
