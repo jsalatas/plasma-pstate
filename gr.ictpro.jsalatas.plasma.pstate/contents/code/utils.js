@@ -79,6 +79,8 @@ var sensors = {
     'lg_battery_charge_limit': {'value': undefined, 'unit':'', 'print': to_bool},
     'lg_usb_charge': {'value': undefined, 'unit':'', 'print': to_bool},
     'lg_fan_mode': {'value': undefined, 'unit':'', 'print': to_bool},
+    'ideapad_battery_conservation': {'value': undefined, 'unit':'', 'print': to_bool},
+    'ideapad_fn_lock': {'value': undefined, 'unit':'', 'print': to_bool},
     'powermizer': {'value': undefined, 'unit':'', 'print': to_string}, 
 
 }
@@ -86,6 +88,7 @@ var sensors = {
 var vendors = {
     'dell': {'provides': ['thermal_mode']},
     'lg-laptop': {'provides': ['lg_battery_charge_limit', 'lg_usb_charge', 'lg_fan_mode']},
+    'ideapad-laptop': {'provides': ['ideapad_battery_conservation', 'ideapad_fn_lock']},
     'nvidia': {'provides': ['powermizer']}
 }
 
@@ -144,6 +147,13 @@ var model =  [
         'vendors': ['lg-laptop'], 
         'items': [
             {'type': 'switch', 'text': 'Silent Mode', 'sensor': 'lg_fan_mode'}
+        ]
+    },
+    {'type': 'header', 'text': 'Ideapad Laptop', 'icon': 'm',
+        'vendors': ['ideapad-laptop'], 
+        'items': [
+            {'type': 'switch', 'text': 'Battery Conservation', 'sensor': 'ideapad_battery_conservation'},
+            {'type': 'switch', 'text': 'Hotkey Mode', 'sensor': 'ideapad_fn_lock'}
         ]
     },
     {'type': 'header', 'text': 'Nvidia Settings', 'icon': 'o',
